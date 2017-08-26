@@ -34,5 +34,5 @@ target_link_libraries(forward_kinematics_pioneer ${catkin_LIBRARIES})
 #add_executable(pwm_quad src/pwm_quad.cpp)
 #target_link_libraries(pwm_quad ${catkin_LIBRARIES})
 
-add_executable(forward_kinematics src/forward_kinematics/forward_kinematics.cpp)
+add_executable(forward_kinematics src/forward_kinematics/forward_kinematics.cpp src/forward_kinematics/ForwardKin.hpp src/forward_kinematics/ForwardKin.cpp )
 target_link_libraries(forward_kinematics ${catkin_LIBRARIES})
