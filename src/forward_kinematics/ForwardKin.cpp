@@ -1,4 +1,4 @@
-#include "../lib/ForwardKin.hpp"
+ sleep#include "../lib/ForwardKin.hpp"
 
 ForwardKin::ForwardKin(int argc, char *argv[])
 {
@@ -18,32 +18,45 @@ ForwardKin::ForwardKin(int argc, char *argv[])
 
 void ForwardKin::moveLinear(float speed)
 {
+    /* Setup Message */
     std_msgs::Float32 vel_linear;
     vel_linear.data = speed;
+    /* Publish it */
     right_pub.publish(vel_linear);
     left_pub.publish(vel_linear);
+    /* Complete cycle */
+    this -> sleep();
     return;
 }
 void ForwardKin::moveAngular(float speed)
 {
+    /* Setup Message */
     std_msgs::Float32 vel_spinPlus;
     std_msgs::Float32 vel_spinMinus;
     vel_spinPlus.data = speed;
     vel_spinMinus.data = -speed;
+    /* Publish it */
     right_pub.publish(vel_spinPlus);
     left_pub.publish(vel_spinMinus);
+    /* Complete cycle */
+    this -> sleep();
     return;
 }
-void ForwardKin::moveStop()
+void ForwardKin:: moveStop()
 {
+    /* Complete cycle */
     std_msgs::Float32 vel_stop;
     vel_stop.data = 0;
+    /* Publish it */
     right_pub.publish(vel_stop);
     left_pub.publish(vel_stop);
+    /* Complete cycle */
+    this -> sleep();
     return;
 }
 
 void ForwardKin::sleep()
 {
     loop_rate_ -> sleep();
+    ros::spinOnce();
 }
