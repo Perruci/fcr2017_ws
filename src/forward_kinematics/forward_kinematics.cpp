@@ -2,13 +2,10 @@
 #include "lib/ForwardKin.hpp"
 
 #define PI 3.1415926535897
-
+/* Square Functions */
 void runAndStop(ForwardKin&, float, float);
-
 double timeTo90deg(float);
-
 void spin90degrees(ForwardKin&, float);
-
 void moveSquare(ForwardKin &fKin, float moveSpeed, float timeForward)
 {
     for(size_t i = 0; i < 4; i++)
@@ -20,6 +17,30 @@ void moveSquare(ForwardKin &fKin, float moveSpeed, float timeForward)
         spin90degrees(fKin, moveSpeed);
         fKin.sleep();
     }
+}
+
+/* Circle functions */
+double timeTo360deg(float velR, float velL)
+{
+    /* Angular velocity as defined in forward_kinematic_pioneer.cpp */
+    /* (v_right - v_left)/0.5 */
+    float angularVel = (velR - velL)/0.5;
+    double timeToAngle = 2*PI/angularVel;
+    return timeToAngle;
+}
+void moveCircle(ForwardKin &fKin, float velR, float velL)
+{
+    double delayTime = timeTo360deg(velR, velL);
+    /* Set up movement */
+    ros::Duration delay(delayTime);
+    /* Move */
+    fKin.setSpeedLeft(velL);
+    fKin.setSpeedRight(velR);
+    /* Wait */
+    delay.sleep();
+    /* Stop */
+    fKin.moveStop();
+    
 }
 
 int main(int argc, char *argv[])
@@ -37,6 +58,9 @@ int main(int argc, char *argv[])
         {
         case 'r':
             moveSquare(fKin, vel, 2);
+            break;
+        case 'c':
+            moveCircle(fKin, vel, 0);
             break;
         case 's':
             fKin.moveStop();
