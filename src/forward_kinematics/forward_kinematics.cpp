@@ -1,6 +1,14 @@
 #include "ros/ros.h"
 #include "lib/ForwardKin.hpp"
 
+void runAndStop(ForwardKin &fKin, float vel)
+{
+    ros::Duration delay(5.0);
+    fKin.moveLinear(vel);
+    delay.sleep();
+    fKin.moveStop();
+}
+
 int main(int argc, char *argv[])
 {
     /* Forward Kinematics class */
@@ -11,21 +19,18 @@ int main(int argc, char *argv[])
     while(ros::ok())
     {
         std::cin >> c;
-        if(c == 'l')
+        switch (c)
         {
-            fKin.moveLinear(vel);
-        }
-        if(c == 'r')
-        {
-            fKin.moveAngular(vel);
-        }
-        if(c == 's')
-        {
+        case 'r':
+            runAndStop(fKin, vel);
+            break;
+        case 's':
             fKin.moveStop();
-        }
-        if(c == 'q')
-        {
+            break;
+        default:
             break;
         }
+        if(c == 'q')
+            break;
     }
 }
