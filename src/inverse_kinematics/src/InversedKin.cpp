@@ -14,6 +14,18 @@ InversedKin::InversedKin(int argc, char *argv[])
    loop_rate_ -> sleep();
 }
 
+void InversedKin::moveAndSpin(float linear, float angular)
+{
+   /* Setup Message */
+   geometry_msgs::Twist vel;
+   vel.linear.x = linear;
+   vel.angular.z = angular;
+   /* Publish it */
+   cmd_vel_pub.publish(vel);
+   /* Complete cycle */
+   this -> sleep();
+   return;
+}
 
 void InversedKin::moveLinear(float speed)
 {

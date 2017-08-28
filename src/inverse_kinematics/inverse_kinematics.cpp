@@ -20,28 +20,26 @@ void moveSquare(InversedKin &iKin, float moveSpeed, float timeForward)
 }
 
 /* Circle functions */
-double timeTo360deg(float velR, float velL)
+double timeTo360deg(float angular)
 {
     /* Angular velocity as defined in forward_kinematic_pioneer.cpp */
     /* (v_right - v_left)/0.5 */
-    float angularVel = (velR - velL)/0.5;
-    double timeToAngle = 2*PI/angularVel;
+    double timeToAngle = 2*PI/angular;
     return timeToAngle;
 }
-// void moveCircle(InversedKin &iKin, float velR, float velL)
-// {
-//     double delayTime = timeTo360deg(velR, velL);
-//     /* Set up movement */
-//     ros::Duration delay(delayTime);
-//     /* Move */
-//     iKin.setSpeedLeft(velL);
-//     iKin.setSpeedRight(velR);
-//     /* Wait */
-//     delay.sleep();
-//     /* Stop */
-//     iKin.moveStop();
+ void moveCircle(InversedKin &iKin, float linear, float angular)
+{
+    double delayTime = timeTo360deg(angular);
+    /* Set up movement */
+    ros::Duration delay(delayTime);
+    /* Move */
+    iKin.moveAndSpin(linear, angular);
+    /* Wait */
+    delay.sleep();
+    /* Stop */
+    iKin.moveStop();
     
-// }
+}
 
 int main(int argc, char *argv[])
 {

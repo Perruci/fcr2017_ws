@@ -23,6 +23,7 @@ public:
     InversedKin(int argc, char *argv[]);
     void moveLinear(float speed);
     void moveAngular(float speed);
+    void moveAndSpin(float linear, float angular);
     void moveStop();
     void sleep();
 };
