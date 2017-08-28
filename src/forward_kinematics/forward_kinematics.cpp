@@ -1,6 +1,8 @@
 #include "ros/ros.h"
 #include "lib/ForwardKin.hpp"
 
+#define PI 3.1415926535897
+
 void runAndStop(ForwardKin&, float, float);
 
 double timeTo90deg(float);
@@ -58,7 +60,6 @@ void runAndStop(ForwardKin &fKin, float vel, float moveTime)
 
 double timeTo90deg(float rotationSpeed)
 {
-    const double PI = 3.1415926535897;
     /* Angular velocity as defined in forward_kinematic_pioneer.cpp */
     /* (v_right - v_left)/0.5 */
     float angularVel = 2*rotationSpeed/0.5;

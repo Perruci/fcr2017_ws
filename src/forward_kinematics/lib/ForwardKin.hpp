@@ -23,6 +23,8 @@ private:
 
 public:
     ForwardKin(int argc, char *argv[]);
+    void setSpeedLeft(float speed);
+    void setSpeedRight(float speed);
     void moveLinear(float speed);
     void moveAngular(float speed);
     void moveStop();

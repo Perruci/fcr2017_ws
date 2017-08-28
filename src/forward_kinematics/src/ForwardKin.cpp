@@ -16,6 +16,30 @@ ForwardKin::ForwardKin(int argc, char *argv[])
    loop_rate_ -> sleep();
 }
 
+void ForwardKin::setSpeedLeft(float speed)
+{
+    /* Setup Message */
+   std_msgs::Float32 vel_linear;
+   vel_linear.data = speed;
+   /* Publish it */
+   left_pub.publish(vel_linear);
+   /* Complete cycle */
+   this -> sleep();
+   return;
+}
+
+void ForwardKin::setSpeedRight(float speed)
+{
+    /* Setup Message */
+   std_msgs::Float32 vel_linear;
+   vel_linear.data = speed;
+   /* Publish it */
+   right_pub.publish(vel_linear);
+   /* Complete cycle */
+   this -> sleep();
+   return;
+}
+
 void ForwardKin::moveLinear(float speed)
 {
    /* Setup Message */
