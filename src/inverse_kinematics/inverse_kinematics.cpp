@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
             moveSquare(iKin, vel, 2);
             break;
         case 'c':
-            // moveCircle(iKin, vel, 0);
+            moveCircle(iKin, vel/2, 2*vel);
             break;
         case 's':
             iKin.moveStop();
@@ -82,9 +82,7 @@ void runAndStop(InversedKin &iKin, float vel, float moveTime)
 
 double timeTo90deg(float rotationSpeed)
 {
-    /* Angular velocity as defined in forward_kinematic_pioneer.cpp */
-    /* (v_right - v_left)/0.5 */
-    float angularVel = 2*rotationSpeed/0.5;
+    float angularVel = rotationSpeed;
     double timeToAngle = (PI/2)/angularVel;
     return timeToAngle;
 }
