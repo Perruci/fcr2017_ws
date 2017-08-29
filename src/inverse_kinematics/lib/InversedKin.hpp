@@ -16,9 +16,12 @@ private:
     std::string topicName;
     // Declare Publishers
     ros::Publisher cmd_vel_pub;
+    // Declare Message
+    geometry_msgs::Twist msg_vel;
     // Loop Rate
     ros::Rate* loop_rate_;
 
+    void zeroMsg();
 public:
     InversedKin(int argc, char *argv[]);
     void moveLinear(float speed);

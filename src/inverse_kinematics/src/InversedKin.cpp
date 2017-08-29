@@ -10,18 +10,29 @@ InversedKin::InversedKin(int argc, char *argv[])
    this -> topicName    = "cmd_vel";
    // Set up global Publishers
    this -> cmd_vel_pub    = n_ -> advertise<geometry_msgs::Twist>("/cmd_vel", 1000);
+   zeroMsg();
    loop_rate_ = new ros::Rate(100);
    loop_rate_ -> sleep();
+}
+
+void InversedKin::zeroMsg()
+{
+   this->msg_vel.linear.x  = 0;
+   this->msg_vel.linear.y  = 0;
+   this->msg_vel.linear.z  = 0;
+   this->msg_vel.angular.x = 0;
+   this->msg_vel.angular.y = 0;
+   this->msg_vel.angular.z = 0;
 }
 
 void InversedKin::moveAndSpin(float linear, float angular)
 {
    /* Setup Message */
-   geometry_msgs::Twist vel;
-   vel.linear.x = linear;
-   vel.angular.z = angular;
+   zeroMsg();
+   msg_vel.linear.x = linear;
+   msg_vel.angular.z = angular;
    /* Publish it */
-   cmd_vel_pub.publish(vel);
+   cmd_vel_pub.publish(msg_vel);
    /* Complete cycle */
    this -> sleep();
    return;
@@ -30,10 +41,10 @@ void InversedKin::moveAndSpin(float linear, float angular)
 void InversedKin::moveLinear(float speed)
 {
    /* Setup Message */
-   geometry_msgs::Twist vel;
-   vel.linear.x = speed;
+   zeroMsg();
+   msg_vel.linear.x = speed;
    /* Publish it */
-   cmd_vel_pub.publish(vel);
+   cmd_vel_pub.publish(msg_vel);
    /* Complete cycle */
    this -> sleep();
    return;
@@ -41,22 +52,19 @@ void InversedKin::moveLinear(float speed)
 void InversedKin::moveAngular(float angSpeed)
 {
    /* Setup Message */
-   geometry_msgs::Twist vel;
-   vel.angular.z = angSpeed;
+   zeroMsg();
+   msg_vel.angular.z = angSpeed;
    /* Publish it */
-   cmd_vel_pub.publish(vel);
+   cmd_vel_pub.publish(msg_vel);
    /* Complete cycle */
    this -> sleep();
    return;
 }
 void InversedKin::moveStop()
 {
-   /* Complete cycle */
-   geometry_msgs::Twist vel_stop;
-   vel_stop.linear.x = 0;
-   vel_stop.angular.z = 0;
+   zeroMsg();
    /* Publish it */
-   this -> cmd_vel_pub.publish(vel_stop);
+   this -> cmd_vel_pub.publish(msg_vel);
    /* Complete cycle */
    this -> sleep();
    return;
