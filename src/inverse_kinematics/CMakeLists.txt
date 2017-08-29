@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(forward_kinematics)
+project(inverse_kinematics)
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
@@ -18,6 +18,6 @@ catkin_package(
 include_directories(
   ${catkin_INCLUDE_DIRS}
 )
-
-add_executable(forward_kinematics forward_kinematics.cpp)
-target_link_libraries(forward_kinematics ${catkin_LIBRARIES})
+# Inversed Kinematics
+add_executable(inverse_kinematics inverse_kinematics.cpp lib/InversedKin.hpp src/InversedKin.cpp )
+target_link_libraries(inverse_kinematics ${catkin_LIBRARIES})

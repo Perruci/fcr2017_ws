@@ -19,5 +19,6 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-add_executable(forward_kinematics forward_kinematics.cpp)
+# Forward Kinematics
+add_executable(forward_kinematics src/forward_kinematics/forward_kinematics.cpp src/forward_kinematics/lib/ForwardKin.hpp src/forward_kinematics/src/ForwardKin.cpp )
 target_link_libraries(forward_kinematics ${catkin_LIBRARIES})
