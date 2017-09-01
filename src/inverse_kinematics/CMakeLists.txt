@@ -19,5 +19,5 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 # Inversed Kinematics
-add_executable(inverse_kinematics inverse_kinematics.cpp lib/InversedKin.hpp src/InversedKin.cpp )
+add_executable(inverse_kinematics inverse_kinematics.cpp lib/InversedKin.h src/InversedKin.cpp )
 target_link_libraries(inverse_kinematics ${catkin_LIBRARIES})
