@@ -1,4 +1,4 @@
-#include "../lib/InversedKin.hpp"
+#include "../lib/InversedKin.h"
 
 InversedKin::InversedKin(int argc, char *argv[])
 {

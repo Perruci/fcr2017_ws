@@ -1,5 +1,5 @@
 #include "ros/ros.h"
-#include "lib/InversedKin.hpp"
+#include "lib/InversedKin.h"
 
 #define PI 3.1415926535897
 /* Square Functions */
@@ -38,7 +38,7 @@ double timeTo360deg(float angular)
     delay.sleep();
     /* Stop */
     iKin.moveStop();
-    
+
 }
 
 int main(int argc, char *argv[])

@@ -1,5 +1,5 @@
 #include "ros/ros.h"
-#include "lib/ForwardKin.hpp"
+#include "lib/ForwardKin.h"
 
 #define PI 3.1415926535897
 /* Square Functions */
@@ -40,7 +40,7 @@ void moveCircle(ForwardKin &fKin, float velR, float velL)
     delay.sleep();
     /* Stop */
     fKin.moveStop();
-    
+
 }
 
 int main(int argc, char *argv[])

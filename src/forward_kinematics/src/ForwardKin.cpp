@@ -1,4 +1,4 @@
-#include "../lib/ForwardKin.hpp"
+#include "../lib/ForwardKin.h"
 
 ForwardKin::ForwardKin(int argc, char *argv[])
 {
