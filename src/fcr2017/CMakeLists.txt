@@ -28,13 +28,8 @@ target_link_libraries(publisher3at ${catkin_LIBRARIES})
 add_executable(pose pose.cpp)
 target_link_libraries(pose ${catkin_LIBRARIES})
 
-#add_executable(pwm_quad src/pwm_quad.cpp)
+add_executable(forward_kinematics_pioneer forward_kinematics_pioneer.cpp)
+target_link_libraries(forward_kinematics_pioneer ${catkin_LIBRARIES})
+
+#add_executable(pwm_quad pwm_quad.cpp)
 #target_link_libraries(pwm_quad ${catkin_LIBRARIES})
-
-# Forward Kinematics
-#add_executable(forward_kinematics forward_kinematics/forward_kinematics.cpp forward_kinematics/lib/ForwardKin.hpp forward_kinematics/src/ForwardKin.cpp )
-#target_link_libraries(forward_kinematics ${catkin_LIBRARIES})
-
-#Inverse Kinematics
-#add_executable(inverse_kinematics inverse_kinematics/inverse_kinematics.cpp inverse_kinematics/lib/InversedKin.hpp inverse_kinematics/src/InversedKin.cpp )
-#target_link_libraries(inverse_kinematics ${catkin_LIBRARIES})
