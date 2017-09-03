@@ -119,8 +119,8 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
-# ${catkin_INCLUDE_DIRS}
+  include
+  ${catkin_INCLUDE_DIRS}
 # TODO: Check names of system library include directories (roscpp, rospy, std_msgs, sensor_msgs, geometry_msgs, p2os_msgs, tf)
   ${roscpp_INCLUDE_DIRS}
   ${rospy_INCLUDE_DIRS}
@@ -144,7 +144,8 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
- add_executable(odometry_subscriber src/odometry_subscriber.cpp)
+add_executable(odometry_subscriber src/odometry_subscriber.cpp)
+add_executable(ultrasound_subscriber src/ultrasound_subscriber.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -159,7 +160,16 @@ include_directories(
 ## Specify libraries to link a library or executable target against
 target_link_libraries(odometry_subscriber
   ${catkin_LIBRARIES}
-
+  ${roscpp_LIBRARIES}
+  ${rospy_LIBRARIES}
+  ${std_msgs_LIBRARIES}
+  ${sensor_msgs_LIBRARIES}
+  ${geometry_msgs_LIBRARIES}
+  ${p2os_msgs_LIBRARIES}
+  ${tf_LIBRARIES}
+)
+target_link_libraries(ultrasound_subscriber
+  ${catkin_LIBRARIES}
   ${roscpp_LIBRARIES}
   ${rospy_LIBRARIES}
   ${std_msgs_LIBRARIES}
@@ -209,19 +219,19 @@ target_link_libraries(odometry_subscriber
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}_test test/test_odometry.cpp)
-# if(TARGET ${PROJECT_NAME}_test)
-#   target_link_libraries(${PROJECT_NAME}_test
-#       ${catkin_LIBRARIES}
-#       ${roscpp_LIBRARIES}
-#       ${rospy_LIBRARIES}
-#       ${std_msgs_LIBRARIES}
-#       ${sensor_msgs_LIBRARIES}
-#       ${geometry_msgs_LIBRARIES}
-#       ${p2os_msgs_LIBRARIES}
-#       ${tf_LIBRARIES}
-#   )
-# endif()
+catkin_add_gtest(ultrasound_test test/test_ultrasound.cpp)
+if(TARGET ultrasound_test)
+  target_link_libraries(ultrasound_test
+      ${catkin_LIBRARIES}
+      ${roscpp_LIBRARIES}
+      ${rospy_LIBRARIES}
+      ${std_msgs_LIBRARIES}
+      ${sensor_msgs_LIBRARIES}
+      ${geometry_msgs_LIBRARIES}
+      ${p2os_msgs_LIBRARIES}
+      ${tf_LIBRARIES}
+  )
+endif()
 #
 # if(CATKIN_ENABLE_TESTING)
 #   find_package(rostest REQUIRED)

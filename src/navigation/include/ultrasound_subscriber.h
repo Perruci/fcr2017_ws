@@ -1,0 +1,18 @@
+#ifndef ULTRASOUND_SUB_H
+#define ULTRASOUND_SUB_H
+
+#include "ros/ros.h"
+#include "p2os_msgs/SonarArray.h"
+#include "sensor_msgs/LaserScan.h"
+
+class UltrasoundSubscriber{
+public:
+    UltrasoundSubscriber();
+    ros::NodeHandle nh;
+    ros::Subscriber msg_sub;
+    std::vector<double> sonarRanges;
+    void printSonar();
+    void ultrasoundCallBack(const p2os_msgs::SonarArray::ConstPtr&);
+};
+
+#endif
