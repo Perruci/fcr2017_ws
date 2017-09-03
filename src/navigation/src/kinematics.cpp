@@ -21,30 +21,6 @@ Kinematics::~Kinematics()
     delete loop_rate_;
 }
 
-inline void Kinematics::zeroMsg()
-{
-   this->msg_vel.linear.x  = 0;
-   this->msg_vel.linear.y  = 0;
-   this->msg_vel.linear.z  = 0;
-   this->msg_vel.angular.x = 0;
-   this->msg_vel.angular.y = 0;
-   this->msg_vel.angular.z = 0;
-}
-
-inline void Kinematics::sleep()
-{
-   loop_rate_ -> sleep();
-   ros::spinOnce();
-}
-
-inline void Kinematics::sendMsg()
-{
-    /* Publish it */
-    cmd_vel_pub.publish(msg_vel);
-    /* Complete cycle */
-    this -> sleep();
-}
-
 void Kinematics::moveAndSpin(float linear, float angular)
 {
    /* Setup Message */

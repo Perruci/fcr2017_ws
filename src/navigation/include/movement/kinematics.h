@@ -20,8 +20,22 @@ private:
     // Loop Rate
     ros::Rate* loop_rate_;
 
-    inline void zeroMsg();
-    inline void sendMsg();
+    inline void zeroMsg()
+    {
+       this->msg_vel.linear.x  = 0;
+       this->msg_vel.linear.y  = 0;
+       this->msg_vel.linear.z  = 0;
+       this->msg_vel.angular.x = 0;
+       this->msg_vel.angular.y = 0;
+       this->msg_vel.angular.z = 0;
+    };
+    inline void sendMsg()
+    {
+        /* Publish it */
+        cmd_vel_pub.publish(msg_vel);
+        /* Complete cycle */
+        this -> sleep();
+    };
 public:
     Kinematics(int argc, char *argv[]);
     virtual ~Kinematics();
@@ -29,7 +43,12 @@ public:
     void moveAngular(float speed);
     void moveAndSpin(float linear, float angular);
     void moveStop();
-    inline void sleep();
+    
+    inline void sleep()
+    {
+       loop_rate_ -> sleep();
+       ros::spinOnce();
+    };
 };
 
 #endif

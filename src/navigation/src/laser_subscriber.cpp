@@ -1,7 +1,8 @@
 #include "../include/measurements/laser_subscriber.h"
 
-LaserSubscriber::LaserSubscriber()
+LaserSubscriber::LaserSubscriber(int argc, char *argv[])
 {
+    ros::init(argc, argv, "Laser_subscriber");
     this->setupComplete = false;
     this->msg_sub = nh.subscribe("/hokuyo_scan", 1000, &LaserSubscriber::laserCallBack, this);
 }
@@ -46,18 +47,17 @@ void LaserSubscriber::printLaser()
         }
 }
 
-int main(int argc, char *argv[])
-{
-    ros::init(argc, argv, "Laser_subscriber");
-    LaserSubscriber laser_sub;
-
-    ros::Rate loop_rate(25);
-    loop_rate.sleep();
-
-    while(ros::ok())
-    {
-        laser_sub.printLaser();
-        loop_rate.sleep();
-        ros::spinOnce();
-    }
-}
+// int main(int argc, char *argv[])
+// {
+//     LaserSubscriber laser_sub(argc, argv);
+//
+//     ros::Rate loop_rate(25);
+//     loop_rate.sleep();
+//
+//     while(ros::ok())
+//     {
+//         laser_sub.printLaser();
+//         loop_rate.sleep();
+//         ros::spinOnce();
+//     }
+// }

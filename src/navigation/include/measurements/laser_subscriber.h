@@ -7,7 +7,7 @@
 
 class LaserSubscriber{
 public:
-    LaserSubscriber();
+    LaserSubscriber(int argc, char *argv[]);
     ~LaserSubscriber();
     ros::NodeHandle nh;
     ros::Subscriber msg_sub;

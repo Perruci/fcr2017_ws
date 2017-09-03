@@ -1,0 +1,52 @@
+#include "../include/navigation.h"
+
+Navigation::Navigation(int argc, char *argv[])
+{
+    this->moveCommands = new Movement(argc, argv);
+    this->laserMonitor = new LaserSubscriber(argc, argv);
+    this->odometryMonitor = new OdometySubscriber(argc, argv);
+    this->sonarMonitor = new UltrasoundSubscriber(argc, argv);
+}
+
+Navigation::~Navigation()
+{
+    delete moveCommands;
+    delete laserMonitor;
+    delete odometryMonitor;
+    delete sonarMonitor;
+}
+
+int main(int argc, char *argv[])
+{
+    Navigation navigate(argc, argv);
+    ros::Rate loop_rate(100);
+    loop_rate.sleep();
+    float vel = 0.2;
+    float angVel = 0.2;
+    int Time = 5;
+    while(ros::ok())
+    {
+        char c = 0;
+        std::cout << "Say the command\n-> ";
+        std::cin >> c;
+        switch (c)
+        {
+        case 'w':
+            navigate.moveCommands->runAndStop(vel, Time);
+            break;
+        case 'a':
+            navigate.moveCommands->spin90degrees(angVel);
+            break;
+        case 'd':
+            navigate.moveCommands->spin90degrees(-angVel);
+            break;
+        // case 's':
+        //     move.kin_->moveStop();
+            break;
+        default:
+            break;
+        }
+        if(c == 'q')
+            break;
+    }
+}

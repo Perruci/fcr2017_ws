@@ -65,37 +65,37 @@ void Movement::spin90degrees(float rotationSpeed)
     this->kin_->moveStop();
 }
 
-int main(int argc, char *argv[])
-{
-    Movement move(argc, argv);
-    ros::Rate loop_rate(100);
-    loop_rate.sleep();
-    float vel = 0.2;
-    float angVel = 0.2;
-    int Time = 5;
-    while(ros::ok())
-    {
-        char c = 0;
-        std::cout << "Say the command\n-> ";
-        std::cin >> c;
-        switch (c)
-        {
-        case 'w':
-            move.runAndStop(vel, Time);
-            break;
-        case 'a':
-            move.spin90degrees(angVel);
-            break;
-        case 'd':
-            move.spin90degrees(-angVel);
-            break;
-        // case 's':
-        //     move.kin_->moveStop();
-            break;
-        default:
-            break;
-        }
-        if(c == 'q')
-            break;
-    }
-}
+// int main(int argc, char *argv[])
+// {
+//     Movement move(argc, argv);
+//     ros::Rate loop_rate(100);
+//     loop_rate.sleep();
+//     float vel = 0.2;
+//     float angVel = 0.2;
+//     int Time = 5;
+//     while(ros::ok())
+//     {
+//         char c = 0;
+//         std::cout << "Say the command\n-> ";
+//         std::cin >> c;
+//         switch (c)
+//         {
+//         case 'w':
+//             move.runAndStop(vel, Time);
+//             break;
+//         case 'a':
+//             move.spin90degrees(angVel);
+//             break;
+//         case 'd':
+//             move.spin90degrees(-angVel);
+//             break;
+//         // case 's':
+//         //     move.kin_->moveStop();
+//             break;
+//         default:
+//             break;
+//         }
+//         if(c == 'q')
+//             break;
+//     }
+// }

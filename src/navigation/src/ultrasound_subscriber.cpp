@@ -6,8 +6,9 @@ void UltrasoundSubscriber::ultrasoundCallBack(const p2os_msgs::SonarArray::Const
         this -> sonarRanges[i] = msg -> ranges[i];
 }
 
-UltrasoundSubscriber::UltrasoundSubscriber()
+UltrasoundSubscriber::UltrasoundSubscriber(int argc, char *argv[])
 {
+    ros::init(argc, argv, "ultrasound_subscriber");
     sonarRanges.resize(16);
     this->msg_sub = nh.subscribe("/sonar", 1000, &UltrasoundSubscriber::ultrasoundCallBack, this);
 }
@@ -22,18 +23,17 @@ void UltrasoundSubscriber::printSonar()
         std::cout << this->sonarRanges[i+8] << '\n';
 }
 
-int main(int argc, char *argv[])
-{
-    ros::init(argc, argv, "ultrasound_subscriber");
-    UltrasoundSubscriber ultrasound_sub;
-
-    ros::Rate loop_rate(25);
-    loop_rate.sleep();
-
-    while(ros::ok())
-    {
-        ultrasound_sub.printSonar();
-        loop_rate.sleep();
-        ros::spinOnce();
-    }
-}
+// int main(int argc, char *argv[])
+// {
+//     UltrasoundSubscriber ultrasound_sub;
+//
+//     ros::Rate loop_rate(25);
+//     loop_rate.sleep();
+//
+//     while(ros::ok())
+//     {
+//         ultrasound_sub.printSonar();
+//         loop_rate.sleep();
+//         ros::spinOnce();
+//     }
+// }

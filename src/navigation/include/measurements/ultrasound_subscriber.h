@@ -6,7 +6,7 @@
 
 class UltrasoundSubscriber{
 public:
-    UltrasoundSubscriber();
+    UltrasoundSubscriber(int argc, char *argv[]);
     ros::NodeHandle nh;
     ros::Subscriber msg_sub;
     std::vector<double> sonarRanges;

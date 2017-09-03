@@ -11,7 +11,7 @@
 
 class OdometySubscriber{
 public:
-    OdometySubscriber();
+    OdometySubscriber(int argc, char *argv[]);
     std::vector<double> getOdometry();
 
     ros::NodeHandle nh;
