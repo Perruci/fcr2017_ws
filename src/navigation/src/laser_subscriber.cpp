@@ -54,8 +54,6 @@ int main(int argc, char *argv[])
     ros::Rate loop_rate(25);
     loop_rate.sleep();
 
-    laser_sub.plotResults();
-
     while(ros::ok())
     {
         laser_sub.printLaser();
