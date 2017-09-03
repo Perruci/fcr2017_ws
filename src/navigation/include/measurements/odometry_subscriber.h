@@ -12,11 +12,11 @@
 class OdometySubscriber{
 public:
     OdometySubscriber(int argc, char *argv[]);
-    std::vector<double> getOdometry();
-
+    std::array<double, 3> getOdometry();
+    void printOdometry();
     ros::NodeHandle nh;
     ros::Subscriber msg_sub;
-    double xPos, yPos, yaw;
+    std::array<double, 3> odometryState;
     void odomCallBack(const nav_msgs::Odometry::ConstPtr&);
 };
 #endif

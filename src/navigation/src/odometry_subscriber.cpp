@@ -2,9 +2,9 @@
 
 void OdometySubscriber::odomCallBack(const nav_msgs::Odometry::ConstPtr& msg)
 {
-    xPos = msg->pose.pose.position.x;
-    yPos = msg->pose.pose.position.y;
-    yaw = tf::getYaw(msg->pose.pose.orientation);
+    odometryState.at(0) = msg->pose.pose.position.x;
+    odometryState.at(1) = msg->pose.pose.position.y;
+    odometryState.at(2) = tf::getYaw(msg->pose.pose.orientation);
 }
 
 OdometySubscriber::OdometySubscriber(int argc, char *argv[])
@@ -15,18 +15,14 @@ OdometySubscriber::OdometySubscriber(int argc, char *argv[])
     this->msg_sub = nh.subscribe("/pose", 10, &OdometySubscriber::odomCallBack, this);
 }
 
-std::vector<double> OdometySubscriber::getOdometry()
+std::array<double, 3> OdometySubscriber::getOdometry()
 {
-    std::vector<double> odometryVec;
-    odometryVec.push_back(yaw);
-    odometryVec.push_back(yPos);
-    odometryVec.push_back(xPos);
-    return odometryVec;
+    return odometryState;
 }
 
-void printOdometry(std::vector<double> odometryVec)
+void OdometySubscriber::printOdometry()
 {
-    ROS_INFO("pose: x = %lf, y = %lf, yaw = %lf", odometryVec.at(0), odometryVec.at(1), odometryVec.at(2));
+    ROS_INFO("pose: x = %lf, y = %lf, yaw = %lf", odometryState.at(0), odometryState.at(1), odometryState.at(2));
 }
 
 // int main(int argc, char *argv[])

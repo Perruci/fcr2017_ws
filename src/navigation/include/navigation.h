@@ -13,6 +13,8 @@ public:
     Navigation(int argc, char *argv[]);
     ~Navigation();
 
+    void moveFront(float, float);
+
     LaserSubscriber*      laserMonitor;
     OdometySubscriber*    odometryMonitor;
     UltrasoundSubscriber* sonarMonitor;

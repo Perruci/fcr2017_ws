@@ -16,6 +16,12 @@ Navigation::~Navigation()
     delete sonarMonitor;
 }
 
+void Navigation::moveFront(float vel, float Time)
+{
+    this->moveCommands->runAndStop(vel, Time);
+    this->odometryMonitor->printOdometry();
+}
+
 int main(int argc, char *argv[])
 {
     Navigation navigate(argc, argv);
@@ -32,7 +38,7 @@ int main(int argc, char *argv[])
         switch (c)
         {
         case 'w':
-            navigate.moveCommands->runAndStop(vel, Time);
+            navigate.moveFront(vel, Time);
             break;
         case 'a':
             navigate.moveCommands->spin90degrees(angVel);
