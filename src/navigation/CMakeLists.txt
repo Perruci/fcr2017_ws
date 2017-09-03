@@ -247,7 +247,7 @@ target_link_libraries(movement
 #############
 
 ## Add gtest based cpp test target and link libraries
-catkin_add_gtest(ultrasound_test test/test_ultrasound.cpp)
+# catkin_add_gtest(ultrasound_test test/test_ultrasound.cpp)
 # if(TARGET ultrasound_test)
 #   target_link_libraries(ultrasound_test
 #       ${catkin_LIBRARIES}
