@@ -146,6 +146,7 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(odometry_subscriber src/odometry_subscriber.cpp)
 add_executable(ultrasound_subscriber src/ultrasound_subscriber.cpp)
+add_executable(laser_subscriber src/laser_subscriber.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -169,6 +170,21 @@ target_link_libraries(odometry_subscriber
   ${tf_LIBRARIES}
 )
 target_link_libraries(ultrasound_subscriber
+  ${catkin_LIBRARIES}
+  ${roscpp_LIBRARIES}
+  ${rospy_LIBRARIES}
+  ${std_msgs_LIBRARIES}
+  ${sensor_msgs_LIBRARIES}
+  ${geometry_msgs_LIBRARIES}
+  ${p2os_msgs_LIBRARIES}
+  ${tf_LIBRARIES}
+)
+# # For plotting matplotlibcpp
+# find_package(PythonLibs 2.7)
+# target_include_directories(laser_subscriber PRIVATE ${PYTHON_INCLUDE_DIRS})
+# target_link_libraries(laser_subscriber ${PYTHON_LIBRARIES})
+
+target_link_libraries(laser_subscriber
   ${catkin_LIBRARIES}
   ${roscpp_LIBRARIES}
   ${rospy_LIBRARIES}
