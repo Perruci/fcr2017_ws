@@ -3,7 +3,6 @@
 
 #include "ros/ros.h"
 #include "p2os_msgs/SonarArray.h"
-#include "sensor_msgs/LaserScan.h"
 
 class UltrasoundSubscriber{
 public:
