@@ -22,14 +22,14 @@ private:
 
     inline void zeroMsg();
     inline void sendMsg();
-    inline void sleep();
 public:
     Kinematics(int argc, char *argv[]);
-    ~Kinematics();
+    virtual ~Kinematics();
     void moveLinear(float speed);
     void moveAngular(float speed);
     void moveAndSpin(float linear, float angular);
     void moveStop();
+    inline void sleep();
 };
 
 #endif

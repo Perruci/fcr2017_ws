@@ -78,36 +78,36 @@ void Kinematics::moveStop()
    return;
 }
 
-int main(int argc, char *argv[])
-{
-    Kinematics move(argc, argv);
-    ros::Rate loop_rate(100);
-    loop_rate.sleep();
-    float vel = 0.2;
-    float angVel = 0.1;
-    while(ros::ok())
-    {
-        char c = 0;
-        std::cout << "Say the command\n-> ";
-        std::cin >> c;
-        switch (c)
-        {
-        case 'w':
-            move.moveLinear(vel);
-            break;
-        case 'a':
-            move.moveAngular(angVel);
-            break;
-        case 'd':
-            move.moveAngular(-angVel);
-            break;
-        case 's':
-            move.moveStop();
-            break;
-        default:
-            break;
-        }
-        if(c == 'q')
-            break;
-    }
-}
+// int main(int argc, char *argv[])
+// {
+    // Kinematics move(argc, argv);
+    // ros::Rate loop_rate(100);
+    // loop_rate.sleep();
+    // float vel = 0.2;
+    // float angVel = 0.1;
+    // while(ros::ok())
+    // {
+        // char c = 0;
+        // std::cout << "Say the command\n-> ";
+        // std::cin >> c;
+        // switch (c)
+        // {
+        // case 'w':
+            // move.moveLinear(vel);
+            // break;
+        // case 'a':
+            // move.moveAngular(angVel);
+            // break;
+        // case 'd':
+            // move.moveAngular(-angVel);
+            // break;
+        // case 's':
+            // move.moveStop();
+            // break;
+        // default:
+            // break;
+        // }
+        // if(c == 'q')
+            // break;
+    // }
+// }

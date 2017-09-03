@@ -147,7 +147,7 @@ include_directories(
 add_executable(odometry_subscriber src/odometry_subscriber.cpp)
 add_executable(ultrasound_subscriber src/ultrasound_subscriber.cpp)
 add_executable(laser_subscriber src/laser_subscriber.cpp)
-add_executable(kinematics src/kinematics.cpp)
+add_executable(movement src/movement.cpp src/kinematics.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -196,7 +196,7 @@ target_link_libraries(laser_subscriber
   ${tf_LIBRARIES}
 )
 
-target_link_libraries(kinematics
+target_link_libraries(movement
   ${catkin_LIBRARIES}
   ${roscpp_LIBRARIES}
   ${rospy_LIBRARIES}
@@ -248,18 +248,18 @@ target_link_libraries(kinematics
 
 ## Add gtest based cpp test target and link libraries
 catkin_add_gtest(ultrasound_test test/test_ultrasound.cpp)
-if(TARGET ultrasound_test)
-  target_link_libraries(ultrasound_test
-      ${catkin_LIBRARIES}
-      ${roscpp_LIBRARIES}
-      ${rospy_LIBRARIES}
-      ${std_msgs_LIBRARIES}
-      ${sensor_msgs_LIBRARIES}
-      ${geometry_msgs_LIBRARIES}
-      ${p2os_msgs_LIBRARIES}
-      ${tf_LIBRARIES}
-  )
-endif()
+# if(TARGET ultrasound_test)
+#   target_link_libraries(ultrasound_test
+#       ${catkin_LIBRARIES}
+#       ${roscpp_LIBRARIES}
+#       ${rospy_LIBRARIES}
+#       ${std_msgs_LIBRARIES}
+#       ${sensor_msgs_LIBRARIES}
+#       ${geometry_msgs_LIBRARIES}
+#       ${p2os_msgs_LIBRARIES}
+#       ${tf_LIBRARIES}
+#   )
+# endif()
 #
 # if(CATKIN_ENABLE_TESTING)
 #   find_package(rostest REQUIRED)
