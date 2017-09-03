@@ -1,6 +1,6 @@
-#include "../include/movement.h"
+#include "../include/movement/kinematics.h"
 
-Movement::Movement(int argc, char *argv[])
+Kinematics::Kinematics(int argc, char *argv[])
 {
    /* ROS setup */
    ros::init(argc, argv, "inverse_kinematics");
@@ -15,13 +15,13 @@ Movement::Movement(int argc, char *argv[])
    loop_rate_ -> sleep();
 }
 
-Movement::~Movement()
+Kinematics::~Kinematics()
 {
     delete n_;
     delete loop_rate_;
 }
 
-inline void Movement::zeroMsg()
+inline void Kinematics::zeroMsg()
 {
    this->msg_vel.linear.x  = 0;
    this->msg_vel.linear.y  = 0;
@@ -31,13 +31,13 @@ inline void Movement::zeroMsg()
    this->msg_vel.angular.z = 0;
 }
 
-inline void Movement::sleep()
+inline void Kinematics::sleep()
 {
    loop_rate_ -> sleep();
    ros::spinOnce();
 }
 
-inline void Movement::sendMsg()
+inline void Kinematics::sendMsg()
 {
     /* Publish it */
     cmd_vel_pub.publish(msg_vel);
@@ -45,7 +45,7 @@ inline void Movement::sendMsg()
     this -> sleep();
 }
 
-void Movement::moveAndSpin(float linear, float angular)
+void Kinematics::moveAndSpin(float linear, float angular)
 {
    /* Setup Message */
    this->zeroMsg();
@@ -55,7 +55,7 @@ void Movement::moveAndSpin(float linear, float angular)
    return;
 }
 
-void Movement::moveLinear(float speed)
+void Kinematics::moveLinear(float speed)
 {
    /* Setup Message */
    this->zeroMsg();
@@ -63,7 +63,7 @@ void Movement::moveLinear(float speed)
    this->sendMsg();
    return;
 }
-void Movement::moveAngular(float angSpeed)
+void Kinematics::moveAngular(float angSpeed)
 {
    /* Setup Message */
    this->zeroMsg();
@@ -71,7 +71,7 @@ void Movement::moveAngular(float angSpeed)
    this->sendMsg();
    return;
 }
-void Movement::moveStop()
+void Kinematics::moveStop()
 {
    this->zeroMsg();
    this->sendMsg();
@@ -80,7 +80,7 @@ void Movement::moveStop()
 
 int main(int argc, char *argv[])
 {
-    Movement move(argc, argv);
+    Kinematics move(argc, argv);
     ros::Rate loop_rate(100);
     loop_rate.sleep();
     float vel = 0.2;

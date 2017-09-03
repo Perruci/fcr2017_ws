@@ -147,7 +147,7 @@ include_directories(
 add_executable(odometry_subscriber src/odometry_subscriber.cpp)
 add_executable(ultrasound_subscriber src/ultrasound_subscriber.cpp)
 add_executable(laser_subscriber src/laser_subscriber.cpp)
-add_executable(movement src/movement.cpp)
+add_executable(kinematics src/kinematics.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -196,7 +196,7 @@ target_link_libraries(laser_subscriber
   ${tf_LIBRARIES}
 )
 
-target_link_libraries(movement
+target_link_libraries(kinematics
   ${catkin_LIBRARIES}
   ${roscpp_LIBRARIES}
   ${rospy_LIBRARIES}

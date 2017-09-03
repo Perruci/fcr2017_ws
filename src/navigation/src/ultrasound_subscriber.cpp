@@ -1,4 +1,4 @@
-#include "../include/ultrasound_subscriber.h"
+#include "../include/measurements/ultrasound_subscriber.h"
 
 void UltrasoundSubscriber::ultrasoundCallBack(const p2os_msgs::SonarArray::ConstPtr& msg)
 {

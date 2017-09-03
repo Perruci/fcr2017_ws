@@ -1,12 +1,12 @@
-#ifndef MOVEMENT_H
-#define MOVEMENT_H
+#ifndef KINEMATICS_H
+#define KINEMATICS_H
 
 #include "ros/ros.h"
 #include <string>
 #include "std_msgs/Float32.h"
 #include "geometry_msgs/Twist.h"
 
-class Movement
+class Kinematics
 {
 private:
     // Declare node handle
@@ -24,8 +24,8 @@ private:
     inline void sendMsg();
     inline void sleep();
 public:
-    Movement(int argc, char *argv[]);
-    ~Movement();
+    Kinematics(int argc, char *argv[]);
+    ~Kinematics();
     void moveLinear(float speed);
     void moveAngular(float speed);
     void moveAndSpin(float linear, float angular);
