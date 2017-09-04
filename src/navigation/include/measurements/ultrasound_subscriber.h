@@ -9,7 +9,7 @@ public:
     UltrasoundSubscriber(int argc, char *argv[]);
     ros::NodeHandle nh;
     ros::Subscriber msg_sub;
-    std::vector<double> sonarRanges;
+    std::array<double,16> sonarRanges;
     void printSonar();
     void ultrasoundCallBack(const p2os_msgs::SonarArray::ConstPtr&);
 };
