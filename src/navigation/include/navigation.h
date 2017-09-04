@@ -14,6 +14,7 @@ public:
     ~Navigation();
 
     void moveFront(float, float);
+    void turn90degrees(float);
 
     LaserSubscriber*      laserMonitor;
     OdometySubscriber*    odometryMonitor;

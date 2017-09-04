@@ -29,7 +29,7 @@ double Movement::timeTo360deg(float angularVel)
 }
  void Movement::moveCircle(float linear, float angular)
 {
-    double delayTime = timeTo360deg(angular);
+    double delayTime = timeTo360deg(std::abs(angular));
     /* Set up movement */
     ros::Duration delay(delayTime);
     /* Move */

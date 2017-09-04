@@ -22,6 +22,12 @@ void Navigation::moveFront(float vel, float Time)
     this->odometryMonitor->printOdometry();
 }
 
+void Navigation::turn90degrees(float vel)
+{
+    this->moveCommands->spin90degrees(vel);
+    this->odometryMonitor->printOdometry();
+}
+
 int main(int argc, char *argv[])
 {
     Navigation navigate(argc, argv);
@@ -41,10 +47,10 @@ int main(int argc, char *argv[])
             navigate.moveFront(vel, Time);
             break;
         case 'a':
-            navigate.moveCommands->spin90degrees(angVel);
+            navigate.turn90degrees(angVel);
             break;
         case 'd':
-            navigate.moveCommands->spin90degrees(-angVel);
+            navigate.turn90degrees(-angVel);
             break;
         // case 's':
         //     move.kin_->moveStop();
