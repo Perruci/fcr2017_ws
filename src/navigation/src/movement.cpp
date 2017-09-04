@@ -10,6 +10,11 @@ Movement::~Movement()
     delete kin_;
 }
 
+void Movement::stopMoving()
+{
+    this->kin_->moveStop();
+}
+
 void Movement::moveSquare(float moveSpeed, float timeForward)
 {
     for(size_t i = 0; i < 4; i++)

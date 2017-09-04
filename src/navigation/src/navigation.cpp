@@ -28,6 +28,12 @@ void Navigation::turn90degrees(float vel)
     this->odometryMonitor->printOdometry();
 }
 
+void Navigation::stopMoving()
+{
+    this->moveCommands->stopMoving();
+    this->odometryMonitor->printOdometry();
+}
+
 int main(int argc, char *argv[])
 {
     Navigation navigate(argc, argv);
@@ -52,8 +58,8 @@ int main(int argc, char *argv[])
         case 'd':
             navigate.turn90degrees(-angVel);
             break;
-        // case 's':
-        //     move.kin_->moveStop();
+        case 's':
+            navigate.stopMoving();
             break;
         default:
             break;

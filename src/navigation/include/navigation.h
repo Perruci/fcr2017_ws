@@ -15,6 +15,7 @@ public:
 
     void moveFront(float, float);
     void turn90degrees(float);
+    void stopMoving();
 
     LaserSubscriber*      laserMonitor;
     OdometySubscriber*    odometryMonitor;

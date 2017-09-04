@@ -22,5 +22,7 @@ public:
     /* Circle functions */
     double timeTo360deg(float);
     void moveCircle(float, float);
+
+    void stopMoving();
 };
 #endif
