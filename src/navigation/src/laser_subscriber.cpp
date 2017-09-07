@@ -19,8 +19,8 @@ void LaserSubscriber::setParameters(const sensor_msgs::LaserScan::ConstPtr& msg)
     this -> angle_min = msg -> angle_min;        //# start angle of the scan [rad]
     this -> angle_max = msg -> angle_max;        //# end angle of the scan [rad]
     this -> angle_increment = msg -> angle_increment;  //# angular distance between measurements [rad]
-    this -> rangesSize = sizeof(msg -> ranges);
-    this -> laserRanges_.resize(rangesSize);
+    this -> laserRanges_.assign(std::begin(msg->ranges), std::end(msg->ranges));
+    this -> rangesSize = this->laserRanges_.size();
     // this -> laserIntensities_.resize(rangesSize);
     this -> setupComplete = true;
 }
@@ -30,11 +30,7 @@ void LaserSubscriber::laserCallBack(const sensor_msgs::LaserScan::ConstPtr& msg)
     if(!setupComplete)
         this -> setParameters(msg);
     else
-        for(size_t i = 0; i < rangesSize; i++)
-        {
-            laserRanges_[i] = msg -> ranges[i];
-            // laserIntensities_[i] = msg -> intensities[i];
-        }
+        this -> laserRanges_.assign(std::begin(msg->ranges), std::end(msg->ranges));
 }
 
 void LaserSubscriber::printLaser()

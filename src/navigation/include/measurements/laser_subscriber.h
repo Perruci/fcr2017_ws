@@ -5,6 +5,10 @@
 #include "sensor_msgs/LaserScan.h"
 #include <boost/array.hpp>
 
+// Size of C array.
+template <typename T,unsigned S>
+inline unsigned arraysize(const T (&v)[S]) { return S; }
+
 class LaserSubscriber{
 public:
     LaserSubscriber(int argc, char *argv[]);
