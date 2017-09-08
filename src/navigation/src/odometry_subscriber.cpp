@@ -22,7 +22,7 @@ std::array<double, 3> OdometySubscriber::getOdometry()
 
 void OdometySubscriber::printOdometry()
 {
-    ROS_INFO("pose: x = %lf, y = %lf, yaw = %lf", odometryState[0], odometryState[1], angleOps::radiansToDegrees(odometryState[2]));
+    ROS_INFO("pose: x = %lf, y = %lf, yaw = %lf", this->X, this->Y, angleOps::radiansToDegrees(this->Yaw));
 }
 
 // int main(int argc, char *argv[])
