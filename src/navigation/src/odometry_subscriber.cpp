@@ -2,9 +2,9 @@
 
 void OdometySubscriber::odomCallBack(const nav_msgs::Odometry::ConstPtr& msg)
 {
-    odometryState[0] = msg->pose.pose.position.x;
-    odometryState[1] = msg->pose.pose.position.y;
-    odometryState[2] = tf::getYaw(msg->pose.pose.orientation);
+    this->X = msg->pose.pose.position.x;
+    this->Y = msg->pose.pose.position.y;
+    this->Yaw = tf::getYaw(msg->pose.pose.orientation);
 }
 
 OdometySubscriber::OdometySubscriber(int argc, char *argv[])

@@ -17,11 +17,15 @@ namespace angleOps
 class OdometySubscriber{
 public:
     OdometySubscriber(int argc, char *argv[]);
-    std::array<double, 3> getOdometry();
-    void printOdometry();
     ros::NodeHandle nh;
     ros::Subscriber msg_sub;
     std::array<double, 3> odometryState;
+    /* Setup odometry state alliases */
+    double& X = odometryState[0];
+    double& Y = odometryState[1];
+    double& Yaw = odometryState[2];
+    std::array<double, 3> getOdometry();
+    void printOdometry();
     void odomCallBack(const nav_msgs::Odometry::ConstPtr&);
 };
 #endif
