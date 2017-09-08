@@ -43,7 +43,7 @@ public:
     void moveAngular(float speed);
     void moveAndSpin(float linear, float angular);
     void moveStop();
-    
+
     inline void sleep()
     {
        loop_rate_ -> sleep();

@@ -2,9 +2,9 @@
 
 void OdometySubscriber::odomCallBack(const nav_msgs::Odometry::ConstPtr& msg)
 {
-    odometryState.at(0) = msg->pose.pose.position.x;
-    odometryState.at(1) = msg->pose.pose.position.y;
-    odometryState.at(2) = tf::getYaw(msg->pose.pose.orientation);
+    odometryState[0] = msg->pose.pose.position.x;
+    odometryState[1] = msg->pose.pose.position.y;
+    odometryState[2] = tf::getYaw(msg->pose.pose.orientation);
 }
 
 OdometySubscriber::OdometySubscriber(int argc, char *argv[])
@@ -22,7 +22,7 @@ std::array<double, 3> OdometySubscriber::getOdometry()
 
 void OdometySubscriber::printOdometry()
 {
-    ROS_INFO("pose: x = %lf, y = %lf, yaw = %lf", odometryState.at(0), odometryState.at(1), odometryState.at(2));
+    ROS_INFO("pose: x = %lf, y = %lf, yaw = %lf", odometryState[0], odometryState[1], angleOps::radiansToDegrees(odometryState[2]));
 }
 
 // int main(int argc, char *argv[])

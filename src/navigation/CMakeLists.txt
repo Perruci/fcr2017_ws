@@ -149,7 +149,6 @@ include_directories(
 # add_executable(laser_subscriber src/laser_subscriber.cpp)
 add_executable(navigation
     src/navigation.cpp
-    src/movement.cpp
     src/kinematics.cpp
     src/odometry_subscriber.cpp
     src/ultrasound_subscriber.cpp
