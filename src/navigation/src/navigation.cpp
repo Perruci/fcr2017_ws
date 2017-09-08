@@ -16,15 +16,22 @@ Navigation::~Navigation()
     delete sonarMonitor;
 }
 
-void Navigation::moveMeters(float distance, float linearVel)
+void Navigation::movementTimeLoop(ros::Duration timeMoving)
 {
-    auto timeMoving = timeToDistance(distance, linearVel);
     auto begin = ros::Time::now();
     for(ros::Time timeLoop = ros::Time::now(); (timeLoop-begin) < timeMoving; timeLoop = ros::Time::now())
     {
-        /* Move */
-        this->moveCommands->moveLinear(linearVel);
+
     }
+}
+
+void Navigation::moveMeters(float distance, float linearVel)
+{
+    auto timeMoving = timeToDistance(distance, linearVel);
+    this->moveCommands->moveLinear(linearVel);
+
+    this->movementTimeLoop(timeMoving);
+
     this->moveCommands->moveStop();
 }
 
@@ -44,12 +51,10 @@ void Navigation::spinDegrees(float angle, float angularVel)
 {
     angle = angleOps::degreesToRadians(angle);
     auto timeSpinning = timeToAngle(angle, angularVel);
-    ros::Time begin = ros::Time::now();
-    for(ros::Time timeLoop = ros::Time::now(); (timeLoop-begin) < timeSpinning; timeLoop = ros::Time::now())
-    {
-        /* Move */
-        this->moveCommands->moveAngular(angularVel);
-    }
+    this->moveCommands->moveAngular(angularVel);
+
+    this->movementTimeLoop(timeSpinning);
+
     this->moveCommands->moveStop();
 }
 
@@ -70,7 +75,7 @@ void Navigation::stopMoving()
     this->moveCommands->moveStop();
     this->odometryMonitor->printOdometry();
     this->sonarMonitor->printSonar();
-    this->laserMonitor->printLaser();
+    // this->laserMonitor->printLaser();
 }
 
 int main(int argc, char *argv[])

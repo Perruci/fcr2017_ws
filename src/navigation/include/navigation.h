@@ -13,14 +13,15 @@ public:
     Navigation(int argc, char *argv[]);
     ~Navigation();
 
-    /* Generical Movements */
+    /* Time management loop */
+    void movementTimeLoop(ros::Duration);
+
+    /* General Movements */
     void moveMeters(float, float);
     ros::Duration timeToDistance(float, float);
     void spinDegrees(float, float);
     ros::Duration timeToAngle(float, float);
 
-    void moveFront(float, float);
-    void turn90degrees(float);
     void stopMoving();
 
     LaserSubscriber*      laserMonitor;
