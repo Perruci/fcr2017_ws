@@ -104,26 +104,26 @@ double Navigation::locationError(geometry_msgs::Point point)
 
 void Navigation::moveToPosition(geometry_msgs::Point point, float vel)
 {
-    /* Nonstop move to position */
+    /* Compute orientation and location error */
     double diffOrientation = orientationError(point);
+    double diffPosition = locationError(point);
     /* Tolerance for both orientation and localization */
     float toleranceAngle = 0.1;
+    double toleranceModule = 0.1;
     /* Loop until orientation is adjusted */
-    for(; diffOrientation > toleranceAngle; diffOrientation = orientationError(point))
+    // Supports negative or positive angles
+    while(std::abs(diffOrientation) > toleranceAngle)
     {
         float adjustVel = diffOrientation > 0? vel: -vel;
-        this->moveCommands->moveAndSpin(vel, adjustVel);
+        this->moveCommands->moveAngular(adjustVel);
+        diffOrientation = orientationError(point);
     }
-    std::cout << "Angle Adjustment Completed" << '\n';
     /* Loop until position is adjusted */
-    double diffPosition = locationError(point);
-    double toleranceModule = 0.1;
-    while(diffPosition > toleranceModule)
+    while(std::abs(diffPosition) > toleranceModule)
     {
         /* Stop angular movement, keeps only linear */
         this->moveCommands->moveLinear(vel);
         diffPosition = locationError(point);
-        std::cout << "Diff position " << diffPosition << '\n';
     }
     this->stopMoving();
 }
@@ -138,7 +138,7 @@ int main(int argc, char *argv[])
     float angVel = 0.2;
     geometry_msgs::Point point;
     point.x = 0;
-    point.y = 1;
+    point.y = -1;
     while(ros::ok())
     {
         char c = 0;
