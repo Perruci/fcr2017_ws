@@ -16,6 +16,8 @@ Navigation::~Navigation()
     delete sonarMonitor;
 }
 
+/* Movement Functions */
+
 void Navigation::movementTimeLoop(ros::Duration timeMoving)
 {
     auto begin = ros::Time::now();
@@ -78,6 +80,55 @@ void Navigation::stopMoving()
     // this->laserMonitor->printLaser();
 }
 
+/* Navigation Functions */
+double Navigation::orientationError(geometry_msgs::Point point)
+{
+    double diffX, diffY;
+    diffX = point.x - this->odometryMonitor->X;
+    diffY = point.y - this->odometryMonitor->Y;
+    /* Get instantaneus orientation ajustment */
+    double diffOrientation;
+    diffOrientation = std::atan2(diffY, diffX) - this->odometryMonitor->Yaw;
+    return(diffOrientation);
+}
+
+double Navigation::locationError(geometry_msgs::Point point)
+{
+    double diffX, diffY;
+    diffX = point.x - this->odometryMonitor->X;
+    diffY = point.y - this->odometryMonitor->Y;
+    double locationError;
+    locationError = sqrt(pow(diffX,2) + pow(diffY,2));
+    return locationError;
+}
+
+void Navigation::moveToPosition(geometry_msgs::Point point, float vel)
+{
+    /* Nonstop move to position */
+    double diffOrientation = orientationError(point);
+    /* Tolerance for both orientation and localization */
+    float toleranceAngle = 0.1;
+    /* Loop until orientation is adjusted */
+    for(; diffOrientation > toleranceAngle; diffOrientation = orientationError(point))
+    {
+        float adjustVel = diffOrientation > 0? vel: -vel;
+        this->moveCommands->moveAndSpin(vel, adjustVel);
+    }
+    std::cout << "Angle Adjustment Completed" << '\n';
+    /* Loop until position is adjusted */
+    double diffPosition = locationError(point);
+    double toleranceModule = 0.1;
+    while(diffPosition > toleranceModule)
+    {
+        /* Stop angular movement, keeps only linear */
+        this->moveCommands->moveLinear(vel);
+        diffPosition = locationError(point);
+        std::cout << "Diff position " << diffPosition << '\n';
+    }
+    this->stopMoving();
+}
+
+
 int main(int argc, char *argv[])
 {
     Navigation navigate(argc, argv);
@@ -85,7 +136,9 @@ int main(int argc, char *argv[])
     loop_rate.sleep();
     float vel = 0.2;
     float angVel = 0.2;
-    int Time = 5;
+    geometry_msgs::Point point;
+    point.x = 0;
+    point.y = 1;
     while(ros::ok())
     {
         char c = 0;
@@ -104,6 +157,9 @@ int main(int argc, char *argv[])
             break;
         case 's':
             navigate.stopMoving();
+            break;
+        case 'p':
+            navigate.moveToPosition(point, vel);
             break;
         default:
             break;
