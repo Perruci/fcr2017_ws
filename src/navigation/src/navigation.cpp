@@ -16,7 +16,7 @@ Navigation::~Navigation()
     delete sonarMonitor;
 }
 
-/* Movement Functions */
+/* Open Loop Movements */
 
 void Navigation::movementTimeLoop(ros::Duration timeMoving)
 {
@@ -80,7 +80,7 @@ void Navigation::stopMoving()
     // this->laserMonitor->printLaser();
 }
 
-/* Navigation Functions */
+/* Closed Loop Movements */
 double Navigation::orientationError(geometry_msgs::Point point)
 {
     double diffX, diffY;
@@ -90,6 +90,19 @@ double Navigation::orientationError(geometry_msgs::Point point)
     double diffOrientation;
     diffOrientation = std::atan2(diffY, diffX) - this->odometryMonitor->Yaw;
     return(diffOrientation);
+}
+
+void Navigation::adjustOrientation(geometry_msgs::Point point, float vel, double tolerance)
+{
+    double diffOrientation = orientationError(point);
+    /* Loop until orientation is adjusted */
+    // Supports negative or positive angles
+    while(std::abs(diffOrientation) > tolerance)
+    {
+        float adjustVel = diffOrientation > 0? vel: -vel;
+        this->moveCommands->moveAngular(adjustVel);
+        diffOrientation = orientationError(point);
+    }
 }
 
 double Navigation::locationError(geometry_msgs::Point point)
@@ -102,22 +115,9 @@ double Navigation::locationError(geometry_msgs::Point point)
     return locationError;
 }
 
-void Navigation::moveToPosition(geometry_msgs::Point point, float vel)
+void Navigation::adjustPosition(geometry_msgs::Point point, float vel, double toleranceModule)
 {
-    /* Compute orientation and location error */
-    double diffOrientation = orientationError(point);
     double diffPosition = locationError(point);
-    /* Tolerance for both orientation and localization */
-    float toleranceAngle = 0.1;
-    double toleranceModule = 0.1;
-    /* Loop until orientation is adjusted */
-    // Supports negative or positive angles
-    while(std::abs(diffOrientation) > toleranceAngle)
-    {
-        float adjustVel = diffOrientation > 0? vel: -vel;
-        this->moveCommands->moveAngular(adjustVel);
-        diffOrientation = orientationError(point);
-    }
     /* Loop until position is adjusted */
     while(std::abs(diffPosition) > toleranceModule)
     {
@@ -125,6 +125,18 @@ void Navigation::moveToPosition(geometry_msgs::Point point, float vel)
         this->moveCommands->moveLinear(vel);
         diffPosition = locationError(point);
     }
+}
+
+void Navigation::moveToPosition(geometry_msgs::Point point, float vel)
+{
+    /* Tolerance for both orientation and localization */
+    float toleranceAngle = 0.1;
+    double toleranceModule = 0.1;
+    /* Loop until orientation is adjusted */
+    this->adjustOrientation(point, vel, toleranceAngle);
+    /* Loop until position is adjusted */
+    this->adjustPosition(point, vel, toleranceModule);
+    /* End Movement */
     this->stopMoving();
 }
 
@@ -137,8 +149,8 @@ int main(int argc, char *argv[])
     float vel = 0.2;
     float angVel = 0.2;
     geometry_msgs::Point point;
-    point.x = 0;
-    point.y = -1;
+    point.x = -1;
+    point.y = 0;
     while(ros::ok())
     {
         char c = 0;

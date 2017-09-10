@@ -18,16 +18,18 @@ public:
     /* Time management loop */
     void movementTimeLoop(ros::Duration);
 
-    /* General Movements */
+    /* Open Loop Movements */
     void moveMeters(float, float);
     ros::Duration timeToDistance(float, float);
     void spinDegrees(float, float);
     ros::Duration timeToAngle(float, float);
     void stopMoving();
 
-    /* Cartesian Navigation */
+    /* Closed Loop Movements */
     double orientationError(geometry_msgs::Point);
+    void adjustOrientation(geometry_msgs::Point, float, double);
     double locationError(geometry_msgs::Point);
+    void adjustPosition(geometry_msgs::Point, float, double);
     void moveToPosition(geometry_msgs::Point, float);
 
     LaserSubscriber*      laserMonitor;
