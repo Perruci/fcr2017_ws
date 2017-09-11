@@ -81,27 +81,45 @@ void Navigation::stopMoving()
 }
 
 /* Closed Loop Movements */
+/*      Control Loops       */
 double Navigation::orientationError(geometry_msgs::Point point)
 {
     double diffX, diffY;
     diffX = point.x - this->odometryMonitor->X;
     diffY = point.y - this->odometryMonitor->Y;
+    double goalOrientation = std::atan2(diffY, diffX);
+    // goalOrientation = angleOps::constrainAngle(goalOrientation);
+    double currentOrientation = this->odometryMonitor->Yaw;
     /* Get instantaneus orientation ajustment */
     double diffOrientation;
-    diffOrientation = std::atan2(diffY, diffX) - this->odometryMonitor->Yaw;
+    diffOrientation = goalOrientation - currentOrientation;
+    if(std::abs(diffOrientation) > M_PI)
+        std::cout << "Higher than usual error: " << diffOrientation << '\n'
+                  << "currentOrientation " << currentOrientation << '\n'
+                  << "goalOrientation " << goalOrientation << '\n';
     return(diffOrientation);
 }
 
 void Navigation::adjustOrientation(geometry_msgs::Point point, float vel, double tolerance)
 {
-    double diffOrientation = orientationError(point);
+    /* Proportional gain */
+    float Kp = 1;
+    float Ki = 0.01;
+    float Kd = 0.01;
+    double error = orientationError(point);
+    double oldError = 0;
+    double accumError = 0;
+    float maxVel = 5*vel;
     /* Loop until orientation is adjusted */
     // Supports negative or positive angles
-    while(std::abs(diffOrientation) > tolerance)
+    while(std::abs(error) > tolerance)
     {
-        float adjustVel = diffOrientation > 0? vel: -vel;
+        float PID = error * Kp + Ki * accumError + Kd * (error - oldError);
+        float adjustVel = std::abs(PID) < maxVel? PID : maxVel;
         this->moveCommands->moveAngular(adjustVel);
-        diffOrientation = orientationError(point);
+        oldError = error;
+        accumError = error + accumError;
+        error = orientationError(point);
     }
 }
 
@@ -117,21 +135,32 @@ double Navigation::locationError(geometry_msgs::Point point)
 
 void Navigation::adjustPosition(geometry_msgs::Point point, float vel, double toleranceModule)
 {
-    double diffPosition = locationError(point);
+    /* Proportional gain */
+    float Kp = 1;
+    float Ki = 0;
+    float Kd = 0;
+    double error = locationError(point);
+    double oldError = 0;
+    double accumError = 0;
+    float maxVel = vel;
     /* Loop until position is adjusted */
-    while(std::abs(diffPosition) > toleranceModule)
+    while(std::abs(error) > toleranceModule)
     {
+        float PID = error * Kp + Ki * accumError + Kd * (error - oldError);
+        float adjustVel = std::abs(PID) < maxVel? PID : maxVel;
         /* Stop angular movement, keeps only linear */
-        this->moveCommands->moveLinear(vel);
-        diffPosition = locationError(point);
+        this->moveCommands->moveLinear(adjustVel);
+        oldError = error;
+        accumError = error + accumError;
+        error = locationError(point);
     }
 }
 
 void Navigation::moveToPosition(geometry_msgs::Point point, float vel)
 {
     /* Tolerance for both orientation and localization */
-    float toleranceAngle = 0.1;
-    double toleranceModule = 0.1;
+    float toleranceAngle = 0.05;
+    double toleranceModule = 0.05;
     /* Loop until orientation is adjusted */
     this->adjustOrientation(point, vel, toleranceAngle);
     /* Loop until position is adjusted */
@@ -140,6 +169,20 @@ void Navigation::moveToPosition(geometry_msgs::Point point, float vel)
     this->stopMoving();
 }
 
+std::vector<geometry_msgs::Point> squarePoints()
+{
+    std::vector<geometry_msgs::Point> vecPoints;
+    int arrayX[] { 1, 1, 0, 0 };
+    int arrayY[] { 0, 1, 1, 0 };
+    for(size_t i = 0; i < 4; i++)
+    {
+        geometry_msgs::Point point;
+        point.x = arrayX[i];
+        point.y = arrayY[i];
+        vecPoints.push_back(point);
+    }
+    return vecPoints;
+}
 
 int main(int argc, char *argv[])
 {
@@ -148,9 +191,8 @@ int main(int argc, char *argv[])
     loop_rate.sleep();
     float vel = 0.2;
     float angVel = 0.2;
-    geometry_msgs::Point point;
-    point.x = -1;
-    point.y = 0;
+    std::vector<geometry_msgs::Point> vecPoints;
+    vecPoints = squarePoints();
     while(ros::ok())
     {
         char c = 0;
@@ -171,7 +213,14 @@ int main(int argc, char *argv[])
             navigate.stopMoving();
             break;
         case 'p':
-            navigate.moveToPosition(point, vel);
+            for(size_t i = 0; i < vecPoints.size(); i++)
+            {
+                std::cout << "Heading to point ["
+                          << vecPoints[i].x << ", "
+                          << vecPoints[i].y << "] "
+                          << '\n';
+                navigate.moveToPosition(vecPoints[i], vel);
+            }
             break;
         default:
             break;
