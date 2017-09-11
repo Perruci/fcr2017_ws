@@ -93,10 +93,6 @@ double Navigation::orientationError(geometry_msgs::Point point)
     /* Get instantaneus orientation ajustment */
     double diffOrientation;
     diffOrientation = goalOrientation - currentOrientation;
-    if(std::abs(diffOrientation) > M_PI)
-        std::cout << "Higher than usual error: " << diffOrientation << '\n'
-                  << "currentOrientation " << currentOrientation << '\n'
-                  << "goalOrientation " << goalOrientation << '\n';
     return(diffOrientation);
 }
 
@@ -169,10 +165,42 @@ void Navigation::moveToPosition(geometry_msgs::Point point, float vel)
     this->stopMoving();
 }
 
+void Navigation::nonStopFollow(geometry_msgs::Point point, float vel)
+{
+    /* Tolerance for both orientation and localization */
+    float toleranceAngle = 0.01;
+    float toleranceModule = 0.1;
+
+    /* PID setup */
+    float Kp = 2;
+    float Ki = 0;
+    float Kd = 0;
+    double error = orientationError(point);
+    double oldError = 0;
+    double accumError = 0;
+    float maxVel = 5*vel;
+    /* Loop until orientation is adjusted and location is reached */
+    double positionError = locationError(point);
+    while(std::abs(error) > toleranceAngle || std::abs(positionError) > toleranceModule)
+    {
+        float PID = error * Kp + Ki * accumError + Kd * (error - oldError);
+        // float adjustVel = std::abs(PID) < maxVel? PID : maxVel;
+        float adjustVel = PID;
+        this->moveCommands->moveAndSpin(vel, adjustVel);
+        oldError = error;
+        accumError = error + accumError;
+        error = orientationError(point);
+        positionError = locationError(point);
+    }
+
+    /* End Movement */
+    this->stopMoving();
+}
+
 std::vector<geometry_msgs::Point> squarePoints()
 {
     std::vector<geometry_msgs::Point> vecPoints;
-    int arrayX[] { 1, 1, 0, 0 };
+    int arrayX[] { -1, -1, 0, 0 };
     int arrayY[] { 0, 1, 1, 0 };
     for(size_t i = 0; i < 4; i++)
     {
@@ -220,6 +248,16 @@ int main(int argc, char *argv[])
                           << vecPoints[i].y << "] "
                           << '\n';
                 navigate.moveToPosition(vecPoints[i], vel);
+            }
+            break;
+        case 'n':
+            for(size_t i = 0; i < vecPoints.size(); i++)
+            {
+                std::cout << "Heading to point ["
+                          << vecPoints[i].x << ", "
+                          << vecPoints[i].y << "] "
+                          << '\n';
+                navigate.nonStopFollow(vecPoints[i], vel);
             }
             break;
         default:
