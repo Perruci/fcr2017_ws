@@ -150,6 +150,7 @@ include_directories(
 add_executable(navigation
     src/navigation.cpp
     src/kinematics.cpp
+    src/movement.cpp
     src/odometry_subscriber.cpp
     src/ultrasound_subscriber.cpp
     src/laser_subscriber.cpp
