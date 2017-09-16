@@ -4,12 +4,19 @@ Movement::Movement(int argc, char *argv[])
 {
     this->moveCommands = new Kinematics(argc, argv);
     this->odometryMonitor = new OdometySubscriber(argc, argv);
+    this->anglePID = new PID( PID_ORIENTATION_FS,
+                              MAX_ANG_VEL,
+                              MIN_ANG_VEL,
+                              PID_ORIENTATION_P,
+                              PID_ORIENTATION_D,
+                              PID_ORIENTATION_I );
 }
 
 Movement::~Movement()
 {
     delete moveCommands;
     delete odometryMonitor;
+    delete anglePID;
 }
 
 /* Open Loop Movements */
@@ -108,27 +115,19 @@ void Movement::go_to_goal(geometry_msgs::Point point, float vel)
     float toleranceAngle = 0.1;
     float toleranceModule = 0.1;
 
-    /* PID setup */
-    float Kp = 1;
-    float Ki = 0.0;
-    float Kd = 0.0;
-    double oldError = 0;
-    double accumError = 0;
-    float maxVel = MAX_ANG_VEL;
     /* Loop until orientation is adjusted and location is reached */
-    double error = orientationError(point);
+    double angularError = orientationError(point);
     double positionError = locationError(point);
     while(std::abs(positionError) > toleranceModule)
     {
-        float PID = error * Kp + Ki * accumError + Kd * (error - oldError);
-        float omega = PID;
+        /* Get PID computed values */
+        float omega = this->anglePID->calculate(angularError);
         float adjustVel = vel / std::pow(std::abs( omega ) + 1, 2);
         this->moveCommands->moveAndSpin(adjustVel, omega);
-        oldError = error;
-        accumError = error + accumError;
-        error = orientationError(point);
+        /* Update errors */
+        angularError = orientationError(point);
         positionError = locationError(point);
     }
-    /* End Movement */
+    /* Stop Movement */
     this->stopMoving();
 }
