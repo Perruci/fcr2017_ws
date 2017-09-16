@@ -129,42 +129,6 @@ double Navigation::locationError(geometry_msgs::Point point)
     return locationError;
 }
 
-void Navigation::adjustPosition(geometry_msgs::Point point, float vel, double toleranceModule)
-{
-    /* PID Setup */
-    float Kp = 1;
-    float Ki = 0;
-    float Kd = 0;
-    double error = locationError(point);
-    double oldError = 0;
-    double accumError = 0;
-    float maxVel = MAX_LIN_VEL;
-    /* Loop until position is adjusted */
-    while(std::abs(error) > toleranceModule)
-    {
-        float PID = error * Kp + Ki * accumError + Kd * (error - oldError);
-        float adjustVel = std::abs(PID) < maxVel? PID : maxVel;
-        /* Stop angular movement, keeps only linear */
-        this->moveCommands->moveLinear(adjustVel);
-        oldError = error;
-        accumError = error + accumError;
-        error = locationError(point);
-    }
-}
-
-void Navigation::moveToPosition(geometry_msgs::Point point, float vel)
-{
-    /* Tolerance for both orientation and localization */
-    float toleranceAngle = 0.05;
-    double toleranceModule = 0.05;
-    /* Loop until orientation is adjusted */
-    this->adjustOrientation(point, vel, toleranceAngle);
-    /* Loop until position is adjusted */
-    this->adjustPosition(point, vel, toleranceModule);
-    /* End Movement */
-    this->stopMoving();
-}
-
 /* Adjust Linear Velocity and Varies the Orientation (always move forward) */
 void Navigation::nonStopFollow(geometry_msgs::Point point, float vel)
 {
@@ -239,16 +203,6 @@ int main(int argc, char *argv[])
             break;
         case 's':
             navigate.stopMoving();
-            break;
-        case 'p':
-            for(size_t i = 0; i < vecPoints.size(); i++)
-            {
-                std::cout << "Heading to point ["
-                          << vecPoints[i].x << ", "
-                          << vecPoints[i].y << "] "
-                          << '\n';
-                navigate.moveToPosition(vecPoints[i], vel);
-            }
             break;
         case 'n':
             for(size_t i = 0; i < vecPoints.size(); i++)

@@ -34,8 +34,6 @@ public:
     double orientationError(geometry_msgs::Point);
     void adjustOrientation(geometry_msgs::Point, float, double);
     double locationError(geometry_msgs::Point);
-    void adjustPosition(geometry_msgs::Point, float, double);
-    void moveToPosition(geometry_msgs::Point, float);
     void nonStopFollow(geometry_msgs::Point, float);
 
     LaserSubscriber*      laserMonitor;
