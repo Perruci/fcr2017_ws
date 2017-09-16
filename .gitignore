@@ -1,0 +1,5 @@
+# Ignore catkin build results
+.catkin_tools/
+build/
+devel/
+logs/
