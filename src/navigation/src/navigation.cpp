@@ -87,12 +87,13 @@ double Navigation::orientationError(geometry_msgs::Point point)
     double diffX, diffY;
     diffX = point.x - this->odometryMonitor->X;
     diffY = point.y - this->odometryMonitor->Y;
+    /* atan2 gives a standard radian value between (-pi, pi] */
     double goalOrientation = std::atan2(diffY, diffX);
-    // goalOrientation = angleOps::constrainAngle(goalOrientation);
-    double currentOrientation = this->odometryMonitor->Yaw;
     /* Get instantaneus orientation ajustment */
     double diffOrientation;
+    double currentOrientation = this->odometryMonitor->Yaw;
     diffOrientation = goalOrientation - currentOrientation;
+    diffOrientation = angleOps::constrainAngle(diffOrientation);
     return(diffOrientation);
 }
 
@@ -105,9 +106,8 @@ void Navigation::adjustOrientation(geometry_msgs::Point point, float vel, double
     double error = orientationError(point);
     double oldError = 0;
     double accumError = 0;
-    float maxVel = 5*vel;
+    float maxVel = MAX_ANG_VEL;
     /* Loop until orientation is adjusted */
-    // Supports negative or positive angles
     while(std::abs(error) > tolerance)
     {
         float PID = error * Kp + Ki * accumError + Kd * (error - oldError);
@@ -131,14 +131,14 @@ double Navigation::locationError(geometry_msgs::Point point)
 
 void Navigation::adjustPosition(geometry_msgs::Point point, float vel, double toleranceModule)
 {
-    /* Proportional gain */
+    /* PID Setup */
     float Kp = 1;
     float Ki = 0;
     float Kd = 0;
     double error = locationError(point);
     double oldError = 0;
     double accumError = 0;
-    float maxVel = vel;
+    float maxVel = MAX_LIN_VEL;
     /* Loop until position is adjusted */
     while(std::abs(error) > toleranceModule)
     {
@@ -165,34 +165,34 @@ void Navigation::moveToPosition(geometry_msgs::Point point, float vel)
     this->stopMoving();
 }
 
+/* Adjust Linear Velocity and Varies the Orientation (always move forward) */
 void Navigation::nonStopFollow(geometry_msgs::Point point, float vel)
 {
     /* Tolerance for both orientation and localization */
-    float toleranceAngle = 0.01;
+    float toleranceAngle = 0.1;
     float toleranceModule = 0.1;
 
     /* PID setup */
-    float Kp = 2;
-    float Ki = 0;
-    float Kd = 0;
-    double error = orientationError(point);
+    float Kp = 1;
+    float Ki = 0.0;
+    float Kd = 0.0;
     double oldError = 0;
     double accumError = 0;
-    float maxVel = 5*vel;
+    float maxVel = MAX_ANG_VEL;
     /* Loop until orientation is adjusted and location is reached */
+    double error = orientationError(point);
     double positionError = locationError(point);
-    while(std::abs(error) > toleranceAngle || std::abs(positionError) > toleranceModule)
+    while(std::abs(positionError) > toleranceModule)
     {
         float PID = error * Kp + Ki * accumError + Kd * (error - oldError);
-        // float adjustVel = std::abs(PID) < maxVel? PID : maxVel;
-        float adjustVel = PID;
-        this->moveCommands->moveAndSpin(vel, adjustVel);
+        float omega = PID;
+        float adjustVel = vel / std::pow(std::abs( omega ) + 1, 2);
+        this->moveCommands->moveAndSpin(adjustVel, omega);
         oldError = error;
         accumError = error + accumError;
         error = orientationError(point);
         positionError = locationError(point);
     }
-
     /* End Movement */
     this->stopMoving();
 }

@@ -7,7 +7,12 @@
 #include "measurements/odometry_subscriber.h"
 #include "measurements/ultrasound_subscriber.h"
 #include "movement/kinematics.h"
+#include "angleOps.h"
 #include <stdexcept>
+
+// Define the maximum velocity to PID
+#define MAX_LIN_VEL 1
+#define MAX_ANG_VEL 1
 
 class Navigation
 {
@@ -31,6 +36,7 @@ public:
     double locationError(geometry_msgs::Point);
     void adjustPosition(geometry_msgs::Point, float, double);
     void moveToPosition(geometry_msgs::Point, float);
+    void nonStopFollow(geometry_msgs::Point, float);
 
     LaserSubscriber*      laserMonitor;
     OdometySubscriber*    odometryMonitor;

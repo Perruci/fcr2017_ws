@@ -1,18 +1,13 @@
 #ifndef ODOMETRY_SUB_H
 #define ODOMETRY_SUB_H
 
+#include "../angleOps.h"
 #include "ros/ros.h"
 #include <string>
 #include "nav_msgs/Odometry.h"
 #include "geometry_msgs/Twist.h"
 #include "tf/tf.h"
 #include "tf/transform_datatypes.h"
-
-namespace angleOps
-{
-    inline float degreesToRadians(float angleDegrees){return(angleDegrees * M_PI / 180.0);};
-    inline float radiansToDegrees(float angleRadians){return(angleRadians * 180.0 / M_PI);};
-}
 
 class OdometySubscriber{
 public:
