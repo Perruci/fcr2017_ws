@@ -3,10 +3,9 @@
 
 #include "math.h"
 
-#define M_2PI 2*M_PI
-
 namespace angleOps
 {
+    static double const M_2PI = 2*M_PI;
     inline float degreesToRadians(float angleDegrees){return(angleDegrees * M_PI / 180.0);};
     inline float radiansToDegrees(float angleRadians){return(angleRadians * 180.0 / M_PI);};
     /* Radians Operation */
