@@ -1,13 +1,13 @@
 #ifndef ODOMETRY_SUB_H
 #define ODOMETRY_SUB_H
 
-#include "../angleOps.h"
 #include "ros/ros.h"
 #include <string>
 #include "nav_msgs/Odometry.h"
 #include "geometry_msgs/Twist.h"
 #include "tf/tf.h"
 #include "tf/transform_datatypes.h"
+#include "../namespaces/angleOps.h"
 
 class OdometySubscriber{
 public:

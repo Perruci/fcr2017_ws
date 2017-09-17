@@ -2,11 +2,12 @@
 #define NAVIGATION_H
 
 #include "ros/ros.h"
+#include "namespaces/parameters.h"
+#include "namespaces/angleOps.h"
 #include "geometry_msgs/Point.h"
 #include "measurements/laser_subscriber.h"
 #include "measurements/ultrasound_subscriber.h"
 #include "movement/movement.h"
-#include "angleOps.h"
 #include <stdexcept>
 
 class Navigation

@@ -4,7 +4,7 @@
 #include "ros/ros.h"
 #include "std_msgs/Float32.h"
 #include "geometry_msgs/Twist.h"
-#include "../parameters.h"
+#include "../namespaces/parameters.h"
 
 class Kinematics
 {

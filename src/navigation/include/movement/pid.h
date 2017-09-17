@@ -6,7 +6,6 @@
 #include <iostream>
 #include <cmath>
 
-
 class PIDImpl
 {
 public:

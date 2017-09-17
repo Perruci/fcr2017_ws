@@ -2,11 +2,11 @@
 #define _MOVEMENT_H_
 
 #include "ros/ros.h"
-#include "../parameters.h"
+#include "../namespaces/parameters.h"
+#include "../namespaces/angleOps.h"
 #include "geometry_msgs/Point.h"
 #include "measurements/odometry_subscriber.h"
 #include "movement/kinematics.h"
-#include "angleOps.h"
 #include "pid.h"
 #include <stdexcept>
 
