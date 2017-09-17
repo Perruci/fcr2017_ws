@@ -15,16 +15,6 @@ OdometySubscriber::OdometySubscriber(int argc, char *argv[])
     this->msg_sub = nh.subscribe("/pose", 10, &OdometySubscriber::odomCallBack, this);
 }
 
-std::array<double, 3> OdometySubscriber::getOdometry()
-{
-    return odometryState;
-}
-
-void OdometySubscriber::printOdometry()
-{
-    ROS_INFO("pose: x = %lf, y = %lf, yaw = %lf", this->X, this->Y, angleOps::radiansToDegrees(this->Yaw));
-}
-
 // int main(int argc, char *argv[])
 // {
 //     OdometySubscriber odometry_sub();

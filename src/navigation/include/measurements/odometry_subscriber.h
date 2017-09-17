@@ -12,6 +12,7 @@
 class OdometySubscriber{
 public:
     OdometySubscriber(int argc, char *argv[]);
+    void odomCallBack(const nav_msgs::Odometry::ConstPtr&);
     ros::NodeHandle nh;
     ros::Subscriber msg_sub;
     std::array<double, 3> odometryState;
@@ -19,8 +20,10 @@ public:
     double& X = odometryState[0];
     double& Y = odometryState[1];
     double& Yaw = odometryState[2];
-    std::array<double, 3> getOdometry();
-    void printOdometry();
-    void odomCallBack(const nav_msgs::Odometry::ConstPtr&);
+    inline std::array<double, 3> getOdometry(){return odometryState;};
+    inline void printOdometry()
+    {
+        ROS_INFO("pose: x = %lf, y = %lf, yaw = %lf", this->X, this->Y, angleOps::radiansToDegrees(this->Yaw));
+    };
 };
 #endif
