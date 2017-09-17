@@ -10,12 +10,27 @@ namespace ros_loopRates
     static unsigned int const navigationLoop = 25;
 }
 
+/* Movement Speeds */
+namespace move_speeds
+{
+    static float const linear = 0.2;
+    static float const omega = 1;
+}
+
+/* Movement Tolerances */
+namespace tolerance
+{
+    /* Tolerance for both orientation and localization */
+    static float const orientation = 0.1;
+    static float const location = 0.1;
+}
+
 /* Orientation PID, used in class Movement */
 namespace pid_orientation
 {
     // Define the maximum velocity to PID
-    static float const minVel = -1;
-    static float const maxVel = 1;
+    static float const minVel = - move_speeds::omega;
+    static float const maxVel =   move_speeds::omega;
     // Define orientation PIDs paramenters
     static float const gainP = 1.0;
     static float const gainI = 0.0;

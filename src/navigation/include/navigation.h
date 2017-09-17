@@ -15,23 +15,28 @@ class Navigation
 public:
     Navigation(int argc, char *argv[]);
     ~Navigation();
+    double orientationError(geometry_msgs::Point);
+    double locationError(geometry_msgs::Point);
 
-    inline void go_to_goal(geometry_msgs::Point point, float vel)
-    {
-        this->moveCommands->go_to_goal(point, vel);
-    };
+    /* Extern Interfaces */
+    inline std::array<double, 3> getOdometry(){return this->odometryMonitor->getOdometry();};
+
+    // bool obstacleDetection();
+    /* Go-To-Goal movement pattern */
+    void go_to_goal(geometry_msgs::Point);
 
     inline void stopMoving()
     {
         this->moveCommands->stopMoving();
-        this->moveCommands->odometryMonitor->printOdometry();
+        this->odometryMonitor->printOdometry();
         this->sonarMonitor->printSonar();
         // this->laserMonitor->printLaser();
     }
 
-    LaserSubscriber*      laserMonitor;
-    UltrasoundSubscriber* sonarMonitor;
-    Movement* moveCommands;
+    LaserSubscriber      *laserMonitor;
+    OdometySubscriber    *odometryMonitor;
+    UltrasoundSubscriber *sonarMonitor;
+    Movement *moveCommands;
 };
 
 #endif

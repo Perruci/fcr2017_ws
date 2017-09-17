@@ -27,14 +27,8 @@ public:
     void stopMoving();
 
     /* Closed Loop Movements */
-    double orientationError(geometry_msgs::Point);
-    double locationError(geometry_msgs::Point);
-    void go_to_goal(geometry_msgs::Point, float);
+    void adjust_and_run(double, double);
 
-    /* Extern Interfaces */
-    inline std::array<double, 3> getOdometry(){return this->odometryMonitor->getOdometry();};
-
-    OdometySubscriber*    odometryMonitor;
     Kinematics* moveCommands;
     PID* anglePID;
 };
