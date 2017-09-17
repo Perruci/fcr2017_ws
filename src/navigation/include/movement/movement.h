@@ -2,21 +2,13 @@
 #define _MOVEMENT_H_
 
 #include "ros/ros.h"
+#include "../parameters.h"
 #include "geometry_msgs/Point.h"
 #include "measurements/odometry_subscriber.h"
 #include "movement/kinematics.h"
 #include "angleOps.h"
 #include "pid.h"
 #include <stdexcept>
-
-// Define the maximum velocity to PID
-#define MIN_ANG_VEL -1
-#define MAX_ANG_VEL 1
-// Define orientation PIDs paramenters
-#define PID_ORIENTATION_P 1.0
-#define PID_ORIENTATION_I 0.0
-#define PID_ORIENTATION_D 0.0
-#define PID_ORIENTATION_FS 1
 
 class Movement
 {

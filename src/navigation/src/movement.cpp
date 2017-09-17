@@ -4,12 +4,12 @@ Movement::Movement(int argc, char *argv[])
 {
     this->moveCommands = new Kinematics(argc, argv);
     this->odometryMonitor = new OdometySubscriber(argc, argv);
-    this->anglePID = new PID( PID_ORIENTATION_FS,
-                              MAX_ANG_VEL,
-                              MIN_ANG_VEL,
-                              PID_ORIENTATION_P,
-                              PID_ORIENTATION_D,
-                              PID_ORIENTATION_I );
+    this->anglePID = new PID( pid_orientation::timeStep,
+                              pid_orientation::maxVel,
+                              pid_orientation::minVel,
+                              pid_orientation::gainP,
+                              pid_orientation::gainD,
+                              pid_orientation::gainI );
 }
 
 Movement::~Movement()
