@@ -23,7 +23,13 @@ public:
     float angle_increment;  //# angular distance between measurements [rad]
     // std::vector<float> laserIntensities_; all intensities return zero...
 
-    void printLaser();
+    inline void printLaser()
+    {
+        if(setupComplete)
+            for(size_t i = 0; i < rangesSize; i++)
+                std::cout << i << " Range: " << laserRanges_[i] << '\n';
+    };
+
     void plotResults();
     void setParameters(const sensor_msgs::LaserScan::ConstPtr&);
     void laserCallBack(const sensor_msgs::LaserScan::ConstPtr&);

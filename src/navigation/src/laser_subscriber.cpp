@@ -33,16 +33,6 @@ void LaserSubscriber::laserCallBack(const sensor_msgs::LaserScan::ConstPtr& msg)
         this -> laserRanges_.assign(std::begin(msg->ranges), std::end(msg->ranges));
 }
 
-void LaserSubscriber::printLaser()
-{
-    if(setupComplete)
-        for(size_t i = 0; i < rangesSize; i++)
-        {
-            std::cout << i << " Range: " << laserRanges_[i] << '\n';
-            // std::cout << i << " Intensity: " << laserIntensities_[i] << '\n';
-        }
-}
-
 // int main(int argc, char *argv[])
 // {
 //     LaserSubscriber laser_sub(argc, argv);
