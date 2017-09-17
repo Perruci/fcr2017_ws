@@ -9,10 +9,6 @@
 #include "angleOps.h"
 #include <stdexcept>
 
-// Define the maximum velocity to PID
-#define MAX_LIN_VEL 1
-#define MAX_ANG_VEL 1
-
 class Navigation
 {
 public:
