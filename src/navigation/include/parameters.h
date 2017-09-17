@@ -1,6 +1,15 @@
 #ifndef _PARAMS_H_
 #define _PARAMS_H_
 
+/* ROS loop rates */
+namespace ros_loopRates
+{
+    /* Used in kinematics.cpp */
+    static unsigned int const movementLoop = 25;
+    /* Used in navigation.cpp */
+    static unsigned int const navigationLoop = 25;
+}
+
 /* Orientation PID, used in class Movement */
 namespace pid_orientation
 {

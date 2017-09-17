@@ -11,7 +11,7 @@ Kinematics::Kinematics(int argc, char *argv[])
    // Set up global Publishers
    this -> cmd_vel_pub  = n_ -> advertise<geometry_msgs::Twist>("/cmd_vel", 1000);
    zeroMsg();
-   loop_rate_ = new ros::Rate(25);
+   loop_rate_ = new ros::Rate(ros_loopRates::movementLoop);
    loop_rate_ -> sleep();
 }
 

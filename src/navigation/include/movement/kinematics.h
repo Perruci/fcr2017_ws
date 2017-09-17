@@ -2,9 +2,9 @@
 #define KINEMATICS_H
 
 #include "ros/ros.h"
-#include <string>
 #include "std_msgs/Float32.h"
 #include "geometry_msgs/Twist.h"
+#include "../parameters.h"
 
 class Kinematics
 {

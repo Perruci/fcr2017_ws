@@ -32,7 +32,7 @@ std::vector<geometry_msgs::Point> squarePoints()
 int main(int argc, char *argv[])
 {
     Navigation navigate(argc, argv);
-    ros::Rate loop_rate(100);
+    ros::Rate loop_rate(ros_loopRates::navigationLoop);
     loop_rate.sleep();
     float vel = 0.2;
     float angVel = 0.2;
