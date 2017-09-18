@@ -66,8 +66,6 @@ std::vector<laser_point> LaserSubscriber::getRanges(float minRange, float maxRan
     std::vector<laser_point> points;
     size_t minIndex = getIndex(minRange);
     size_t maxIndex = getIndex(maxRange);
-    std::cout << "Min Index " << minIndex << '\n'
-              << "Max Index " << maxIndex << '\n';
     if( minIndex < 0 || maxIndex > rangesSize )
     {
         throw std::logic_error("[LASER SUB] ranges exeeds the maximum or minimum!");
@@ -77,6 +75,37 @@ std::vector<laser_point> LaserSubscriber::getRanges(float minRange, float maxRan
     {
         laser_point auxPoint = {getOrientation(i), laserRanges_[i]};
         points.push_back(auxPoint);
+    }
+    return points;
+}
+
+std::vector<laser_point> LaserSubscriber::getInRange(float minRange, float maxRange, float distance)
+{
+    if(!setupComplete)
+    {
+        throw std::logic_error("[LASER SUB] Setup not yet complete!");
+        return {};
+    }
+    if( minRange > maxRange )
+    {
+        throw std::logic_error("[LASER SUB] minRange is greater than maxRange!");
+        return {};
+    }
+    std::vector<laser_point> points;
+    size_t minIndex = getIndex(minRange);
+    size_t maxIndex = getIndex(maxRange);
+    if( minIndex < 0 || maxIndex > rangesSize )
+    {
+        throw std::logic_error("[LASER SUB] ranges exeeds the maximum or minimum!");
+        return {};
+    }
+    for(size_t i = minIndex; i < maxIndex; i++)
+    {
+        if(laserRanges_[i] < distance)
+        {
+            laser_point auxPoint = {getOrientation(i), laserRanges_[i]};
+            points.push_back(auxPoint);
+        }
     }
     return points;
 }

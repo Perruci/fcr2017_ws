@@ -21,14 +21,14 @@ bool Navigation::obstacleDetection(float distance)
 {
     float maxFrontAngle = angleOps::degreesToRadians(tolerance::max_front_deg);
     float minFrontAngle = angleOps::degreesToRadians(tolerance::min_front_deg);
-    std::vector<laser_point> frontPoints = laserMonitor->getRanges(minFrontAngle, maxFrontAngle);
+    std::vector<laser_point> frontPoints = laserMonitor->getInRange(minFrontAngle, maxFrontAngle);
+    if(frontPoints.empty())
+        return false;
     size_t vecSize = frontPoints.size();
-    std::cout << "Points size: " << vecSize << '\n';
     for(size_t i = 0; i < vecSize; i++)
-        if(frontPoints[i][laser::distance] < distance)
-            std::cout << "Front Point " << frontPoints[i][laser::orientation]
-                      << ", "          << frontPoints[i][laser::distance] << '\n';
-
+        std::cout << "Front Point " << frontPoints[i][laser::orientation]
+                  << ", "          << frontPoints[i][laser::distance] << '\n';
+    return true;
 }
 
 /* Navigation Movements ---------------------------------------- */

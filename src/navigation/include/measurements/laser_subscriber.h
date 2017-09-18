@@ -23,6 +23,7 @@ public:
     laser_points[1] = distance;
     */
     std::vector<laser_point> getNearPoints(float distance = tolerance::objects);
+    std::vector<laser_point> getInRange(float, float, float distance = tolerance::objects );
     std::vector<laser_point> getRanges(float, float);
 
     /* Inline methods -----------------------------------------*/
