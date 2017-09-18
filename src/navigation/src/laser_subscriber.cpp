@@ -33,6 +33,7 @@ void LaserSubscriber::laserCallBack(const sensor_msgs::LaserScan::ConstPtr& msg)
         this -> laserRanges_.assign(std::begin(msg->ranges), std::end(msg->ranges));
 }
 
+/* May be optimized by returning a unique_ptr (https://stackoverflow.com/questions/752658/is-the-practice-of-returning-a-c-reference-variable-evil) */
 std::vector<laser_point> LaserSubscriber::getNearPoints(float distance)
 {
     if(!setupComplete)
@@ -44,7 +45,7 @@ std::vector<laser_point> LaserSubscriber::getNearPoints(float distance)
     for(size_t i = 0; i < rangesSize; i++)
         if(laserRanges_[i] < distance)
         {
-            laser_point auxPoint = {i, laserRanges_[i]};
+            laser_point auxPoint = {getOrientation(i), laserRanges_[i]};
             nearPoints.push_back(auxPoint);
         }
     return nearPoints;

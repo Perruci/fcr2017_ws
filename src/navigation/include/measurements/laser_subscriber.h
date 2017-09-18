@@ -2,6 +2,7 @@
 #define LASER_SUB_H
 
 #include "../namespaces/parameters.h"
+#include "../namespaces/angleOps.h"
 #include "ros/ros.h"
 #include "sensor_msgs/LaserScan.h"
 #include <boost/array.hpp>
@@ -12,24 +13,6 @@ public:
     LaserSubscriber(int argc, char *argv[]);
     ~LaserSubscriber();
 
-    inline void printLaser()
-    {
-        if(!setupComplete)
-            return;
-        for(size_t i = 0; i < rangesSize; i++)
-            std::cout << i << " Range: " << laserRanges_[i] << '\n';
-    };
-
-    inline void printNearPoints()
-    {
-        if(!setupComplete)
-            return;
-        auto vecPoints = getNearPoints();
-        size_t vecSize = vecPoints.size();
-        for(size_t i = 0; i < vecSize; i++)
-            std::cout << "Near Point " << vecPoints[i][orientation]
-                      << ", "          << vecPoints[i][distance] << '\n';
-    };
 
     void plotResults();
     void setParameters(const sensor_msgs::LaserScan::ConstPtr&);
@@ -41,6 +24,31 @@ public:
     */
     enum {orientation, distance};
     std::vector<laser_point> getNearPoints(float distance = tolerance::objects);
+
+    /* Inline methods -----------------------------------------*/
+    inline void printLaser()
+    {
+        if(!setupComplete)
+        return;
+        for(size_t i = 0; i < rangesSize; i++)
+        std::cout << i << " Range: " << laserRanges_[i] << '\n';
+    };
+
+    inline void printNearPoints()
+    {
+        if(!setupComplete)
+        return;
+        auto vecPoints = getNearPoints();
+        size_t vecSize = vecPoints.size();
+        for(size_t i = 0; i < vecSize; i++)
+        std::cout << "Near Point " << vecPoints[i][orientation]
+                << ", "          << vecPoints[i][distance] << '\n';
+    };
+
+    inline double getOrientation(unsigned int index)
+    {
+        return angleOps::getOrientation(index, this->angle_min, this->angle_max, this->angle_increment);
+    };
 
     ros::NodeHandle nh;
     ros::Subscriber msg_sub;
