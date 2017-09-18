@@ -40,7 +40,6 @@ public:
     inline void stopMoving()
     {
         this->moveCommands->stopMoving();
-        this->odometryMonitor->printOdometry();
     }
 
     LaserSubscriber      *laserMonitor;
