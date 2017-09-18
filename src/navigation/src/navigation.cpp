@@ -125,9 +125,9 @@ void Navigation::go_to_goal(geometry_msgs::Point point)
     while(std::abs(positionError) > tolerance::location)
     {
         /* Check for obstacles */
-        // if(obstacleDetection())
-        //     obstacleAvoidance();
-        // else
+        if(obstacleDetection())
+            obstacleAvoidance();
+        else
             this->moveCommands->adjust_and_run(angularError);
         /* Update errors */
         angularError = orientationError(point);
@@ -140,6 +140,6 @@ void Navigation::go_to_goal(geometry_msgs::Point point)
 void Navigation::obstacleAvoidance()
 {
     std::cout << "Obstacle detected!" << '\n';
-    double angularError = orientationError(this->reboundAngle);
-    this->moveCommands->adjust_and_run(angularError);
+    std::cout << "Rebound angle: " << reboundAngle << '\n';
+    this->moveCommands->adjust_and_run(this->reboundAngle);
 }
