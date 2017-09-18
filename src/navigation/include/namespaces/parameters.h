@@ -32,7 +32,8 @@ namespace tolerance
 namespace obstacle_detection
 {
     /* Distance to Objects */
-    static float const distance = 1;
+    static float const distance = 1.0;
+    static float const max_range = 2.0;
     static float const min_front_deg = -45;
     static float const max_front_deg =  45;
 }

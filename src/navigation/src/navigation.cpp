@@ -39,13 +39,47 @@ bool Navigation::setMeanObstaclePoints(std::vector<laser_point> &frontPoints)
     return pointsCount>0? true : false;
 }
 
-bool Navigation::obstacleDetection(float distance)
+/* Bubble Rebound Obstacle Avoidance */
+/* Inpired by https://pdfs.semanticscholar.org/519e/790c8477cfb1d1a176e220f010d5ec5b1481.pdf */
+bool Navigation::bubleRebound(float distance)
 {
     float maxFrontAngle = angleOps::degreesToRadians(obstacle_detection::max_front_deg);
     float minFrontAngle = angleOps::degreesToRadians(obstacle_detection::min_front_deg);
-    std::vector<laser_point> frontPoints = laserMonitor->getInRange(minFrontAngle, maxFrontAngle);
 
-    return setMeanObstaclePoints(frontPoints);
+    std::vector<laser_point> frontPoints = laserMonitor->getRanges(minFrontAngle, maxFrontAngle);
+    if(frontPoints.empty())
+        return false;
+
+    double sumOrientationDistance = 0;
+    double sumDistance = 0;
+    double minDistance = frontPoints[0][laser::distance];
+    size_t vecSize = frontPoints.size();
+    std::cout << "Vec Size " << vecSize << '\n';
+    for(size_t i = 0; i < vecSize; i++)
+    {
+        /* Sum orientation and distance product */
+        /* normalize big distances */
+        sumOrientationDistance += frontPoints[i][laser::orientation] * frontPoints[i][laser::distance];
+        sumDistance += frontPoints[i][laser::distance];
+        if(minDistance > frontPoints[i][laser::distance])
+            minDistance = frontPoints[i][laser::distance];
+    }
+    std::cout << "Min Distance found: " << minDistance << '\n';
+    std::cout << "Sum Orientation-Distance " << sumOrientationDistance << '\n';
+    std::cout << "Sum Distance " << sumDistance << '\n';
+    double reboundAngle = sumOrientationDistance / sumDistance;
+    std::cout << "Rebound Angle: " << reboundAngle << '\n';
+
+    return minDistance < distance? true : false;
+}
+
+bool Navigation::obstacleDetection(float distance)
+{
+    // float maxFrontAngle = angleOps::degreesToRadians(obstacle_detection::max_front_deg);
+    // float minFrontAngle = angleOps::degreesToRadians(obstacle_detection::min_front_deg);
+    // std::vector<laser_point> frontPoints = laserMonitor->getInRange(minFrontAngle, maxFrontAngle);
+    // return setMeanObstaclePoints(frontPoints);
+    return bubleRebound();
 }
 
 /* Navigation Movements ---------------------------------------- */

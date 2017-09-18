@@ -27,6 +27,7 @@ public:
     double& meanOrientation = objectsMean[laser::orientation];
     double& meanDistance = objectsMean[laser::distance];
     bool setMeanObstaclePoints(std::vector<laser_point> &frontPoints);
+    bool bubleRebound(float distance = obstacle_detection::distance);
     bool obstacleDetection(float distance = obstacle_detection::distance);
 
     /* Go-To-Goal movement pattern ----------------------------------------*/
