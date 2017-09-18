@@ -22,8 +22,8 @@ public:
     laser_points[0] = orientation;
     laser_points[1] = distance;
     */
-    enum {orientation, distance};
     std::vector<laser_point> getNearPoints(float distance = tolerance::objects);
+    std::vector<laser_point> getRanges(float, float);
 
     /* Inline methods -----------------------------------------*/
     inline void printLaser()
@@ -37,17 +37,22 @@ public:
     inline void printNearPoints()
     {
         if(!setupComplete)
-        return;
+            return;
         auto vecPoints = getNearPoints();
         size_t vecSize = vecPoints.size();
         for(size_t i = 0; i < vecSize; i++)
-        std::cout << "Near Point " << vecPoints[i][orientation]
-                << ", "          << vecPoints[i][distance] << '\n';
+        std::cout << "Near Point " << vecPoints[i][laser::orientation]
+                << ", "          << vecPoints[i][laser::distance] << '\n';
     };
 
     inline double getOrientation(unsigned int index)
     {
         return angleOps::getOrientation(index, this->angle_min, this->angle_max, this->angle_increment);
+    };
+
+    inline double getIndex(double orientation)
+    {
+        return angleOps::getIndex(orientation, this->angle_min, this->angle_max, this->angle_increment);
     };
 
     ros::NodeHandle nh;

@@ -1,6 +1,9 @@
 #ifndef _PARAMS_H_
 #define _PARAMS_H_
 
+#include <iostream>
+#include <boost/array.hpp>
+
 /* ROS loop rates */
 namespace ros_loopRates
 {
@@ -25,6 +28,15 @@ namespace tolerance
     static float const location = 0.1;
     /* Distance to Objects */
     static float const objects = 1;
+    static float const min_front_deg = -45;
+    static float const max_front_deg =  45;
+
+}
+
+/* Laser Points */
+namespace laser
+{
+    enum {orientation, distance};
 }
 
 /* Orientation PID, used in class Movement */

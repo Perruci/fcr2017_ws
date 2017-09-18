@@ -21,7 +21,9 @@ public:
     /* Extern Interfaces */
     inline std::array<double, 3> getOdometry(){return this->odometryMonitor->getOdometry();};
 
-    // bool obstacleDetection();
+    /* Sensors Processing */
+    bool obstacleDetection(float distance = tolerance::objects);
+
     /* Go-To-Goal movement pattern */
     void go_to_goal(geometry_msgs::Point);
 
@@ -29,8 +31,7 @@ public:
     {
         this->moveCommands->stopMoving();
         this->odometryMonitor->printOdometry();
-        this->sonarMonitor->printSonar();
-        // this->laserMonitor->printLaser();
+        this->obstacleDetection();
     }
 
     LaserSubscriber      *laserMonitor;

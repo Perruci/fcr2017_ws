@@ -36,8 +36,13 @@ namespace angleOps
     {
         float orientation = index*step + minAngle;
         if(orientation > maxAngle)
-            std::logic_error("getOrientation() - calculated angle exeeded maxAngle");
+            std::logic_error("[ANGLE OPS] getOrientation() - calculated angle exeeded maxAngle");
         return orientation;
+    }
+    inline unsigned int getIndex(double orientation, float minAngle, float maxAngle, float step)
+    {
+        unsigned int index = (orientation - minAngle)/step;
+        return index;
     }
 }
 #endif
