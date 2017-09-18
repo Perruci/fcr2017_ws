@@ -73,6 +73,8 @@ std::vector<laser_point> LaserSubscriber::getRanges(float minRange, float maxRan
     }
     for(size_t i = minIndex; i < maxIndex; i++)
     {
+        if(std::isinf(laserRanges_[i]))
+            laserRanges_[i] = this->range_max;
         laser_point auxPoint = {getOrientation(i), laserRanges_[i]};
         points.push_back(auxPoint);
     }
