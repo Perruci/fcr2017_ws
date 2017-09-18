@@ -23,6 +23,8 @@ namespace tolerance
     /* Tolerance for both orientation and localization */
     static float const orientation = 0.1;
     static float const location = 0.1;
+    /* Distance to Objects */
+    static float const objects = 1;
 }
 
 /* Orientation PID, used in class Movement */
