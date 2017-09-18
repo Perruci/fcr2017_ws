@@ -23,12 +23,14 @@ public:
 
     /* Sensors Processing ----------------------------------------*/
     laser_point objectsMean;
+    double reboundAngle;
     /* Setup object mean alliases */
     double& meanOrientation = objectsMean[laser::orientation];
     double& meanDistance = objectsMean[laser::distance];
     bool setMeanObstaclePoints(std::vector<laser_point> &frontPoints);
     bool bubleRebound(float distance = obstacle_detection::distance);
     bool obstacleDetection(float distance = obstacle_detection::distance);
+    void obstacleAvoidance();
 
     /* Go-To-Goal movement pattern ----------------------------------------*/
     void go_to_goal(geometry_msgs::Point);

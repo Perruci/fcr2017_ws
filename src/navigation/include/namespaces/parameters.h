@@ -34,8 +34,12 @@ namespace obstacle_detection
     /* Distance to Objects */
     static float const distance = 1.0;
     static float const max_range = 2.0;
-    static float const min_front_deg = -45;
-    static float const max_front_deg =  45;
+    /* For orientatio0n adjustmente */
+    static float const min_front_deg = -90;
+    static float const max_front_deg =  90;
+    /* For obstacle detection */
+    static float const min_obstacle_deg = -45;
+    static float const max_obstacle_deg =  45;
 }
 
 /* Laser Points */
