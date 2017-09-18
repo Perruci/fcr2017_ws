@@ -14,9 +14,10 @@ public:
 
     inline void printLaser()
     {
-        if(setupComplete)
-            for(size_t i = 0; i < rangesSize; i++)
-                std::cout << i << " Range: " << laserRanges_[i] << '\n';
+        if(!setupComplete)
+            return;
+        for(size_t i = 0; i < rangesSize; i++)
+            std::cout << i << " Range: " << laserRanges_[i] << '\n';
     };
 
     inline void printNearPoints()
