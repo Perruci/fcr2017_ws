@@ -15,8 +15,6 @@ class Navigation
 public:
     Navigation(int argc, char *argv[]);
     ~Navigation();
-    double orientationError(geometry_msgs::Point);
-    double locationError(geometry_msgs::Point);
 
     /* Extern Interfaces ----------------------------------------*/
     inline std::array<double, 3> getOdometry(){return this->odometryMonitor->getOdometry();};
@@ -33,13 +31,16 @@ public:
     void obstacleAvoidance();
 
     /* Go-To-Goal movement pattern ----------------------------------------*/
+    double orientationError(geometry_msgs::Point);
+    double orientationError(double);
+    double locationError(geometry_msgs::Point);
     void go_to_goal(geometry_msgs::Point);
 
+    /* Inline functions */
     inline void stopMoving()
     {
         this->moveCommands->stopMoving();
         this->odometryMonitor->printOdometry();
-        this->obstacleDetection();
     }
 
     LaserSubscriber      *laserMonitor;

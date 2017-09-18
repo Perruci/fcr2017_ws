@@ -27,7 +27,7 @@ public:
     void stopMoving();
 
     /* Closed Loop Movements */
-    void adjust_and_run(double, double);
+    void adjust_and_run(double);
 
     Kinematics* moveCommands;
     PID* anglePID;

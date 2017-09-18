@@ -56,7 +56,6 @@ bool Navigation::bubleRebound(float distance)
     double sumDistance = 0;
     double minDistance = obstacle_detection::max_range;
     size_t vecSize = frontPoints.size();
-    std::cout << "Vec Size " << vecSize << '\n';
     for(size_t i = 0; i < vecSize; i++)
     {
         /* Sum orientation and distance product */
@@ -69,11 +68,7 @@ bool Navigation::bubleRebound(float distance)
                 if(minDistance > frontPoints[i][laser::distance])
                     minDistance = frontPoints[i][laser::distance];
     }
-    std::cout << "Min Distance found: " << minDistance << '\n';
-    std::cout << "Sum Orientation-Distance " << sumOrientationDistance << '\n';
-    std::cout << "Sum Distance " << sumDistance << '\n';
     this->reboundAngle = sumOrientationDistance / sumDistance;
-    std::cout << "Rebound Angle: " << reboundAngle << '\n';
 
     return minDistance < distance? true : false;
 }
@@ -83,11 +78,6 @@ bool Navigation::obstacleDetection(float distance)
     return bubleRebound();
 }
 
-void Navigation::obstacleAvoidance()
-{
-    if(std::abs(reboundAngle) < tolerance::orientation)
-        return;
-}
 
 /* Navigation Movements ---------------------------------------- */
 double Navigation::orientationError(geometry_msgs::Point point)
@@ -97,6 +87,16 @@ double Navigation::orientationError(geometry_msgs::Point point)
     diffY = point.y - this->odometryMonitor->Y;
     /* atan2 gives a standard radian value between (-pi, pi] */
     double goalOrientation = std::atan2(diffY, diffX);
+    /* Get instantaneus orientation ajustment */
+    double diffOrientation;
+    double currentOrientation = this->odometryMonitor->Yaw;
+    diffOrientation = goalOrientation - currentOrientation;
+    diffOrientation = angleOps::constrainAngle(diffOrientation);
+    return(diffOrientation);
+}
+
+double Navigation::orientationError(double goalOrientation)
+{
     /* Get instantaneus orientation ajustment */
     double diffOrientation;
     double currentOrientation = this->odometryMonitor->Yaw;
@@ -117,12 +117,17 @@ double Navigation::locationError(geometry_msgs::Point point)
 
 void Navigation::go_to_goal(geometry_msgs::Point point)
 {
+    this->stopMoving();
     /* Loop until orientation is adjusted and location is reached */
     double angularError = orientationError(point);
     double positionError = locationError(point);
     while(std::abs(positionError) > tolerance::location)
     {
-        this->moveCommands->adjust_and_run(angularError, positionError);
+        /* Check for obstacles */
+        if(obstacleDetection())
+            obstacleAvoidance();
+        else
+            this->moveCommands->adjust_and_run(angularError);
         /* Update errors */
         angularError = orientationError(point);
         positionError = locationError(point);
@@ -130,6 +135,13 @@ void Navigation::go_to_goal(geometry_msgs::Point point)
     /* Stop Movement */
     this->stopMoving();
 };
+
+void Navigation::obstacleAvoidance()
+{
+    std::cout << "Obstacle detected!" << '\n';
+    double angularError = orientationError(this->reboundAngle);
+    this->moveCommands->adjust_and_run(angularError);
+}
 
 std::vector<geometry_msgs::Point> squarePoints()
 {

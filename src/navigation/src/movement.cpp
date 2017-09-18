@@ -81,7 +81,7 @@ void Movement::stopMoving()
 /* Closed Loop Movements */
 /*      Control Loops       */
 /* Adjust Linear Velocity and Varies the Orientation (always move forward) */
-void Movement::adjust_and_run(double angularError, double positionError)
+void Movement::adjust_and_run(double angularError)
 {
     /* Get PID computed values */
     float omega = this->anglePID->calculate(angularError);
