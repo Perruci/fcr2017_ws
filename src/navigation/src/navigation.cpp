@@ -41,8 +41,8 @@ bool Navigation::setMeanObstaclePoints(std::vector<laser_point> &frontPoints)
 
 bool Navigation::obstacleDetection(float distance)
 {
-    float maxFrontAngle = angleOps::degreesToRadians(tolerance::max_front_deg);
-    float minFrontAngle = angleOps::degreesToRadians(tolerance::min_front_deg);
+    float maxFrontAngle = angleOps::degreesToRadians(obstacle_detection::max_front_deg);
+    float minFrontAngle = angleOps::degreesToRadians(obstacle_detection::min_front_deg);
     std::vector<laser_point> frontPoints = laserMonitor->getInRange(minFrontAngle, maxFrontAngle);
 
     return setMeanObstaclePoints(frontPoints);

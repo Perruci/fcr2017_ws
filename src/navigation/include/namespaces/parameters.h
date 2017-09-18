@@ -26,11 +26,15 @@ namespace tolerance
     /* Tolerance for both orientation and localization */
     static float const orientation = 0.1;
     static float const location = 0.1;
+}
+
+/* Obstacle Detection (class Navigation)*/
+namespace obstacle_detection
+{
     /* Distance to Objects */
-    static float const objects = 1;
+    static float const distance = 1;
     static float const min_front_deg = -45;
     static float const max_front_deg =  45;
-
 }
 
 /* Laser Points */
