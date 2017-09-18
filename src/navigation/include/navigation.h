@@ -22,10 +22,10 @@ public:
     inline std::array<double, 3> getOdometry(){return this->odometryMonitor->getOdometry();};
 
     /* Sensors Processing ----------------------------------------*/
-    std::array<laser_point, 2> objectsMeans;
+    laser_point objectsMean;
     /* Setup object mean alliases */
-    laser_point& leftMean = objectsMeans[0];
-    laser_point& rightMean = objectsMeans[1];
+    double& meanOrientation = objectsMean[laser::orientation];
+    double& meanDistance = objectsMean[laser::distance];
     bool setMeanObstaclePoints(std::vector<laser_point> &frontPoints);
     bool obstacleDetection(float distance = tolerance::objects);
 

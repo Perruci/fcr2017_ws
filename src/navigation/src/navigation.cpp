@@ -20,33 +20,23 @@ Navigation::~Navigation()
 bool Navigation::setMeanObstaclePoints(std::vector<laser_point> &frontPoints)
 {
     /* TODO adapt to recursive mean */
-    this->leftMean = {0,0};
-    this->rightMean = {0,0};
-    size_t leftCount = 0;
-    size_t rightCount = 0;
+    this->meanOrientation = 0;
+    this->meanDistance = 0;
+    size_t pointsCount = 0;
     if(frontPoints.empty())
         return false;
     size_t vecSize = frontPoints.size();
     for(size_t i = 0; i < vecSize; i++)
     {
-        if(frontPoints[i][laser::orientation] < 0)
-        {
-            rightCount += 1;
-            rightMean[laser::orientation] += frontPoints[i][laser::orientation];
-            rightMean[laser::distance] += frontPoints[i][laser::distance];
-        }
-        else
-        {
-            leftCount += 1;
-            leftMean[laser::orientation] += frontPoints[i][laser::orientation];
-            leftMean[laser::distance] += frontPoints[i][laser::distance];
-        }
+        meanOrientation += frontPoints[i][laser::orientation];
+        meanDistance += frontPoints[i][laser::distance];
+        pointsCount += 1;
     }
     /* Compute mean values */
-    leftMean[laser::orientation] = leftCount > 0? leftMean[laser::orientation] / leftCount : 0;
-    leftMean[laser::distance] = leftCount > 0? leftMean[laser::distance] / leftCount : 0;
-    rightMean[laser::orientation] = rightCount > 0? rightMean[laser::orientation] / rightCount : 0;
-    rightMean[laser::distance] = rightCount > 0? rightMean[laser::distance] / rightCount : 0;
+    meanOrientation = pointsCount > 0? meanOrientation / pointsCount : 0;
+    meanDistance = pointsCount > 0? meanDistance / pointsCount : 0;
+
+    return pointsCount>0? true : false;
 }
 
 bool Navigation::obstacleDetection(float distance)
@@ -55,15 +45,7 @@ bool Navigation::obstacleDetection(float distance)
     float minFrontAngle = angleOps::degreesToRadians(tolerance::min_front_deg);
     std::vector<laser_point> frontPoints = laserMonitor->getInRange(minFrontAngle, maxFrontAngle);
 
-    setMeanObstaclePoints(frontPoints);
-
-    std::cout << "Mean Left: \n"
-                    << "\torientation: " << leftMean[laser::orientation]
-                    << "\tdistance: " << leftMean[laser::distance] << '\n'
-              << "Mean Right: \n"
-                    << "\torientation: " << rightMean[laser::orientation]
-                    << "\tdistance: " << rightMean[laser::distance] << '\n';
-    return true;
+    return setMeanObstaclePoints(frontPoints);
 }
 
 /* Navigation Movements ---------------------------------------- */
