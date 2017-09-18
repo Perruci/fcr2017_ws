@@ -20,12 +20,12 @@ public:
     inline std::array<double, 3> getOdometry(){return this->odometryMonitor->getOdometry();};
 
     /* Sensors Processing ----------------------------------------*/
-    laser_point objectsMean;
+    laser_point objectNear;
     double reboundAngle;
     /* Setup object mean alliases */
-    double& meanOrientation = objectsMean[laser::orientation];
-    double& meanDistance = objectsMean[laser::distance];
-    bool setMeanObstaclePoints(std::vector<laser_point> &frontPoints);
+    double& nearestOrientation = objectNear[laser::orientation];
+    double& nearestDistance = objectNear[laser::distance];
+    bool setMinObstaclePoints();
     bool bubleRebound(float distance = obstacle_detection::distance);
     bool obstacleDetection(float distance = obstacle_detection::distance);
     void obstacleAvoidance();

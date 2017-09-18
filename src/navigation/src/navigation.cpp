@@ -18,26 +18,33 @@ Navigation::~Navigation()
 }
 
 /* Sensors Processing ------------------------------------------ */
-bool Navigation::setMeanObstaclePoints(std::vector<laser_point> &frontPoints)
+bool Navigation::setMinObstaclePoints()
 {
+    float maxFrontAngle = angleOps::degreesToRadians(obstacle_detection::max_front_deg);
+    float minFrontAngle = angleOps::degreesToRadians(obstacle_detection::min_front_deg);
+
+    std::vector<laser_point> frontPoints = laserMonitor->getInRange(minFrontAngle, maxFrontAngle);
+    if(frontPoints.empty())
+        return false;
+
     /* TODO adapt to recursive mean */
-    this->meanOrientation = 0;
-    this->meanDistance = 0;
+    this->nearestOrientation = 0;
+    this->nearestDistance = obstacle_detection::distance;
     size_t pointsCount = 0;
     if(frontPoints.empty())
         return false;
     size_t vecSize = frontPoints.size();
     for(size_t i = 0; i < vecSize; i++)
     {
-        meanOrientation += frontPoints[i][laser::orientation];
-        meanDistance += frontPoints[i][laser::distance];
+        if(frontPoints[i][laser::distance] < nearestDistance)
+        {
+            nearestOrientation = frontPoints[i][laser::orientation];
+            nearestDistance = frontPoints[i][laser::distance];
+        }
         pointsCount += 1;
     }
-    /* Compute mean values */
-    meanOrientation = pointsCount > 0? meanOrientation / pointsCount : 0;
-    meanDistance = pointsCount > 0? meanDistance / pointsCount : 0;
 
-    return pointsCount>0? true : false;
+    return pointsCount > 0? true : false;
 }
 
 /* Bubble Rebound Obstacle Avoidance */
@@ -76,7 +83,9 @@ bool Navigation::bubleRebound(float distance)
 
 bool Navigation::obstacleDetection(float distance)
 {
-    return bubleRebound();
+    return setMinObstaclePoints();
+
+    // return bubleRebound();
 }
 
 
@@ -139,7 +148,9 @@ void Navigation::go_to_goal(geometry_msgs::Point point)
 
 void Navigation::obstacleAvoidance()
 {
-    std::cout << "Obstacle detected!" << '\n';
-    std::cout << "Rebound angle: " << reboundAngle << '\n';
-    this->moveCommands->adjust_and_run(this->reboundAngle);
+     std::cout << "Obstacle detected!" << '\n';
+     double reboundAngle = nearestOrientation < 0?
+        nearestOrientation + M_PI / 2 : nearestOrientation - M_PI /2 ;
+     std::cout << "Rebound angle: " << reboundAngle << '\n';
+     this->moveCommands->moveCommands->moveAndSpin(move_speeds::linear, reboundAngle);
 }
