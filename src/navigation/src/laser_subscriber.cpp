@@ -36,7 +36,10 @@ void LaserSubscriber::laserCallBack(const sensor_msgs::LaserScan::ConstPtr& msg)
 std::vector<laser_point> LaserSubscriber::getNearPoints(float distance)
 {
     if(!setupComplete)
+    {
         throw std::logic_error("Negative time deducted when moving");
+        return {};
+    }
     std::vector<laser_point> nearPoints;
     for(size_t i = 0; i < rangesSize; i++)
         if(laserRanges_[i] < distance)
