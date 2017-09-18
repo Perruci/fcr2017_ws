@@ -18,13 +18,18 @@ public:
     double orientationError(geometry_msgs::Point);
     double locationError(geometry_msgs::Point);
 
-    /* Extern Interfaces */
+    /* Extern Interfaces ----------------------------------------*/
     inline std::array<double, 3> getOdometry(){return this->odometryMonitor->getOdometry();};
 
-    /* Sensors Processing */
+    /* Sensors Processing ----------------------------------------*/
+    std::array<laser_point, 2> objectsMeans;
+    /* Setup object mean alliases */
+    laser_point& leftMean = objectsMeans[0];
+    laser_point& rightMean = objectsMeans[1];
+    bool setMeanObstaclePoints(std::vector<laser_point> &frontPoints);
     bool obstacleDetection(float distance = tolerance::objects);
 
-    /* Go-To-Goal movement pattern */
+    /* Go-To-Goal movement pattern ----------------------------------------*/
     void go_to_goal(geometry_msgs::Point);
 
     inline void stopMoving()
