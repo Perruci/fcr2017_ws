@@ -27,7 +27,6 @@ bool Navigation::setMinObstaclePoints()
     if(frontPoints.empty())
         return false;
 
-    /* TODO adapt to recursive mean */
     this->nearestOrientation = 0;
     this->nearestDistance = obstacle_detection::distance;
     size_t pointsCount = 0;
@@ -47,47 +46,10 @@ bool Navigation::setMinObstaclePoints()
     return pointsCount > 0? true : false;
 }
 
-/* Bubble Rebound Obstacle Avoidance */
-/* Inpired by https://pdfs.semanticscholar.org/519e/790c8477cfb1d1a176e220f010d5ec5b1481.pdf */
-bool Navigation::bubleRebound(float distance)
-{
-    float maxObstacleAngle = angleOps::degreesToRadians(obstacle_detection::max_obstacle_deg);
-    float minObstacleAngle = angleOps::degreesToRadians(obstacle_detection::min_obstacle_deg);
-    float maxFrontAngle = angleOps::degreesToRadians(obstacle_detection::max_front_deg);
-    float minFrontAngle = angleOps::degreesToRadians(obstacle_detection::min_front_deg);
-
-    std::vector<laser_point> frontPoints = laserMonitor->getRanges(minFrontAngle, maxFrontAngle);
-    if(frontPoints.empty())
-        return false;
-
-    double sumOrientationDistance = 0;
-    double sumDistance = 0;
-    double minDistance = obstacle_detection::max_range;
-    size_t vecSize = frontPoints.size();
-    for(size_t i = 0; i < vecSize; i++)
-    {
-        /* Sum orientation and distance product */
-        /* normalize big distances */
-        sumOrientationDistance += frontPoints[i][laser::orientation] * frontPoints[i][laser::distance];
-        sumDistance += frontPoints[i][laser::distance];
-        /* For obstacle detection consider only max_obstacle_deg and min_obstacle_deg*/
-        if(frontPoints[i][laser::orientation] > minObstacleAngle)
-            if(frontPoints[i][laser::orientation] < maxObstacleAngle)
-                if(minDistance > frontPoints[i][laser::distance])
-                    minDistance = frontPoints[i][laser::distance];
-    }
-    this->reboundAngle = sumOrientationDistance / sumDistance;
-
-    return minDistance < distance? true : false;
-}
-
 bool Navigation::obstacleDetection(float distance)
 {
     return setMinObstaclePoints();
-
-    // return bubleRebound();
 }
-
 
 /* Navigation Movements ---------------------------------------- */
 double Navigation::orientationError(geometry_msgs::Point point)
@@ -148,9 +110,8 @@ void Navigation::go_to_goal(geometry_msgs::Point point)
 
 void Navigation::obstacleAvoidance()
 {
-     std::cout << "Obstacle detected!" << '\n';
+    /* Proportional gain: orientation orthogonal to obstacle */
      double reboundAngle = nearestOrientation < 0?
         nearestOrientation + M_PI / 2 : nearestOrientation - M_PI /2 ;
-     std::cout << "Rebound angle: " << reboundAngle << '\n';
      this->moveCommands->moveCommands->moveAndSpin(move_speeds::linear, reboundAngle);
 }
