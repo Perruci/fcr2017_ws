@@ -26,24 +26,29 @@ O Trabalho foi desenvolvido em ROS Kinectic e contêm as dependências listadas 
     * [catkin_tools](http://catkin-tools.readthedocs.io/en/latest/advanced/catkin_shell_verbs.html) [[1]]
 
 * Instalação das dependências extras utilizadas:
+
 ```
     sudo apt-get install ros-kinectic-p2os-msgs
     sudo apt-get install ros-kinetic-ros-control ros-kinetic-ros-controllers
     sudo apt-get install catkin_tools
+```
 
-    ```
 ### Compilação
 Para compilar o workspace, utilize o comando:
+
 ```
     catkin build
 ```
+
 Para limpar o workspace:
+
 ```
     catkin clean
 ```
 
 ### Algoritimo
 Pseudo código simplificado do algorítimo implementado.
+
 ```
 INICIO
     enquanto ros::ok():
