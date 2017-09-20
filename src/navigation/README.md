@@ -33,18 +33,54 @@ O Trabalho foi desenvolvido em ROS Kinectic e contêm as dependências listadas 
     sudo apt-get install catkin_tools
 ```
 
-### Compilação
+### Configurações do Workspace
+Primeiramente, certifique-se estar no diretório principal do workspace.
+
+```
+    cd path/to/fcr2017_ws
+```
+
+
 Para compilar o workspace, utilize o comando:
 
 ```
     catkin build
 ```
-
-Para limpar o workspace:
+Em seguida, é necessário atualizar as referências do ambiente.
+Execute o comando:
 
 ```
-    catkin clean
+    source devel/setup.bash
 ```
+
+
+### Execução
+Primeiramente, deve-se lançar a simulação.
+Esta está contida no pacote fcr2017 e foi configurada pelos monitores.
+
+```
+    roslaunch fcr2017 pioneer3at.gazebo.launch
+```
+
+Em seguida, deve-se executar o executável navigation, no pacote navigation.
+
+```
+    rosrun navigation navigation
+```
+
+O pacote será, então executado.
+
+### Entradas e Saídas Testadas
+
+Seu input padrão são coordenadas X e Y de um ponto no espaço.
+O Robô é capaz de locomover-se de forma satisfatória ao logo do mapa.
+No entanto, existem alguns pontos que não podem ser alcançados.
+
+Portanto, recomenda-se o teste primário com as seguintes coordenadas:
+
+* (X, Y) = (3, 0) - movimento retilíneo;
+* (X, Y) = (-1, 5) - controle de trajetória;
+* (X, Y) = (12, 12) - desvio de obstáculos (follow wall);
 
 ### Algoritimo
 Pseudo código simplificado do algorítimo implementado.
