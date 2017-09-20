@@ -70,7 +70,7 @@ Em seguida, deve-se executar o executável navigation, no pacote navigation.
 
 O pacote será, então executado.
 
-### Entradas e Saídas Testadas
+### Entradas e Saídas Exemplo
 
 Seu input padrão são coordenadas X e Y de um ponto no espaço.
 O Robô é capaz de locomover-se de forma satisfatória ao logo do mapa.
