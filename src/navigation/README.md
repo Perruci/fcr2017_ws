@@ -60,7 +60,7 @@ INICIO
                 orientação_normal <- OrientacaoNormal()
                 AjustaOrientacao(orientacao_normal)
             se nao:
-                orientacao_alvo = OrientaPonto(posicao_alvo)
+                orientacao_alvo <- OrientaPonto(posicao_alvo)
                 AjustaOrientacao(orientacao_alvo)
             fim se
             MoveFrente()
@@ -102,4 +102,4 @@ navigation/
 ```
 
 [1]: http://www.ros.org/news/2016/04/5-reasons-ros-users-will-want-to-try-catkin-tools-beta-2.html
-[2]:https://gist.github.com/bradley219/5373998
+[2]: https://gist.github.com/bradley219/5373998
