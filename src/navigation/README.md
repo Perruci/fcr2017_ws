@@ -30,7 +30,7 @@ O Trabalho foi desenvolvido em ROS Kinectic e contêm as dependências listadas 
 ```
     sudo apt-get install ros-kinectic-p2os-msgs
     sudo apt-get install ros-kinetic-ros-control ros-kinetic-ros-controllers
-    sudo apt-get install catkin_tools
+    sudo apt-get install python-catkin-tools
 ```
 
 ### Configurações do Workspace
