@@ -19,4 +19,4 @@ Dependências:
 * ROS Kinetic, ou Lunar;
 * sudo apt-get install ros-kinectic-p2os-msgs
 * sudo apt-get install ros-kinetic-ros-control ros-kinetic-ros-controllers
-* sudo apt-get install catkin_tools
+* sudo apt-get install python-catkin-tools
