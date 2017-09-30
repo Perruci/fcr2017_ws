@@ -1,32 +1,72 @@
 #include "../include/grid_map.h"
 
-// using namespace grid_map;
+Grid_Mapping::Grid_Mapping()
+{
+    // Initialize node and publisher.
+    this->publisher = nh_.advertise<grid_map_msgs::GridMap>("grid_map_simple_demo/grid_map", 1, true);
+    // this->subscriber = nh_.subscribe("/hokuyo_scan", 1000, callback);
+    this->createGridMap();
+}
+
+Grid_Mapping::~Grid_Mapping()
+{
+
+}
+
+void Grid_Mapping::createGridMap()
+{
+    // Create grid map.
+    this->map = grid_map::GridMap({"obstacles"});
+    map.setFrameId("map");
+    map.setGeometry(grid_map::Length(grid_map_params::LengthX,
+                                     grid_map_params::LengthY),
+                                     grid_map_params::cellSize);
+    ROS_INFO("Created map with size %f x %f m (%i x %i cells).",
+              map.getLength().x(), map.getLength().y(),
+              map.getSize()(0), map.getSize()(1));
+}
+
+// void Grid_Mapping::laserCallBack(const sensor_msgs::LaserScan::ConstPtr& msg)
+// {
+//
+// }
+
+void Grid_Mapping::generateGridMap(ros::Time& time)
+{
+    for (grid_map::GridMapIterator it(this->map); !it.isPastEnd(); ++it)
+    {
+        grid_map::Position position;
+        map.getPosition(*it, position);
+        map.at("obstacles", *it) = -0.04 + 0.2 * std::sin(3.0 * time.toSec() + 5.0 * position.y()) * position.x();
+    }
+}
+
+void Grid_Mapping::publishGridMap(ros::Time& time)
+{
+    // Publish grid map.
+    this->map.setTimestamp(time.toNSec());
+    grid_map_msgs::GridMap message;
+    grid_map::GridMapRosConverter::toMessage(this->map, message);
+    this->publisher.publish(message);
+    ROS_INFO_THROTTLE(1.0, "Grid map (timestamp %f) published.", message.info.header.stamp.toSec());
+}
 
 int main(int argc, char** argv)
 {
     // Initialize node and publisher.
     ros::init(argc, argv, "grid_map_simple_demo");
-    ros::NodeHandle nh("~");
-    ros::Publisher publisher = nh.advertise<grid_map_msgs::GridMap>("grid_map", 1, true);
-
-    // Create grid map.
-    grid_map::GridMap map({"obstacles"});
-    map.setFrameId("map");
-    map.setGeometry(grid_map::Length(5.0, 5.0), 0.05);
-    ROS_INFO("Created map with size %f x %f m (%i x %i cells).",
-        map.getLength().x(), map.getLength().y(),
-        map.getSize()(0), map.getSize()(1));
-
+    Grid_Mapping gmap;
     // Work with grid map in a loop.
     ros::Rate rate(30.0);
-    while (nh.ok())
+    while (gmap.ok())
     {
         // Add data to grid map.
         ros::Time time = ros::Time::now();
-        generateGridMap(map, time);
-        publishGridMap(map, time, publisher);
+        gmap.generateGridMap(time);
+        gmap.publishGridMap(time);
         // Wait for next cycle.
         rate.sleep();
+        ros::spinOnce();
     }
     return 0;
 }

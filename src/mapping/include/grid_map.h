@@ -6,25 +6,31 @@
 #include <grid_map_msgs/GridMap.h>
 #include <cmath>
 
-inline void generateGridMap(grid_map::GridMap& map, ros::Time time)
+namespace grid_map_params
 {
-    for (grid_map::GridMapIterator it(map); !it.isPastEnd(); ++it)
-    {
-        grid_map::Position position;
-        map.getPosition(*it, position);
-        map.at("obstacles", *it) = -0.04 + 0.2 * std::sin(3.0 * time.toSec() + 5.0 * position.y()) * position.x();
-    }
+    float LengthX = 5.0;
+    float LengthY = 5.0;
+    float cellSize = 0.05;
 }
 
-inline void publishGridMap(grid_map::GridMap& map, ros::Time time, ros::Publisher& pub)
+class Grid_Mapping
 {
-    // Publish grid map.
-    map.setTimestamp(time.toNSec());
-    grid_map_msgs::GridMap message;
-    grid_map::GridMapRosConverter::toMessage(map, message);
-    pub.publish(message);
-    ROS_INFO_THROTTLE(1.0, "Grid map (timestamp %f) published.", message.info.header.stamp.toSec());
-}
+public:
+    Grid_Mapping();
+    ~Grid_Mapping();
 
+    void laserCallBack();
+    void createGridMap();
+    void generateGridMap(ros::Time& time);
+    void publishGridMap(ros::Time& time);
+
+    inline bool ok(){return nh_.ok();};
+
+private:
+    ros::NodeHandle nh_;
+    ros::Publisher publisher;
+    // ros::Subscriber subscriber;
+    grid_map::GridMap map;
+};
 
 #endif
