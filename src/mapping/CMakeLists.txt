@@ -55,13 +55,13 @@ include_directories(
 
 ## Declare a cpp executable
 add_executable(
-  simple_demo
-  src/simple_demo_node.cpp
+  grid_map
+  src/grid_map_node.cpp
 )
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(
-  simple_demo
+  grid_map
   ${catkin_LIBRARIES}
 )
 
@@ -102,7 +102,7 @@ target_link_libraries(
 
 # Mark executables and/or libraries for installation
 install(
-  TARGETS simple_demo
+  TARGETS grid_map
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
