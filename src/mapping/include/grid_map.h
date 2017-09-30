@@ -28,6 +28,7 @@ public:
     inline bool ok(){return nh_.ok();};
 
 private:
+    std::vector<float> laserRanges_;
     void laserCallBack(const sensor_msgs::LaserScan::ConstPtr&);
 
     ros::NodeHandle nh_;

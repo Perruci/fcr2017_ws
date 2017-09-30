@@ -15,6 +15,7 @@ Grid_Mapping::~Grid_Mapping()
 
 void Grid_Mapping::laserCallBack(const sensor_msgs::LaserScan::ConstPtr& msg)
 {
+    this->laserRanges_.assign(std::begin(msg->ranges), std::end(msg->ranges));
     this->generateGridMap();
 }
 
