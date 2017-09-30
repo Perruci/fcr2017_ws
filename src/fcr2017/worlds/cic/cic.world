@@ -1,6 +1,14 @@
 <?xml version="1.0"?>
 <sdf version="1.4">
   <world name="default">
+
+    <!-- Modificação na fisica para melhorar o desempenho da simulação [fabiots] -->
+    <physics type='ode'>
+      <max_step_size>0.01</max_step_size>
+      <real_time_factor>1</real_time_factor>
+      <real_time_update_rate>100</real_time_update_rate>
+    </physics>
+
     <include>
         <uri>model://ground_plane</uri>
     </include>
@@ -8,7 +16,8 @@
         <uri>model://sun</uri>
     </include>
     <model name="cic">
-       <pose>2.12727 10.806 0 0 -0 0</pose>
+    	<!-- Modificação no eixo Z do modelo "cic" para acabar com os problemas de renderização (flickering) -->
+       <pose>2.12727 10.806 -0.01 0 -0 0</pose>
       <static>true</static>
       <link name="body">
       <collision name="collision">
