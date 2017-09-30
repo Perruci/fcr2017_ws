@@ -19,18 +19,21 @@ int main(int argc, char** argv)
   ROS_INFO("Created map with size %f x %f m (%i x %i cells).",
     map.getLength().x(), map.getLength().y(),
     map.getSize()(0), map.getSize()(1));
-
   // Work with grid map in a loop.
   ros::Rate rate(30.0);
   while (nh.ok()) {
+    /* create new noise layer */
+    map.add("noise", Matrix::Random(map.getSize()(0), map.getSize()(1)));
+    /* modify obstacles with noise */
+    map.add("obstacles", map["noise"]);
 
     // Add data to grid map.
     ros::Time time = ros::Time::now();
-    for (GridMapIterator it(map); !it.isPastEnd(); ++it) {
-      Position position;
-      map.getPosition(*it, position);
-      map.at("obstacles", *it) = -0.04 + 0.2 * std::sin(3.0 * time.toSec() + 5.0 * position.y()) * position.x();
-    }
+    // for (GridMapIterator it(map); !it.isPastEnd(); ++it) {
+    // //   Position position;
+    // //   map.getPosition(*it, position);
+    // //   map.at("obstacles", *it) = -0.04 + 0.2 * std::sin(3.0 * time.toSec() + 5.0 * position.y()) * position.x();
+    // }
 
     // Publish grid map.
     map.setTimestamp(time.toNSec());
