@@ -3,7 +3,7 @@
 Grid_Mapping::Grid_Mapping()
 {
     // Initialize node and publisher.
-    this->publisher = nh_.advertise<grid_map_msgs::GridMap>("grid_map_simple_demo/grid_map", 1, true);
+    this->publisher = nh_.advertise<grid_map_msgs::GridMap>("grid_map_node/grid_map", 1, true);
     // this->subscriber = nh_.subscribe("/hokuyo_scan", 1000, callback);
     this->createGridMap();
 }
@@ -54,7 +54,7 @@ void Grid_Mapping::publishGridMap(ros::Time& time)
 int main(int argc, char** argv)
 {
     // Initialize node and publisher.
-    ros::init(argc, argv, "grid_map_simple_demo");
+    ros::init(argc, argv, "grid_map_node");
     Grid_Mapping gmap;
     // Work with grid map in a loop.
     ros::Rate rate(30.0);
