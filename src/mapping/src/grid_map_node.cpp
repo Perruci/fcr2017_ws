@@ -16,11 +16,11 @@ Grid_Mapping::~Grid_Mapping()
 void Grid_Mapping::laserCallBack(const sensor_msgs::LaserScan::ConstPtr& msg)
 {
     this->laserRanges_.assign(std::begin(msg->ranges), std::end(msg->ranges));
-    this->generateGridMap();
 }
 
 void Grid_Mapping::createGridMap()
 {
+    this->gridPose = grid_map::Position(0.0,0.0);
     // Create grid map.
     this->map = grid_map::GridMap({"obstacles"});
     map.setFrameId("map");
@@ -30,12 +30,15 @@ void Grid_Mapping::createGridMap()
     ROS_INFO("Created map with size %f x %f m (%i x %i cells).",
               map.getLength().x(), map.getLength().y(),
               map.getSize()(0), map.getSize()(1));
+
+    map.add("obstacles", 0.5);
 }
 
 void Grid_Mapping::generateGridMap()
 {
     ros::Time time = ros::Time::now();
-    for (grid_map::GridMapIterator it(this->map); !it.isPastEnd(); ++it)
+    for (grid_map::SpiralIterator it(this->map, this->gridPose, laser_params::max_range);
+        !it.isPastEnd(); ++it)
     {
         grid_map::Position position;
         map.getPosition(*it, position);
@@ -63,6 +66,7 @@ int main(int argc, char** argv)
     /* Wait for Laser data to generate grid map */
     while (gmap.ok())
     {
+        gmap.generateGridMap();
         ros::spinOnce();
     }
     return 0;

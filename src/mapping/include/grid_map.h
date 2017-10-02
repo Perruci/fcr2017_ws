@@ -14,6 +14,11 @@ namespace grid_map_params
     float cellSize = 0.05;
 }
 
+namespace laser_params
+{
+    float max_range = 2;
+}
+
 class Grid_Mapping
 {
 public:
@@ -35,6 +40,7 @@ private:
     ros::Publisher publisher;
     ros::Subscriber subscriber;
     grid_map::GridMap map;
+    grid_map::Position gridPose;
 };
 
 #endif
