@@ -15,7 +15,11 @@ Grid_Mapping::~Grid_Mapping()
 
 void Grid_Mapping::laserCallBack(const sensor_msgs::LaserScan::ConstPtr& msg)
 {
+    this->angle_step = msg->angle_increment;
+    this->minAngle = msg->angle_min;
+    this->maxAngle = msg->angle_max;
     this->laserRanges_.assign(std::begin(msg->ranges), std::end(msg->ranges));
+    this->generateGridMap();
 }
 
 void Grid_Mapping::createGridMap()
@@ -39,16 +43,37 @@ void Grid_Mapping::generateGridMap()
     ros::Time time = ros::Time::now();
     grid_map::Index start;
     grid_map::Index end;
-    map.getIndex(this->gridPose, start);
-    map.getIndex(grid_map::Position(laser_params::max_range, 0), end);
 
-    for (grid_map::LineIterator it(this->map, start, end);
-        !it.isPastEnd(); ++it)
+    for(size_t i = 0; i < laserRanges_.size(); i++)
     {
-        grid_map::Position position;
-        map.getPosition(*it, position);
-        map.at("obstacles", *it) = -0.04 + 0.2 * std::sin(3.0 * time.toSec() + 5.0 * position.y()) * position.x();
+        /* If found obstacle */
+        if(laserRanges_[i] < laser_params::max_range)
+        {
+            map.getIndex(this->gridPose, start);
+            map.getIndex(this->getPosition(i, laserRanges_[i]), end);
+            for (grid_map::LineIterator it(this->map, start, end);
+                !it.isPastEnd(); ++it)
+            {
+                grid_map::Position position;
+                map.getPosition(*it, position);
+                map.at("obstacles", *it) = 0;
+            }
+            map.at("obstacles", end) = 1;
+        }
+        else
+        {
+            map.getIndex(this->gridPose, start);
+            map.getIndex(grid_map::Position(laser_params::max_range, 0), end);
+            for (grid_map::LineIterator it(this->map, start, end);
+                !it.isPastEnd(); ++it)
+            {
+                grid_map::Position position;
+                map.getPosition(*it, position);
+                map.at("obstacles", *it) = 0;
+            }
+        }
     }
+
     this->publishGridMap(time);
 }
 
@@ -62,6 +87,24 @@ void Grid_Mapping::publishGridMap(ros::Time& time)
     ROS_INFO_THROTTLE(1.0, "Grid map (timestamp %f) published.", message.info.header.stamp.toSec());
 }
 
+grid_map::Position Grid_Mapping::getPosition(size_t index, float rangesValue)
+{
+    double orientation = getOrientation(index, this->minAngle, this->maxAngle, this->angle_step);
+    // get module
+    int module = floor(rangesValue);
+    float X = module*cos(orientation);
+    float Y = module*sin(orientation);
+    return grid_map::Position(X,Y);
+}
+
+double Grid_Mapping::getOrientation(unsigned int index, float minAngle, float maxAngle, float step)
+{
+    float orientation = index*step + minAngle;
+    if(orientation > maxAngle)
+        std::logic_error("[ANGLE OPS] getOrientation() - calculated angle exeeded maxAngle");
+    return orientation;
+}
+
 int main(int argc, char** argv)
 {
     // Initialize node and publisher.
@@ -71,7 +114,6 @@ int main(int argc, char** argv)
     /* Wait for Laser data to generate grid map */
     while (gmap.ok())
     {
-        gmap.generateGridMap();
         ros::spinOnce();
     }
     return 0;

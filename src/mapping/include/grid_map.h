@@ -33,8 +33,12 @@ public:
     inline bool ok(){return nh_.ok();};
 
 private:
+    float angle_step;
+    float minAngle, maxAngle;
     std::vector<float> laserRanges_;
     void laserCallBack(const sensor_msgs::LaserScan::ConstPtr&);
+    double getOrientation(unsigned int index, float minAngle, float maxAngle, float step);
+    grid_map::Position getPosition(size_t,float);
 
     ros::NodeHandle nh_;
     ros::Publisher publisher;
