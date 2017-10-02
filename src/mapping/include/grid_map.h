@@ -12,6 +12,9 @@ namespace grid_map_params
     float LengthX = 5.0;
     float LengthY = 5.0;
     float cellSize = 0.05;
+
+    float obstacleProp = 1.5;
+    float freeProp = 0.5;
 }
 
 namespace laser_params

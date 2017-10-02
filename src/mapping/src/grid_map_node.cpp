@@ -56,9 +56,9 @@ void Grid_Mapping::generateGridMap()
             {
                 grid_map::Position position;
                 map.getPosition(*it, position);
-                map.at("obstacles", *it) = 0;
+                map.at("obstacles", *it) *= grid_map_params::freeProp;
             }
-            map.at("obstacles", end) = 1;
+            map.at("obstacles", end) = grid_map_params::obstacleProp;
         }
         else
         {
@@ -69,7 +69,7 @@ void Grid_Mapping::generateGridMap()
             {
                 grid_map::Position position;
                 map.getPosition(*it, position);
-                map.at("obstacles", *it) = 0;
+                map.at("obstacles", *it) *= grid_map_params::freeProp;
             }
         }
     }
