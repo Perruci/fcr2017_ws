@@ -37,7 +37,12 @@ void Grid_Mapping::createGridMap()
 void Grid_Mapping::generateGridMap()
 {
     ros::Time time = ros::Time::now();
-    for (grid_map::SpiralIterator it(this->map, this->gridPose, laser_params::max_range);
+    grid_map::Index start;
+    grid_map::Index end;
+    map.getIndex(this->gridPose, start);
+    map.getIndex(grid_map::Position(laser_params::max_range, 0), end);
+
+    for (grid_map::LineIterator it(this->map, start, end);
         !it.isPastEnd(); ++it)
     {
         grid_map::Position position;
