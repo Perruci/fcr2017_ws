@@ -1,25 +1,16 @@
 #include "../include/grid_mapping.h"
 
-Grid_Mapping::Grid_Mapping()
+Grid_Mapping::Grid_Mapping(int argc, char **argv)
 {
     // Initialize node and publisher.
     this->publisher = nh_.advertise<grid_map_msgs::GridMap>("grid_map_node/grid_map", 1, true);
-    this->subscriber = nh_.subscribe("/hokuyo_scan", 1000, &Grid_Mapping::laserCallBack, this);
+    this->laserMonitor_ = new LaserSubscriber(argc, argv);
     this->createGridMap();
 }
 
 Grid_Mapping::~Grid_Mapping()
 {
-
-}
-
-void Grid_Mapping::laserCallBack(const sensor_msgs::LaserScan::ConstPtr& msg)
-{
-    this->angle_step = msg->angle_increment;
-    this->minAngle = msg->angle_min;
-    this->maxAngle = msg->angle_max;
-    this->laserRanges_.assign(std::begin(msg->ranges), std::end(msg->ranges));
-    this->generateGridMap();
+    delete laserMonitor_;
 }
 
 void Grid_Mapping::createGridMap()
@@ -41,16 +32,21 @@ void Grid_Mapping::createGridMap()
 void Grid_Mapping::generateGridMap()
 {
     ros::Time time = ros::Time::now();
+
+    if(!this->laserMonitor_->setupComplete)
+    {
+        return;
+    }
     grid_map::Index start;
     grid_map::Index end;
 
-    for(size_t i = 0; i < laserRanges_.size(); i++)
+    for(size_t i = 0; i < laserMonitor_->rangesSize; i++)
     {
         /* If found obstacle */
-        if(laserRanges_[i] < laser_params::max_range)
+        if(laserMonitor_->laserRanges_[i] < laser_params::max_range)
         {
             map.getIndex(this->gridPose, start);
-            map.getIndex(this->getPosition(i, laserRanges_[i]), end);
+            map.getIndex(this->getPosition(i, laserMonitor_->laserRanges_[i]), end);
             for (grid_map::LineIterator it(this->map, start, end);
                 !it.isPastEnd(); ++it)
             {
@@ -89,18 +85,10 @@ void Grid_Mapping::publishGridMap(ros::Time& time)
 
 grid_map::Position Grid_Mapping::getPosition(size_t index, float rangesValue)
 {
-    double orientation = getOrientation(index, this->minAngle, this->maxAngle, this->angle_step);
+    double orientation = getOrientation(index);
     // get module
     int module = floor(rangesValue);
     float X = module*cos(orientation);
     float Y = module*sin(orientation);
     return grid_map::Position(X,Y);
-}
-
-double Grid_Mapping::getOrientation(unsigned int index, float minAngle, float maxAngle, float step)
-{
-    float orientation = index*step + minAngle;
-    if(orientation > maxAngle)
-        std::logic_error("[ANGLE OPS] getOrientation() - calculated angle exeeded maxAngle");
-    return orientation;
 }

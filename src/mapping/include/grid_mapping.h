@@ -8,11 +8,13 @@
 #include <cmath>
 
 #include "namespaces/parameters.h"
+#include "namespaces/angleOps.h"
+#include "measurements/laser_subscriber.h"
 
 class Grid_Mapping
 {
 public:
-    Grid_Mapping();
+    Grid_Mapping(int argc, char **argv);
     ~Grid_Mapping();
 
     void laserCallBack();
@@ -23,18 +25,17 @@ public:
     inline bool ok(){return nh_.ok();};
 
 private:
-    float angle_step;
-    float minAngle, maxAngle;
-    std::vector<float> laserRanges_;
-    void laserCallBack(const sensor_msgs::LaserScan::ConstPtr&);
-    double getOrientation(unsigned int index, float minAngle, float maxAngle, float step);
+    inline double getOrientation(unsigned int index)
+    {
+        this->laserMonitor_->getOrientation(index);
+    }
     grid_map::Position getPosition(size_t,float);
 
     ros::NodeHandle nh_;
     ros::Publisher publisher;
-    ros::Subscriber subscriber;
     grid_map::GridMap map;
     grid_map::Position gridPose;
+    LaserSubscriber* laserMonitor_;
 };
 
 #endif
