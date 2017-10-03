@@ -5,6 +5,7 @@ Grid_Mapping::Grid_Mapping(int argc, char **argv)
     // Initialize node and publisher.
     this->publisher = nh_.advertise<grid_map_msgs::GridMap>("grid_map_node/grid_map", 1, true);
     this->laserMonitor_ = new LaserSubscriber(argc, argv);
+    this->odometryMonitor_ = new OdometrySubscriber(argc, argv);
     this->createGridMap();
 }
 

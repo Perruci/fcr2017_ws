@@ -43,7 +43,7 @@ public:
     }
 
     LaserSubscriber      *laserMonitor;
-    OdometySubscriber    *odometryMonitor;
+    OdometrySubscriber    *odometryMonitor;
     UltrasoundSubscriber *sonarMonitor;
     Movement *moveCommands;
 };

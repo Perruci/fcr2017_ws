@@ -3,7 +3,7 @@
 Navigation::Navigation(int argc, char *argv[])
 {
     this->moveCommands = new Movement(argc, argv);
-    this->odometryMonitor = new OdometySubscriber(argc, argv);
+    this->odometryMonitor = new OdometrySubscriber(argc, argv);
     this->laserMonitor = new LaserSubscriber(argc, argv);
     this->sonarMonitor = new UltrasoundSubscriber(argc, argv);
     this->stopMoving();

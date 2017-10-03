@@ -10,6 +10,7 @@
 #include "namespaces/parameters.h"
 #include "namespaces/angleOps.h"
 #include "measurements/laser_subscriber.h"
+#include "measurements/odometry_subscriber.h"
 
 class Grid_Mapping
 {
@@ -36,6 +37,7 @@ private:
     grid_map::GridMap map;
     grid_map::Position gridPose;
     LaserSubscriber* laserMonitor_;
+    OdometrySubscriber* odometryMonitor_;
 };
 
 #endif
