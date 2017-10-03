@@ -7,20 +7,7 @@
 #include <sensor_msgs/LaserScan.h>
 #include <cmath>
 
-namespace grid_map_params
-{
-    float LengthX = 5.0;
-    float LengthY = 5.0;
-    float cellSize = 0.05;
-
-    float obstacleProp = 1.5;
-    float freeProp = 0.5;
-}
-
-namespace laser_params
-{
-    float max_range = 2;
-}
+#include "namespaces/parameters.h"
 
 class Grid_Mapping
 {

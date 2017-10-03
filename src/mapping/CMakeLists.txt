@@ -57,6 +57,7 @@ include_directories(
 add_executable(
   grid_map
   src/grid_map_node.cpp
+  src/grid_mapping.cpp
 )
 
 ## Specify libraries to link a library or executable target against
