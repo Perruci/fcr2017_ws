@@ -44,11 +44,17 @@ class Vertex:
     def __str__(self):
         return str(self.id) + ' adjacent: ' + str([x.id for x in self.adjacent])
 
-    def setPoint(self, x, y):
+    def set_point(self, x, y):
         self.point = Point(x, y, 0)
 
-    def getPoint(self):
+    def get_point(self):
         return self.point
+
+    def get_pointX(self):
+        return self.point.x
+
+    def get_pointY(self):
+        return self.point.y
 
 class Graph:
     def __init__(self):
@@ -91,4 +97,4 @@ class Graph:
     def set_point(self, vertex, x, y):
         if vertex not in self.vert_dict:
             self.add_vertex(vertex)
-        self.vert_dict[vertex].setPoint(x, y)
+        self.vert_dict[vertex].set_point(x, y)

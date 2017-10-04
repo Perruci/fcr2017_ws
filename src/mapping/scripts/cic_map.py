@@ -10,8 +10,8 @@ def cartesian_distance(point1, point2):
     return math.sqrt(diffX ** 2 + diffY **2)
 
 def vertex_distance(graph, vertex1, vertex2):
-    point1 = graph.get_vertex(vertex1).getPoint()
-    point2 = graph.get_vertex(vertex2).getPoint()
+    point1 = graph.get_vertex(vertex1).get_point()
+    point2 = graph.get_vertex(vertex2).get_point()
 
     return cartesian_distance(point1, point2)
 

@@ -4,7 +4,7 @@ from cic_map import getMap
 def shortest(v, path):
     ''' make shortest path from v.previous'''
     if v.previous:
-        path.append(v.previous.get_id())
+        path.append(v.previous)
         shortest(v.previous, path)
     return
 
@@ -63,6 +63,8 @@ if __name__ == '__main__':
     dijkstra(g, g.get_vertex('1'), g.get_vertex('18'))
 
     target = g.get_vertex('18')
-    path = [target.get_id()]
+    path = [target]
     shortest(target, path)
-    print 'The shortest path : %s' %(path[::-1])
+    print 'The shortest path : '
+    for node in path:
+        print 'Node [', node.get_id(), '] (', node.get_pointX(), ', ', node.get_pointY(), ')'
