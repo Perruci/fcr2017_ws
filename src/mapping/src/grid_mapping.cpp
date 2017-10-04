@@ -27,7 +27,7 @@ void Grid_Mapping::createGridMap()
               map.getLength().x(), map.getLength().y(),
               map.getSize()(0), map.getSize()(1));
 
-    float uniformProbability = 0.5;
+    float uniformProbability = 1;
     map.add("obstacles", uniformProbability);
 }
 
@@ -43,6 +43,7 @@ void Grid_Mapping::generateGridMap()
     grid_map::Index end;
 
     map.add("visited", 0);
+    map.add("probability", 10);
 
     for(size_t i = 0; i < laserMonitor_->rangesSize; i++)
     {
@@ -58,7 +59,7 @@ void Grid_Mapping::generateGridMap()
                 {
                     grid_map::Position position;
                     map.getPosition(*it, position);
-                    map.at("obstacles", *it) = grid_map_params::freeProp;
+                    map.at("probability", *it) = grid_map_params::freeProp;
                     map.at("visited", *it) = 1;
                 }
             }
@@ -67,21 +68,25 @@ void Grid_Mapping::generateGridMap()
         else
         {
             map.getIndex(this->gridPose, start);
-            map.getIndex(this->getPosition(i, laser_params::max_range), end);
+            map.getIndex(this->getPosition(i, laserMonitor_->laserRanges_[i]), end);
             for (grid_map::LineIterator it(this->map, start, end); !it.isPastEnd(); ++it)
             {
                 /* if has not been visited */
-                if(map.at("visited", *it) == 0 )
+                if(map.at("probability", *it) == 0 )
                 {
                     grid_map::Position position;
                     map.getPosition(*it, position);
-                    map.at("obstacles", *it) = grid_map_params::freeProp;
+                    map.at("probability", *it) = grid_map_params::freeProp;
+                    map.at("visited", *it) = 1;
                 }
             }
         }
     }
+    /* Compute obstacle probability */
+    map.add("obstacles", map.get("probability").cwiseProduct(map.get("obstacles")));
+
     /* Normalize output layer */
-    map.add("obstacles", map.get("obstacles")/map.get("obstacles").sum());
+    map.add("obstacles", map.get("obstacles")/map.get("obstacles").norm());
 
     this->publishGridMap(time);
 }
