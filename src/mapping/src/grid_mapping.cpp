@@ -27,7 +27,8 @@ void Grid_Mapping::createGridMap()
               map.getLength().x(), map.getLength().y(),
               map.getSize()(0), map.getSize()(1));
 
-    map.add("obstacles", 0.5);
+    float uniformProbability = 0.5;
+    map.add("obstacles", uniformProbability);
 }
 
 void Grid_Mapping::generateGridMap()
@@ -41,6 +42,8 @@ void Grid_Mapping::generateGridMap()
     grid_map::Index start;
     grid_map::Index end;
 
+    map.add("visited", 0);
+
     for(size_t i = 0; i < laserMonitor_->rangesSize; i++)
     {
         /* If found obstacle */
@@ -48,28 +51,37 @@ void Grid_Mapping::generateGridMap()
         {
             map.getIndex(this->gridPose, start);
             map.getIndex(this->getPosition(i, laserMonitor_->laserRanges_[i]), end);
-            for (grid_map::LineIterator it(this->map, start, end);
-                !it.isPastEnd(); ++it)
+            for (grid_map::LineIterator it(this->map, start, end); !it.isPastEnd(); ++it)
             {
-                grid_map::Position position;
-                map.getPosition(*it, position);
-                map.at("obstacles", *it) *= grid_map_params::freeProp;
+                /* If has not been visited */
+                if(map.at("visited", *it) == 0 )
+                {
+                    grid_map::Position position;
+                    map.getPosition(*it, position);
+                    map.at("obstacles", *it) = grid_map_params::freeProp;
+                    map.at("visited", *it) = 1;
+                }
             }
             map.at("obstacles", end) = grid_map_params::obstacleProp;
         }
         else
         {
             map.getIndex(this->gridPose, start);
-            map.getIndex(grid_map::Position(laser_params::max_range, 0), end);
-            for (grid_map::LineIterator it(this->map, start, end);
-                !it.isPastEnd(); ++it)
+            map.getIndex(this->getPosition(i, laser_params::max_range), end);
+            for (grid_map::LineIterator it(this->map, start, end); !it.isPastEnd(); ++it)
             {
-                grid_map::Position position;
-                map.getPosition(*it, position);
-                map.at("obstacles", *it) *= grid_map_params::freeProp;
+                /* if has not been visited */
+                if(map.at("visited", *it) == 0 )
+                {
+                    grid_map::Position position;
+                    map.getPosition(*it, position);
+                    map.at("obstacles", *it) = grid_map_params::freeProp;
+                }
             }
         }
     }
+    /* Normalize output layer */
+    map.add("obstacles", map.get("obstacles")/map.get("obstacles").sum());
 
     this->publishGridMap(time);
 }

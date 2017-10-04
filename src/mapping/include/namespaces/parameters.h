@@ -38,8 +38,8 @@ namespace grid_map_params
     static float LengthY = 5.0;
     static float cellSize = 0.05;
 
-    static float obstacleProp = 1.5;
-    static float freeProp = 0.5;
+    static float obstacleProp = 0.8;
+    static float freeProp = 0.1;
 }
 
 namespace laser_params
