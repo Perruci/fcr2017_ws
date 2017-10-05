@@ -1,5 +1,7 @@
 from graph import Graph
 
+# thanks to http://www.bogotobogo.com/python/python_Dijkstras_Shortest_Path_Algorithm.php
+
 def shortest(v, path):
     ''' make shortest path from v.previous'''
     if v.previous:
