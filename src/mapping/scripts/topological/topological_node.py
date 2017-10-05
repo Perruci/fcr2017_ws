@@ -13,12 +13,13 @@ from cic_map import getMap
 def initialize_map():
     g = getMap()
 
-    print 'Graph data:'
+    # print 'Graph data:'
     for v in g:
         for w in v.get_connections():
             vid = v.get_id()
             wid = w.get_id()
-            print '( %s , %s, %3d)'  % ( vid, wid, v.get_weight(w))
+            # print '( %s , %s, %3d)'  % ( vid, wid, v.get_weight(w))
+    print 'Graph setup complete'
     return g
 
 def get_shortest_path(g, initial, target):
@@ -72,7 +73,9 @@ if __name__ == '__main__':
         # generate messages
         msg_string = get_id_msg(best_path)
         pub_id.publish(msg_string)
+        rospy.loginfo('paths id published')
 
         msg_pose = generate_poses_msg(best_path)
         pub_pose.publish(msg_pose)
+        rospy.loginfo('paths points published')
         r.sleep()
