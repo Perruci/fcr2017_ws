@@ -1,5 +1,4 @@
 from graph import Graph
-from cic_map import getMap
 
 def shortest(v, path):
     ''' make shortest path from v.previous'''
