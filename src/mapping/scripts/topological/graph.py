@@ -65,6 +65,13 @@ class Vertex:
         self.regionPt1 = point1
         self.regionPt2 = point2
 
+    # definido sempre com P1.x < P2.x e P1.y > P2.y
+    def is_inside(self, point):
+        if point.x > self.regionPt1.x and point.x < self.regionPt2.x:
+            if point.y < self.regionPt1.y and point.y > self.regionPt2.y:
+                return True
+        return False
+
 class Graph:
     def __init__(self):
         self.vert_dict = {}
@@ -112,3 +119,9 @@ class Graph:
         if vertex not in self.vert_dict:
             self.add_vertex(vertex)
         self.vert_dict[vertex].set_region(point1, point2)
+
+    def is_inside(self, vertex, point):
+        if self.vert_dict[vertex].is_inside(point):
+            return True
+        else:
+            return False

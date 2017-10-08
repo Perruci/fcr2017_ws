@@ -20,6 +20,15 @@ def initialize_map():
     print 'Graph setup complete'
     return g
 
+def get_vertex_from_point(g, point):
+    # get vertex names
+    keys = g.get_vertices()
+    for v_id in keys:
+        if g.is_inside(v_id, point):
+            return v_id
+    print 'target point not found on vertices'
+    return
+
 def get_shortest_path(g, initial, target):
     dj.dijkstra(g, g.get_vertex(initial), g.get_vertex(target))
     target = g.get_vertex(target)
@@ -60,7 +69,12 @@ class TopologicalMap:
     def get_pose_callback(self, pose_data):
         self.target_pose = pose_data
         print 'recieved target pose: (', self.target_pose.position.x, ', ',self.target_pose.position.y, ')'
-        self.best_path = get_shortest_path(self.graph, '1', '18')
+
+        target_id = get_vertex_from_point(self.graph, self.target_pose.position)
+
+        print 'target id found: ', target_id
+
+        self.best_path = get_shortest_path(self.graph, '1', target_id)
         self.recieved_target = True
 
     def __init__(self):
