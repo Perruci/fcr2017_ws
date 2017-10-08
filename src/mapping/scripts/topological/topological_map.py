@@ -35,7 +35,7 @@ def get_shortest_path(g, initial, target):
     target = g.get_vertex(target)
     path = [target]
     dj.shortest(target, path)
-    return path
+    return list(reversed(path))
 
 def print_path(path):
     print 'The shortest path : '
