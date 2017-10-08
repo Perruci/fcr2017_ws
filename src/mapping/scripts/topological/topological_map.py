@@ -70,10 +70,12 @@ class TopologicalMap:
     def get_origin_callback(self, odometry_data):
         # get pose from odometry message
         self.origin_pose = odometry_data.pose.pose
-        print 'recieved origin pose: (', self.origin_pose.position.x, ', ',self.origin_pose.position.y, ')'
-        self.origin_id = get_vertex_from_point(self.graph, self.origin_pose.position)
-        print 'origin id found: ', self.origin_id
-        if self.origin_id != '0':
+
+        new_id = get_vertex_from_point(self.graph, self.origin_pose.position);
+        # if new id returns a valid vertex
+        if new_id != self.origin_id:
+            print 'vertex change: from ', self.origin_id, ' to ', new_id
+            self.origin_id = new_id
             self.recieved_origin = True
 
 
@@ -88,11 +90,14 @@ class TopologicalMap:
 
     def __init__(self):
         self.graph = initialize_map()
-        # ROS setup
-        self.sub_origin = rospy.Subscriber('/pose', Odometry, self.get_origin_callback)
+        ## ROS setup
+        # subscribers to pose and where_to
+        self.sub_origin = rospy.Subscriber('pose', Odometry, self.get_origin_callback)
         self.sub_target = rospy.Subscriber('topological/where_to', Pose, self.get_target_callback)
+        # publishers
+        self.pub_curr_id = rospy.Publisher('topological/current_id', String, queue_size=10)
+        self.pub_best_id = rospy.Publisher('topological/best_path/ids', String, queue_size=10)
         self.pub_pose = rospy.Publisher('topological/best_path/poses', PoseArray, queue_size=10)
-        self.pub_id = rospy.Publisher('topological/best_path/ids', String, queue_size=10)
         self.origin_pose = Pose()
         self.origin_id = '0'
         self.recieved_origin = False
@@ -100,11 +105,15 @@ class TopologicalMap:
         self.target_id = '0'
         self.recieved_target = False
 
+    # publishung routines
     def run(self):
+        if self.recieved_origin:
+            self.pub_curr_id.publish(self.origin_id)
+            rospy.loginfo('published current ID')
+
         if self.recieved_origin and self.recieved_target:
-            # generate messages
             msg_string = get_id_msg(self.best_path)
-            self.pub_id.publish(msg_string)
+            self.pub_best_id.publish(msg_string)
             rospy.loginfo('paths id published')
 
             msg_pose = generate_poses_msg(self.best_path)
