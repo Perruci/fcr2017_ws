@@ -58,28 +58,30 @@ def generate_poses_msg(path):
 
 class TopologicalMap:
     def get_pose_callback(self, pose_data):
-        if pose_data.size() != 2:
-            print 'POSE_SUB: wrong number of points recieved'
-        else:
-            self.target_poses = pose_array_data
-            self.recieved_target = True
+        self.target_pose = pose_data
+        self.best_path = get_shortest_path(self.graph, '1', '18')
+        self.recieved_target = True
 
     def __init__(self):
         self.graph = initialize_map()
-        self.best_path = get_shortest_path(self.graph, '1', '18')
         # ROS setup
         self.sub_pose = rospy.Subscriber('topological/where_to', Pose, self.get_pose_callback)
         self.pub_pose = rospy.Publisher('topological/best_path/poses', PoseArray, queue_size=10)
         self.pub_id = rospy.Publisher('topological/best_path/ids', String, queue_size=10)
-        self.target_poses = set()
+        self.target_pose = Pose()
         self.recieved_target = False
 
     def run(self):
-        # generate messages
-        msg_string = get_id_msg(self.best_path)
-        self.pub_id.publish(msg_string)
-        rospy.loginfo('paths id published')
+        if self.recieved_target:
+            # generate messages
+            msg_string = get_id_msg(self.best_path)
+            self.pub_id.publish(msg_string)
+            rospy.loginfo('paths id published')
 
-        msg_pose = generate_poses_msg(self.best_path)
-        self.pub_pose.publish(msg_pose)
-        rospy.loginfo('paths points published')
+            msg_pose = generate_poses_msg(self.best_path)
+            self.pub_pose.publish(msg_pose)
+            rospy.loginfo('paths points published')
+
+            self.recieved_target = False
+        else:
+            rospy.loginfo('waiting for directions')
