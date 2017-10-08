@@ -10,5 +10,8 @@ if __name__ == '__main__':
     r = rospy.Rate(1) # 1hz
 
     while not rospy.is_shutdown():
-        top_map.run()
-        r.sleep()
+        try:
+            top_map.run()
+            r.sleep()
+        except rospy.ROSInterruptException:
+            pass
