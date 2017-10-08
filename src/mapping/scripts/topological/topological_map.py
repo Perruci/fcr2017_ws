@@ -2,6 +2,7 @@ import rospy
 from std_msgs.msg import String
 from geometry_msgs.msg import Pose
 from geometry_msgs.msg import PoseArray
+from nav_msgs.msg import Odometry
 
 import dijkstra as dj
 from graph import Graph
@@ -27,7 +28,7 @@ def get_vertex_from_point(g, point):
         if g.is_inside(v_id, point):
             return v_id
     print 'target point not found on vertices'
-    return
+    return '0'
 
 def get_shortest_path(g, initial, target):
     dj.dijkstra(g, g.get_vertex(initial), g.get_vertex(target))
@@ -66,28 +67,41 @@ def generate_poses_msg(path):
 
 
 class TopologicalMap:
-    def get_pose_callback(self, pose_data):
+    def get_origin_callback(self, odometry_data):
+        # get pose from odometry message
+        self.origin_pose = odometry_data.pose.pose
+        print 'recieved origin pose: (', self.origin_pose.position.x, ', ',self.origin_pose.position.y, ')'
+        self.origin_id = get_vertex_from_point(self.graph, self.origin_pose.position)
+        print 'origin id found: ', self.origin_id
+        if self.origin_id != '0':
+            self.recieved_origin = True
+
+
+    def get_target_callback(self, pose_data):
         self.target_pose = pose_data
         print 'recieved target pose: (', self.target_pose.position.x, ', ',self.target_pose.position.y, ')'
-
-        target_id = get_vertex_from_point(self.graph, self.target_pose.position)
-
-        print 'target id found: ', target_id
-
-        self.best_path = get_shortest_path(self.graph, '1', target_id)
-        self.recieved_target = True
+        self.target_id = get_vertex_from_point(self.graph, self.target_pose.position)
+        print 'target id found: ', self.target_id
+        if self.target_id != '0' and self.recieved_origin:
+            self.best_path = get_shortest_path(self.graph, self.origin_id, self.target_id)
+            self.recieved_target = True
 
     def __init__(self):
         self.graph = initialize_map()
         # ROS setup
-        self.sub_pose = rospy.Subscriber('topological/where_to', Pose, self.get_pose_callback)
+        self.sub_origin = rospy.Subscriber('/pose', Odometry, self.get_origin_callback)
+        self.sub_target = rospy.Subscriber('topological/where_to', Pose, self.get_target_callback)
         self.pub_pose = rospy.Publisher('topological/best_path/poses', PoseArray, queue_size=10)
         self.pub_id = rospy.Publisher('topological/best_path/ids', String, queue_size=10)
+        self.origin_pose = Pose()
+        self.origin_id = '0'
+        self.recieved_origin = False
         self.target_pose = Pose()
+        self.target_id = '0'
         self.recieved_target = False
 
     def run(self):
-        if self.recieved_target:
+        if self.recieved_origin and self.recieved_target:
             # generate messages
             msg_string = get_id_msg(self.best_path)
             self.pub_id.publish(msg_string)
