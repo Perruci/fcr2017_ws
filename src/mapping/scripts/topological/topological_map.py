@@ -59,6 +59,7 @@ def generate_poses_msg(path):
 class TopologicalMap:
     def get_pose_callback(self, pose_data):
         self.target_pose = pose_data
+        print 'recieved target pose: (', self.target_pose.position.x, ', ',self.target_pose.position.y, ')'
         self.best_path = get_shortest_path(self.graph, '1', '18')
         self.recieved_target = True
 
