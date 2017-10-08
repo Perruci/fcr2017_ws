@@ -16,6 +16,9 @@ class Vertex:
         self.previous = None
         # Central Point
         self.point = Point
+        # Region bounded points
+        self.regionPt1 = Point
+        self.regionPt2 = Point
 
     def add_neighbor(self, neighbor, weight=0):
         self.adjacent[neighbor] = weight
@@ -44,6 +47,7 @@ class Vertex:
     def __str__(self):
         return str(self.id) + ' adjacent: ' + str([x.id for x in self.adjacent])
 
+    # Points functions
     def set_point(self, x, y):
         self.point = Point(x, y, 0)
 
@@ -55,6 +59,11 @@ class Vertex:
 
     def get_pointY(self):
         return self.point.y
+
+    # Region functions
+    def set_region(self, point1, point2):
+        self.regionPt1 = point1
+        self.regionPt2 = point2
 
 class Graph:
     def __init__(self):
@@ -98,3 +107,8 @@ class Graph:
         if vertex not in self.vert_dict:
             self.add_vertex(vertex)
         self.vert_dict[vertex].set_point(x, y)
+
+    def set_region(self, vertex, point1, point2):
+        if vertex not in self.vert_dict:
+            self.add_vertex(vertex)
+        self.vert_dict[vertex].set_region(point1, point2)
