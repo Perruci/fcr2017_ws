@@ -23,6 +23,12 @@ class Layer:
     def get_grid(self):
         return self.grid
 
+    def set_grid(self, matrix):
+        if matrix.shape == self.grid.shape:
+            self.grid = matrix
+        else:
+            print 'Trying to assign grid layer of a different shape'
+
 class GridMap:
     def __init__(self):
         self.layer_dict = {}
@@ -43,13 +49,19 @@ class GridMap:
             return None
 
     def show_layer(self, node, windowname):
-        cv2.imshow(windowname, self.get_grid(node))
-        cv2.waitKey(0)
+        if node in self.layer_dict:
+            cv2.imshow(windowname, self.get_grid(node))
+            cv2.waitKey(0)
+        else:
+            print 'tried to show an unitialized layer'
 
     def save_layer(self, node, filename):
-        cv2.imwrite(filename, self.get_grid(node))
+        if node in self.layer_dict:
+            cv2.imwrite(filename, self.get_grid(node))
+        else:
+            print 'tried to save an unitialized layer'
 
     def run(self):
-        self.add_layer('1')
-        self.show_layer('1', 'grid_map')
-        self.save_layer('1', 'grid.png')
+        self.add_layer('occupancy_map')
+        self.show_layer('occupancy_map', 'grid_map')
+        self.save_layer('occupancy_map', 'grid.png')
