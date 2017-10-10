@@ -5,6 +5,7 @@ from matplotlib import pyplot as plt
 
 import laser_monitor
 import odometry_monitor
+import topological_monitor
 
 class Layer:
     def init_layer(self):
@@ -38,6 +39,7 @@ class GridMap:
         self.num_layer = 0
         self.laser_monitor = laser_monitor.LaserMonitor()
         self.odometry_monitor = odometry_monitor.OdometryMonitor()
+        self.topological_monitor = topological_monitor.TopologicalMonitor()
 
     def __iter__(self):
         return iter(self.layer_dict.values())
