@@ -3,6 +3,8 @@ import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 
+import laser_monitor
+
 class Layer:
     def init_layer(self):
         # basic setup
@@ -33,6 +35,7 @@ class GridMap:
     def __init__(self):
         self.layer_dict = {}
         self.num_layer = 0
+        self.laser_monitor = laser_monitor.LaserMonitor()
 
     def __iter__(self):
         return iter(self.layer_dict.values())
@@ -51,7 +54,6 @@ class GridMap:
     def show_layer(self, node, windowname):
         if node in self.layer_dict:
             cv2.imshow(windowname, self.get_grid(node))
-            cv2.waitKey(0)
         else:
             print 'tried to show an unitialized layer'
 
@@ -64,4 +66,3 @@ class GridMap:
     def run(self):
         self.add_layer('occupancy_map')
         self.show_layer('occupancy_map', 'grid_map')
-        self.save_layer('occupancy_map', 'grid.png')
