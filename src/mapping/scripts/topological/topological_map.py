@@ -65,6 +65,15 @@ def generate_poses_msg(path):
 
     return pose_array
 
+def generate_regions_msg(g, vertex):
+    regionPt1, regionPt2 = g.get_region(vertex)
+    if regionPt1 == None or regionPt2 == None:
+        return None
+    pose_array = initialize_pose_array()
+    pose_array.poses.append(get_pose(regionPt1))
+    pose_array.poses.append(get_pose(regionPt2))
+    return pose_array
+
 
 class TopologicalMap:
     def get_origin_callback(self, odometry_data):
@@ -95,7 +104,8 @@ class TopologicalMap:
         self.sub_origin = rospy.Subscriber('pose', Odometry, self.get_origin_callback)
         self.sub_target = rospy.Subscriber('topological/where_to', Pose, self.get_target_callback)
         # publishers
-        self.pub_curr_id = rospy.Publisher('topological/current_id', String, queue_size=10)
+        self.pub_curr_id = rospy.Publisher('topological/current/id', String, queue_size=10)
+        self.pub_curr_region = rospy.Publisher('topological/current/region', PoseArray, queue_size=10)
         self.pub_best_id = rospy.Publisher('topological/best_path/ids', String, queue_size=10)
         self.pub_pose = rospy.Publisher('topological/best_path/poses', PoseArray, queue_size=10)
         self.origin_pose = Pose()
@@ -110,6 +120,9 @@ class TopologicalMap:
         if self.recieved_origin:
             self.pub_curr_id.publish(self.origin_id)
             rospy.loginfo('published current ID')
+            msg_region = generate_regions_msg(self.graph, self.origin_id)
+            self.pub_curr_region.publish(msg_region)
+            rospy.loginfo('published current region')
 
         if self.recieved_origin and self.recieved_target:
             msg_string = get_id_msg(self.best_path)
