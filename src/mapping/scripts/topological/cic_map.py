@@ -3,8 +3,6 @@ import math
 from geometry_msgs.msg import Point
 from graph import Graph
 
-import yaml
-
 def cartesian_distance(point1, point2):
     diffX = point2.x - point1.x
     diffY = point2.y - point1.y
@@ -16,10 +14,6 @@ def vertex_distance(graph, vertex1, vertex2):
     point2 = graph.get_vertex(vertex2).get_point()
 
     return cartesian_distance(point1, point2)
-
-def dump_to_yaml(data):
-    stream = file('cic_map.yaml', 'w')
-    yaml.dump(data, stream)    # Write a YAML representation of data to 'document.yaml'.
 
 def getMap():
     g = Graph()
@@ -102,8 +96,6 @@ def getMap():
     g.add_vertex('18')
     g.set_point('18', 38.5, 0)
     g.set_region('18', Point(36,2.5,0), Point(41,-2.5,0))
-
-    dump_to_yaml(g)
 
     ## Make connections
     # upper layers connection
