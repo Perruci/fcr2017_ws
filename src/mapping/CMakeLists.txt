@@ -68,6 +68,7 @@ include_directories(
 ## in contrast to setup.py, you can choose the destination
 install(PROGRAMS
   src/topological/topological_node
+  src/grid_map/grid_map_node
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
