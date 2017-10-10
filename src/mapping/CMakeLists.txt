@@ -5,25 +5,13 @@ set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
-  roscpp
   rospy
-  grid_map_core
-  grid_map_ros
-  grid_map_cv
-  grid_map_filters
-  grid_map_loader
-  grid_map_msgs
-  grid_map_octomap
-  grid_map_rviz_plugin
-  grid_map_visualization
   geometry_msgs
   sensor_msgs
   cv_bridge
   octomap_msgs
   filters
 )
-
-find_package(octomap REQUIRED)
 
 ###################################
 ## catkin specific configuration ##
@@ -35,9 +23,9 @@ find_package(octomap REQUIRED)
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  INCLUDE_DIRS include
+  # INCLUDE_DIRS include
 #  LIBRARIES ${PROJECT_NAME}
-  CATKIN_DEPENDS
+  # CATKIN_DEPENDS
 #  DEPENDS system_lib
 )
 
@@ -48,26 +36,26 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-  include
+  # include
   ${catkin_INCLUDE_DIRS}
   ${EIGEN3_INCLUDE_DIR}
   ${OCTOMAP_INCLUDE_DIR}
 )
 
 ## Declare a cpp executable
-add_executable(
-  grid_map
-  src/grid_map_node.cpp
-  src/grid_mapping.cpp
-  src/laser_subscriber.cpp
-  src/odometry_subscriber.cpp
-)
+# add_executable(
+#   grid_map
+#   src/grid_map_node.cpp
+#   src/grid_mapping.cpp
+#   src/laser_subscriber.cpp
+#   src/odometry_subscriber.cpp
+# )
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(
-  grid_map
-  ${catkin_LIBRARIES}
-)
+# target_link_libraries(
+#   grid_map
+#   ${catkin_LIBRARIES}
+# )
 
 #############
 ## Install ##
@@ -79,7 +67,7 @@ target_link_libraries(
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
 install(PROGRAMS
-  scripts/topological/topological_node
+  src/topological/topological_node
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
@@ -105,19 +93,19 @@ install(PROGRAMS
 # )
 
 # Mark executables and/or libraries for installation
-install(
-  TARGETS grid_map
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
+# install(
+#   TARGETS grid_map
+#   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+# )
 
 
 # Mark other files for installation
-install(
-  DIRECTORY config data doc launch rviz scripts
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-)
+# install(
+#   DIRECTORY config data doc launch rviz scripts
+#   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+# )
 
 
 #############
