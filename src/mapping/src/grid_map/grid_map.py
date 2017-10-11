@@ -7,46 +7,30 @@ import laser_monitor
 import odometry_monitor
 import topological_monitor
 
-class Layer:
-    def init_layer(self):
-        # basic setup
-        grid_widith = 25
-        grid_height = 20
-        # number of points per meter
-        resolution = 5
-        # get rows and cols
-        rows = grid_height * resolution
-        cols = grid_widith * resolution
-        # create empty numpy instace
-        return np.ones([rows, cols], np.float32)/2
-
-    def __init__(self, name):
-        self.name = name
-        self.grid = self.init_layer()
-
-    def get_grid(self):
-        return self.grid
-
-    def set_grid(self, matrix):
-        if matrix.shape == self.grid.shape:
-            self.grid = matrix
-        else:
-            print 'Trying to assign grid layer of a different shape'
+import layer
 
 class GridMap:
+    ''' GridMap node main Class '''
+    def init_basic_layer(self):
+        self.num_layer = self.num_layer + 1
+        new_layer = layer.BasicLayer(self.basic_layer)
+        self.layer_dict[self.basic_layer] = new_layer
+
     def __init__(self):
+        self.basic_layer = 'occupancy_map'
         self.layer_dict = {}
         self.num_layer = 0
         self.laser_monitor = laser_monitor.LaserMonitor()
         self.odometry_monitor = odometry_monitor.OdometryMonitor()
         self.topological_monitor = topological_monitor.TopologicalMonitor()
+        self.init_basic_layer()
 
     def __iter__(self):
         return iter(self.layer_dict.values())
 
     def add_layer(self, node):
         self.num_layer = self.num_layer + 1
-        new_layer = Layer(node)
+        new_layer = layer.Layer(node)
         self.layer_dict[node] = new_layer
 
     def get_grid(self, node):
@@ -68,5 +52,4 @@ class GridMap:
             print 'tried to save an unitialized layer'
 
     def run(self):
-        self.add_layer('occupancy_map')
-        self.show_layer('occupancy_map', 'grid_map')
+        self.show_layer(self.basic_layer, 'grid_map')
