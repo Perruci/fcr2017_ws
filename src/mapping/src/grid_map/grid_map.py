@@ -20,6 +20,7 @@ class GridMap:
         self.basic_layer = 'occupancy_map'
         self.layer_dict = {}
         self.num_layer = 0
+        self.current_id = '0' # default node id
         self.laser_monitor = laser_monitor.LaserMonitor()
         self.odometry_monitor = odometry_monitor.OdometryMonitor()
         self.topological_monitor = topological_monitor.TopologicalMonitor()
@@ -33,11 +34,29 @@ class GridMap:
         new_layer = layer.Layer(node)
         self.layer_dict[node] = new_layer
 
+    def get_layer(self, node):
+        if node in self.layer_dict:
+            return self.layer_dict[node]
+        else:
+            return None
+
     def get_grid(self, node):
         if node in self.layer_dict:
             return self.layer_dict[node].get_grid()
         else:
             return None
+
+    def set_occupancy_border(self):
+        regionPt1, regionPt2 = self.topological_monitor.get_region()
+        self.get_layer(self.basic_layer).set_borders(regionPt1, regionPt2)
+
+    def node_id_monitor(self):
+        gotten_id = self.topological_monitor.get_id()
+        if self.current_id != gotten_id:
+            print 'changed topological node', self.current_id, 'to', gotten_id
+            self.current_id = gotten_id
+            self.add_layer(self.current_id)
+            self.set_occupancy_border()
 
     def show_layer(self, node, windowname):
         if node in self.layer_dict:
@@ -52,4 +71,4 @@ class GridMap:
             print 'tried to save an unitialized layer'
 
     def run(self):
-        self.show_layer(self.basic_layer, 'grid_map')
+        self.node_id_monitor()

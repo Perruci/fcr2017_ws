@@ -12,11 +12,12 @@ class Layer:
         rows = grid_height * resolution
         cols = grid_widith * resolution
         # create empty numpy instace
-        return np.empty([rows, cols], np.float32)
+        return np.ones([rows, cols], np.float32)/2
 
     def __init__(self, name):
         self.name = name
         self.grid = self.init_layer()
+        self.border_points = set()
 
     def get_grid(self):
         return self.grid
@@ -27,8 +28,11 @@ class Layer:
         else:
             print 'Trying to assign grid layer of a different shape'
 
+    def set_borders(self, pt1, pt2):
+        self.border_points = [pt1, pt2]
+
 class BasicLayer(Layer):
-    ''' Basic Grid Map Layer initialize as 0.5 '''
+    ''' Basic Grid Map Layer initialize as True for all obstacles '''
     def __init__(self, name):
         Layer.__init__(self, name)
-        self.grid = np.ones(self.grid.shape, self.grid.dtype)/2
+        self.grid = np.ones(self.grid.shape, dtype=bool)

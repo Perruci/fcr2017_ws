@@ -1,6 +1,7 @@
 import rospy
 from std_msgs.msg import String
 from geometry_msgs.msg import PoseArray
+from geometry_msgs.msg import Point
 
 class TopologicalMonitor:
     ''' Topological Map and Grid Map interface '''
@@ -24,15 +25,17 @@ class TopologicalMonitor:
         self.region_set = False
         self.sub_current_id = rospy.Subscriber('topological/current/id', String, self.id_callback)
         self.sub_current_region = rospy.Subscriber('topological/current/region', PoseArray, self.region_callback)
+        self.regionPt1 = Point()
+        self.regionPt2 = Point()
 
     def get_id(self):
         if self.id_set:
-            return self.id_set
+            return self.current_id
         else:
-            return None
+            return '0'
 
     def get_region(self):
         if self.region_set:
-            return regionPt1, regionPt2
+            return self.regionPt1, self.regionPt2
         else:
-            return None
+            return None, None
