@@ -14,12 +14,13 @@ class LaserMonitor:
             self.angle_max = laser_data.angle_max               # end angle of the scan [rad]
             self.angle_increment = laser_data.angle_increment   # angular distance between measurements [rad]
             self.first_run = False
+            # output variables
             self.laser_ranges = np.array(laser_data.ranges)
+            self.ranges_orientation = np.arange(self.angle_min, self.angle_max, self.angle_increment)
 
     def __init__(self):
         self.sub_laser = rospy.Subscriber('hokuyo_scan', LaserScan,  self.laser_callback)
         self.first_run = True
-
 
     def get_ranges(self):
         if self.first_run:
@@ -27,3 +28,14 @@ class LaserMonitor:
             return None
         else:
             return self.laser_ranges
+
+    def get_obstacles(self, distance):
+        if self.first_run:
+            print 'waiting for laser messages'
+            return None
+        obstacles = self.laser_ranges
+        # set threshold for values greater than distance
+        indexes = obstacles[:] > distance
+        obstacles[indexes] = distance
+        # returns the concatenation of both obstacles and orientation
+        return obstacles
