@@ -1,5 +1,5 @@
 # Computational Principles of Robotics - FCR 2017
-========
+
 ## Diretivas originais dos monitores
 Pacote do ROS para o curso de Fundamentos Computacionais de Robótica - CIC - UnB
 
