@@ -12,6 +12,7 @@ import layer
 class GridMap:
     ''' GridMap node main Class '''
     def init_basic_layer(self):
+        ''' Basic layer is the matrix of occupancy which will fill the grid_map'''
         self.num_layer = self.num_layer + 1
         new_layer = layer.BasicLayer(self.basic_layer)
         self.layer_dict[self.basic_layer] = new_layer
@@ -31,22 +32,26 @@ class GridMap:
         return iter(self.layer_dict.values())
 
     def add_layer(self, node):
+        ''' Add a Layer to layer_dict '''
         self.num_layer = self.num_layer + 1
         new_layer = layer.Layer(node)
         self.layer_dict[node] = new_layer
 
     def get_layer(self, node):
+        ''' Return layer called node '''
         if node in self.layer_dict:
             return self.layer_dict[node]
         else:
             return None
 
-
     def set_occupancy_border(self):
+        ''' Define basic_layer dimentions using topological_map information '''
         regionPt1, regionPt2 = self.topological_monitor.get_region()
         self.get_layer(self.basic_layer).set_borders(regionPt1, regionPt2)
 
     def node_id_update(self):
+        ''' Process any changes in current_id call back
+            If finds a new node_id, creates a layer for it'''
         gotten_id = self.topological_monitor.get_id()
         if self.current_id != gotten_id:
             print 'changed topological node', self.current_id, 'to', gotten_id
@@ -61,7 +66,6 @@ class GridMap:
         obstacles = self.laser_monitor.get_obstacles(3)
         if obstacles is not None:
             print obstacles
-
 
     ''' Class Main Fuction '''
     def run(self):

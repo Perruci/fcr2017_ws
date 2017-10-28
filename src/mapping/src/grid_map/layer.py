@@ -3,6 +3,10 @@ import numpy as np
 class Layer:
     ''' Default GridMap Layer Instance '''
     def init_layer(self):
+        '''
+            Layers have, by default 25 meters widith
+            and 20 meters height
+        '''
         # basic setup
         grid_widith = 25
         grid_height = 20

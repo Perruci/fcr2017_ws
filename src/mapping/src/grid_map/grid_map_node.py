@@ -12,6 +12,7 @@ if __name__ == '__main__':
     while not rospy.is_shutdown():
         try:
             grid.run()
+            grid.show_layer(grid.current_id, grid.current_id)
             cv2.waitKey(1)
             r.sleep()
         except rospy.ROSInterruptException:
