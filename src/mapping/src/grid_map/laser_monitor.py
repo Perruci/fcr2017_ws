@@ -34,8 +34,5 @@ class LaserMonitor:
             print 'waiting for laser messages'
             return None
         obstacles = self.laser_ranges
-        # set threshold for values greater than distance
-        indexes = obstacles[:] > distance
-        obstacles[indexes] = distance
         # returns the concatenation of both obstacles and orientation
         return obstacles
