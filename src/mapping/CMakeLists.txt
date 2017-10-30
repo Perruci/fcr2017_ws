@@ -9,7 +9,6 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   sensor_msgs
   cv_bridge
-  octomap_msgs
   filters
 )
 
