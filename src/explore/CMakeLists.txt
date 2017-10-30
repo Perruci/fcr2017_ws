@@ -146,6 +146,7 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(explore
     src/main.cpp
+    src/explore.cpp
     src/navigation.cpp
     src/kinematics.cpp
     src/movement.cpp

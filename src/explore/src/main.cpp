@@ -1,9 +1,11 @@
+#include "../include/explore.h"
 #include "../include/movement/navigation.h"
 
 bool startMenu();
 
 int main(int argc, char *argv[])
 {
+    Explore explore(argc, argv);
     Navigation navigate(argc, argv);
     ros::spinOnce();
 
