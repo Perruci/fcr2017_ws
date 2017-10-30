@@ -88,11 +88,18 @@ class TopologicalMap:
             self.recieved_origin = True
 
 
-    def get_target_callback(self, pose_data):
+    def get_target_callback_pose(self, pose_data):
         self.target_pose = pose_data
         print 'recieved target pose: (', self.target_pose.position.x, ', ',self.target_pose.position.y, ')'
         self.target_id = get_vertex_from_point(self.graph, self.target_pose.position)
         print 'target id found: ', self.target_id
+        if self.target_id != '0' and self.recieved_origin:
+            self.best_path = get_shortest_path(self.graph, self.origin_id, self.target_id)
+            self.recieved_target = True
+
+    def get_target_callback_id(self, id_str):
+        self.target_id = pose_data
+        print 'recieved target id: (', self.target_id ')'
         if self.target_id != '0' and self.recieved_origin:
             self.best_path = get_shortest_path(self.graph, self.origin_id, self.target_id)
             self.recieved_target = True
@@ -102,7 +109,8 @@ class TopologicalMap:
         ## ROS setup
         # subscribers to pose and where_to
         self.sub_origin = rospy.Subscriber('pose', Odometry, self.get_origin_callback)
-        self.sub_target = rospy.Subscriber('topological/where_to', Pose, self.get_target_callback)
+        self.sub_target = rospy.Subscriber('topological/where_to/pose', Pose, self.get_target_callback_pose)
+        self.sub_target = rospy.Subscriber('topological/where_to/id', String, self.get_target_callback_id)
         # publishers
         self.pub_curr_id = rospy.Publisher('topological/current/id', String, queue_size=10)
         self.pub_curr_region = rospy.Publisher('topological/current/region', PoseArray, queue_size=10)

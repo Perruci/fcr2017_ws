@@ -1,4 +1,4 @@
-#include "../include/navigation.h"
+#include "../include/movement/navigation.h"
 
 Navigation::Navigation(int argc, char *argv[])
 {
