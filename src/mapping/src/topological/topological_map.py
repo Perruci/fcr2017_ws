@@ -98,7 +98,7 @@ class TopologicalMap:
             self.recieved_target = True
 
     def get_target_callback_id(self, id_str):
-        self.target_id = pose_data
+        self.target_id = id_str.data
         print 'recieved target id: (', self.target_id, ')'
         if self.target_id != '0' and self.recieved_origin:
             self.best_path = get_shortest_path(self.graph, self.origin_id, self.target_id)
