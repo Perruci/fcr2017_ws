@@ -5,8 +5,8 @@ bool startMenu();
 
 int main(int argc, char *argv[])
 {
-    Explore explore(argc, argv);
     Navigation navigate(argc, argv);
+    Explore explore(argc, argv);
     ros::spinOnce();
 
     bool explore_complete = false;

@@ -17,17 +17,17 @@ Explore::~Explore()
 
 void Explore::poseArrayCallback(const geometry_msgs::PoseArray::ConstPtr& msg)
 {
-    if(target_pose_sent)
-    {
-        this->posePath.assign(std::begin(msg->poses), std::end(msg->poses));
-        std::cout << "Best path poses recieved: " << '\n';
-        for(auto pose : this->posePath)
-        {
-            std::cout << "pose: " << pose.position.x << " " << pose.position.y << '\n';
-        }
-        this->best_path_recieved = true;
-        this->target_pose_sent = false;
-    }
+    // if(target_pose_sent)
+    // {
+    //     this->posePath.assign(std::begin(msg->poses), std::end(msg->poses));
+    //     std::cout << "Best path poses recieved: " << '\n';
+    //     for(auto pose : this->posePath)
+    //     {
+    //         std::cout << "pose: " << pose.position.x << " " << pose.position.y << '\n';
+    //     }
+    //     this->best_path_recieved = true;
+    //     this->target_pose_sent = false;
+    // }
 }
 
 void Explore::targetPublish(geometry_msgs::Pose pose)
