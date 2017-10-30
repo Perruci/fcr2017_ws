@@ -3,7 +3,7 @@ from geometry_msgs.msg import Pose
 from geometry_msgs.msg import Point
 
 def talker():
-    pub = rospy.Publisher('topological/where_to', Pose, queue_size=10)
+    pub = rospy.Publisher('topological/where_to/pose', Pose, queue_size=10)
     rospy.init_node('talker', anonymous=True)
     rate = rospy.Rate(1) # 10hz
     while not rospy.is_shutdown():
