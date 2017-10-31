@@ -44,6 +44,9 @@ class Vertex:
     def set_visited(self):
         self.visited = True
 
+    def set_unvisited(self):
+        self.visited = False
+
     def __str__(self):
         return str(self.id) + ' adjacent: ' + str([x.id for x in self.adjacent])
 
@@ -70,8 +73,8 @@ class Vertex:
 
     # definido sempre com P1.x < P2.x e P1.y > P2.y
     def is_inside(self, point):
-        if point.x > self.regionPt1.x and point.x < self.regionPt2.x:
-            if point.y < self.regionPt1.y and point.y > self.regionPt2.y:
+        if point.x >= self.regionPt1.x and point.x <= self.regionPt2.x:
+            if point.y <= self.regionPt1.y and point.y >= self.regionPt2.y:
                 return True
         return False
 
@@ -134,3 +137,7 @@ class Graph:
             return True
         else:
             return False
+
+    def reset_visited(self):
+        for key, vertex in self.vert_dict.items():
+            vertex.set_unvisited()

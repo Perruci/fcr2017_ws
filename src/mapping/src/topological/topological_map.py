@@ -30,7 +30,12 @@ def get_vertex_from_point(g, point):
     print 'target point not found on vertices'
     return '0'
 
+def reset_shortest_path(g):
+    g = initialize_map()
+
 def get_shortest_path(g, initial, target):
+    reset_shortest_path(g)
+    print 'Origin: ', initial, 'Target: ', target
     dj.dijkstra(g, g.get_vertex(initial), g.get_vertex(target))
     target = g.get_vertex(target)
     path = [target]
@@ -66,6 +71,8 @@ def generate_poses_msg(path):
     return pose_array
 
 def generate_regions_msg(g, vertex):
+    if vertex == '0':
+        return None
     regionPt1, regionPt2 = g.get_region(vertex)
     if regionPt1 == None or regionPt2 == None:
         return None
@@ -131,8 +138,9 @@ class TopologicalMap:
             self.pub_curr_id.publish(self.origin_id)
             rospy.loginfo('published current ID')
             msg_region = generate_regions_msg(self.graph, self.origin_id)
-            self.pub_curr_region.publish(msg_region)
-            rospy.loginfo('published current region')
+            if msg_region:
+                self.pub_curr_region.publish(msg_region)
+                rospy.loginfo('published current region')
 
         if self.recieved_origin and self.recieved_target:
             msg_string = get_id_msg(self.best_path)

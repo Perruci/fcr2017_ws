@@ -79,7 +79,7 @@ def getMap():
 
     g.add_vertex('14')
     g.set_point('14', -1, 0)
-    g.set_region('14', Point(-3,2.5,0), Point(1.5,-2.5,0))
+    g.set_region('14', Point(-3.5,2.5,0), Point(1.5,-2.5,0))
 
     g.add_vertex('15')
     g.set_point('15', 8, 0)
