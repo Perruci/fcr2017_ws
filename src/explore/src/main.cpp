@@ -37,6 +37,10 @@ int main(int argc, char *argv[])
                     while(explore.run())
                     {
                         ros::spinOnce();
+                        while(!explore.best_path_recieved)
+                            ros::spinOnce();
+                        explore.go_to_goal(navigate);
+                        ros::spinOnce();
                     }
                     break;
             }

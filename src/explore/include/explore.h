@@ -18,6 +18,7 @@ public:
     void poseArrayCallback(const geometry_msgs::PoseArray::ConstPtr&);
     void poseTargetPublish(geometry_msgs::Pose);
     void idTargetPublish(std::string);
+    void go_to_goal(Navigation&);
     /* variables */
     std::vector<std::string> map_nodes;
     bool best_path_recieved;

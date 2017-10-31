@@ -48,6 +48,16 @@ void Explore::idTargetPublish(std::string str)
     this->id_pub.publish(msg);
 }
 
+void Explore::go_to_goal(Navigation& nav)
+{
+    for(auto pose : this->posePath)
+    {
+        std::cout << "Heading to point [" << pose.position.x << ", " << pose.position.y << "]" << '\n';
+        nav.go_to_goal(pose.position);
+        nav.stopMoving();
+    }
+}
+
 bool Explore::run()
 {
     if(this->map_nodes.empty())
@@ -61,5 +71,5 @@ bool Explore::run()
     std::cout << "Explore node " << target << '\n';
     this->idTargetPublish(target);
     ros::spinOnce();
-    return false;
+    return true;
 }
