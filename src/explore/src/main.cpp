@@ -1,7 +1,7 @@
 #include "../include/explore.h"
 #include "../include/movement/navigation.h"
 
-bool startMenu();
+char startMenu();
 
 int main(int argc, char *argv[])
 {
@@ -14,25 +14,32 @@ int main(int argc, char *argv[])
 
     while(ros::ok())
     {
-        if(explore_complete)
+        char command = startMenu();
+        if(command != 'q')
         {
-            navigate.explore();
-            explore_complete = true;
-        }
+            switch (command)
+            {
+                case 'm':
+                    std::cout << "Where would you like to go? \n"
+                              << "Insert X value:\n-> ";
+                    std::cin >> point.x;
+                    std::cout << "Insert Y value:\n-> ";
+                    std::cin >> point.y;
 
-        if(startMenu())
-        {
-            std::cout << "Where would you like to go? \n"
-                      << "Insert X value:\n-> ";
-            std::cin >> point.x;
-            std::cout << "Insert Y value:\n-> ";
-            std::cin >> point.y;
+                    std::cout << "Heading to point [" << point.x << ", " << point.y << "]" << '\n';
 
-            std::cout << "Heading to point [" << point.x << ", " << point.y << "]" << '\n';
+                    navigate.go_to_goal(point);
 
-            navigate.go_to_goal(point);
+                    navigate.stopMoving();
+                    break;
 
-            navigate.stopMoving();
+                case 'p':
+                    while(explore.run())
+                    {
+                        ros::spinOnce();
+                    }
+                    break;
+            }
         }
         else
             break;
@@ -40,10 +47,11 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-bool startMenu()
+char startMenu()
 {
     std::cout << "Hello Human o/" << '\n';
     std::cout << "What would you like me to do?" << '\n';
+    std::cout << "\tp --- run through all nodes" << '\n';
     std::cout << "\tm --- move to a point" << '\n';
     std::cout << "\tq --- quit and sleep" << '\n';
     std::cout << "-> ";
@@ -53,11 +61,14 @@ bool startMenu()
         std::cin >> c;
         switch (c)
         {
+            case 'p':
+                return 'p';
+                break;
             case 'm':
-                return true;
+                return 'm';
                 break;
             case 'q':
-                return false;
+                return 'q';
                 break;
             default:
                 std::cout << "Oops, I didn't get it\ntry again: -> " << '\n';

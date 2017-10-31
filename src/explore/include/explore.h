@@ -2,6 +2,8 @@
 #define EXPLORE_H
 
 #include "movement/navigation.h"
+#include "std_msgs/String.h"
+#include "geometry_msgs/Point.h"
 #include "geometry_msgs/Pose.h"
 #include "geometry_msgs/PoseArray.h"
 
@@ -12,9 +14,12 @@ public:
     ~Explore();
 
     bool run();
+    void loadToplogicalNodes();
     void poseArrayCallback(const geometry_msgs::PoseArray::ConstPtr&);
-    void targetPublish(geometry_msgs::Pose);
+    void poseTargetPublish(geometry_msgs::Pose);
+    void idTargetPublish(std::string);
     /* variables */
+    std::vector<std::string> map_nodes;
     bool best_path_recieved;
     std::vector<geometry_msgs::Pose> posePath;
     bool target_pose_sent;
@@ -23,6 +28,7 @@ public:
     ros::NodeHandle nh;
     ros::Subscriber poseArray_sub;
     ros::Publisher  pose_pub;
+    ros::Publisher  id_pub;
 };
 
 #endif
