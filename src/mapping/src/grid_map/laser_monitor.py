@@ -14,9 +14,9 @@ class LaserMonitor:
             self.angle_max = laser_data.angle_max               # end angle of the scan [rad]
             self.angle_increment = laser_data.angle_increment   # angular distance between measurements [rad]
             self.first_run = False
-            # output variables
-            self.laser_ranges = np.array(laser_data.ranges)
             self.ranges_orientation = np.arange(self.angle_min, self.angle_max, self.angle_increment)
+        # output variables
+        self.laser_ranges = np.array(laser_data.ranges)
 
     def __init__(self):
         self.sub_laser = rospy.Subscriber('hokuyo_scan', LaserScan,  self.laser_callback)
