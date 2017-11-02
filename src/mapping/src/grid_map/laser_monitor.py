@@ -29,10 +29,9 @@ class LaserMonitor:
         else:
             return self.laser_ranges
 
-    def get_obstacles(self):
+    def get_angles(self):
         if self.first_run:
             print 'waiting for laser messages'
             return None
-        obstacles = self.laser_ranges
-        # returns the concatenation of both obstacles and orientation
-        return obstacles
+        else:
+            return self.ranges_orientation
