@@ -3,7 +3,13 @@ import math
 
 def get_int_distance(value1, value2):
     ''' Returns the absolute distance from two float objects '''
-    return int(math.ceil(abs(value1 - value2)))
+    return int(math.floor(abs(value1 - value2)))
+
+def get_idx_from_polar(angle, radius, resolution):
+    ''' Returns x and y integers corresponding to a point in polar coordinates '''
+    x = int(math.floor(math.cos(angle) * radius * resolution))
+    y = int(math.floor(math.sin(angle) * radius * resolution))
+    return x, y
 
 class Layer:
     ''' Default GridMap Layer Instance '''
@@ -65,9 +71,20 @@ class Layer:
                 laser_ranges: list of laser distances corresponding to angle_ranges
         '''
         obstacle_value = 1
-        free_value = 0
+        free_value = -1
 
         idx_origin_x = get_int_distance(self.border_points[0].x, origin_x) * self.resolution
         idx_origin_y = get_int_distance(self.border_points[1].y, origin_y) * self.resolution
 
-        self.grid[idx_origin_x, idx_origin_y] = obstacle_value
+        for i in xrange(len(laser_ranges)):
+            idx_x, idx_y = get_idx_from_polar(angle_ranges[i] + orientation, laser_ranges[i], self.resolution)
+            idx_x = idx_origin_x + idx_x
+            idx_y = idx_origin_y + idx_y
+            if idx_x < self.cols and idx_x > 0:
+                if idx_y < self.rows and idx_y > 0:
+                    self.grid[idx_y, idx_x] = obstacle_value
+
+            # mark robot
+            if idx_x < self.cols and idx_x > 0:
+                if idx_y < self.rows and idx_y > 0:
+                    self.grid[idx_origin_y, idx_origin_x] = free_value

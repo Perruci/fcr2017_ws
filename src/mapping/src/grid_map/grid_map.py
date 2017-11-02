@@ -67,13 +67,13 @@ class GridMap:
     def process_obstacles(self):
         ''' Process laser_monitor messages to detect and process obstacles '''
         thetas = self.laser_monitor.get_angles()
-        ranges = self.laser_monitor.get_ranges()
-        if ranges is not None:
+        obstacles = self.laser_monitor.get_obstacles()
+        if obstacles is not None:
             self.get_layer(self.current_id).draw_obstacles(self.current_position.x,
                                                            self.current_position.y,
                                                            self.current_orientation,
                                                            thetas,
-                                                           ranges)
+                                                           obstacles)
 
     def run(self):
         ''' Class Main Fuction '''

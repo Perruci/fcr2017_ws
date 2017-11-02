@@ -35,3 +35,14 @@ class LaserMonitor:
             return None
         else:
             return self.ranges_orientation
+
+    def get_obstacles(self, distance=30.0):
+        if self.first_run:
+            print 'waiting for laser messages'
+            return None
+        obstacles = self.laser_ranges
+        # set threshold for values greater than distance
+        indexes = obstacles[:] > distance
+        obstacles[indexes] = distance
+        # returns the concatenation of both obstacles and orientation
+        return obstacles
