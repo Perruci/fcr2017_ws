@@ -18,7 +18,6 @@ class Layer:
         self.name = name
         self.set_borders(region_points[0], region_points[1])
         self.grid = self.init_layer()
-        self.border_points = set()
         self.first_imshow = True
 
     def init_layer(self):
