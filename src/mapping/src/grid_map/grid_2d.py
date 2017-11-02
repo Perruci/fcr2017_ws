@@ -11,30 +11,40 @@ class Grid2D:
         self.norm = mpl.colors.BoundaryNorm(self.bounds, self.cmap.N)
         self.first_imshow = True
 
-
-    def show_grid2d(self, grid, node_name):
-        ''' Imshow a 2D grid based on grid np.matrix input: grid '''
+    def update_image(self, grid, node_name):
+        ''' Perform image update on matplotlib structure '''
         # tell imshow about color map so that only set colors are used
         self.img = plt.imshow(grid,interpolation='nearest',
-                                 cmap = self.cmap, norm = self.norm)
-        # first run of imshow
-        if self.first_imshow:
-            # make a color bar
-            self.cbar = plt.colorbar(self.img,
-                                     cmap=self.cmap,
-                                     norm=self.norm,
-                                     boundaries=self.bounds,
-                                     ticks=[-1,0,1])
-            self.cbar.ax.set_yticklabels(['free', 'unknown', 'obstacle'])
-            self.first_imshow = False
+                              cmap = self.cmap, norm = self.norm)
         # iteractive mode: on
         plt.ion()
         # add plot title
         plt.title('Node: ' + node_name)
+
+    def create_colorbar(self):
+        # make a color bar
+        self.cbar = plt.colorbar(self.img,
+                                 cmap=self.cmap,
+                                 norm=self.norm,
+                                 boundaries=self.bounds,
+                                 ticks=[-1,0,1])
+        self.cbar.ax.set_yticklabels(['free', 'unknown', 'obstacle'])
+
+    def show_grid2d(self, grid, node_name):
+        ''' Imshow a 2D grid based on grid np.matrix input: grid '''
+        # Update stored image
+        self.update_image(grid, node_name)
+
+        # first run of imshow
+        if self.first_imshow:
+            self.create_colorbar()
+            self.first_imshow = False
+
         # show plot
         plt.show()
         plt.pause(0.01)
 
-    def save_grid2d(self, grid, node_name):
+    def save_grid2d(self, grid, node_name, path):
         if not self.first_imshow:
-            plt.savefig(node_name + '.png', bbox_inches='tight')
+            self.update_image(grid, node_name)
+            plt.savefig(path + node_name + '.png', bbox_inches='tight')

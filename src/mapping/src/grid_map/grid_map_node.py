@@ -3,8 +3,19 @@ import rospy
 import cv2
 import grid_map
 
-if __name__ == '__main__':
+import os, errno
 
+def create_dir(directory):
+    ''' Create a directory if its not found '''
+    if not os.path.exists(directory):
+        try:
+            os.makedirs(directory)
+        except OSError as e:
+            if e.errno != errno.EEXIST:
+                raise
+
+if __name__ == '__main__':
+    ''' GridMap Node main function '''
     rospy.init_node('grid_map')
 
     grid = grid_map.GridMap()
@@ -16,4 +27,7 @@ if __name__ == '__main__':
             cv2.waitKey(1)
             r.sleep()
         except rospy.ROSInterruptException:
+            save_path = 'src/mapping/docs/grid_map_results/'
+            create_dir(save_path)
+            grid.save_all_layers(save_path)
             pass

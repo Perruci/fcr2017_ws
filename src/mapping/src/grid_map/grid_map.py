@@ -90,3 +90,8 @@ class GridMap:
             self.grid_2d.save_grid2d(self.get_grid(node), filename)
         else:
             print 'tried to save an unitialized layer'
+
+    def save_all_layers(self, path = './'):
+        ''' Save all layers to folder given in path '''
+        for node in self.layer_dict:
+            self.grid_2d.save_grid2d(self.get_grid(node), node, path)
