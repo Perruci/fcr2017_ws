@@ -33,7 +33,7 @@ class Layer:
         rows = grid_height * resolution
         cols = grid_widith * resolution
         # create empty numpy instace
-        return np.zeros([rows, cols], np.float32)/2
+        return np.zeros([rows, cols])
 
     def get_grid(self):
         ''' Return corresponding grid '''
