@@ -18,6 +18,7 @@ class GridMap:
         self.layer_dict[self.basic_layer] = new_layer
 
     def __init__(self):
+        ''' GridMap Constructor '''
         self.basic_layer = 'occupancy_map'
         self.layer_dict = {}
         self.num_layer = 0
@@ -60,32 +61,37 @@ class GridMap:
             self.set_occupancy_border()
 
     def node_pose_update(self):
+        ''' Updates the private vatiable for current_position '''
         self.current_position = self.odometry_monitor.get_position
 
     def process_obstacles(self):
+        ''' Process laser_monitor messages to detect and process obstacles '''
         obstacles = self.laser_monitor.get_obstacles(3)
         if obstacles is not None:
             print obstacles
 
-    ''' Class Main Fuction '''
     def run(self):
+        ''' Class Main Fuction '''
         self.node_id_update()
         self.node_pose_update()
         self.process_obstacles()
 
     def get_grid(self, node):
+        ''' return layer corresponding to node identificator '''
         if node in self.layer_dict:
             return self.layer_dict[node].get_grid()
         else:
             return None
 
     def show_layer(self, node, windowname):
+        ''' Show image corresponding to layer identified by node '''
         if node in self.layer_dict:
             cv2.imshow(windowname, self.get_grid(node))
         else:
             print 'tried to show an unitialized layer'
 
     def save_layer(self, node, filename):
+        ''' Save layer corresponding to node to a file '''
         if node in self.layer_dict:
             cv2.imwrite(filename, self.get_grid(node))
         else:

@@ -19,20 +19,24 @@ class Layer:
         return np.ones([rows, cols], np.float32)/2
 
     def __init__(self, name):
+        ''' Class Constructor '''
         self.name = name
         self.grid = self.init_layer()
         self.border_points = set()
 
     def get_grid(self):
+        ''' Return corresponding grid '''
         return self.grid
 
     def set_grid(self, matrix):
+        ''' Assign a new matrix to layers grid '''
         if matrix.shape == self.grid.shape:
             self.grid = matrix
         else:
             print 'Trying to assign grid layer of a different shape'
 
     def set_borders(self, pt1, pt2):
+        ''' Define border points for layer '''
         self.border_points = [pt1, pt2]
 
 class BasicLayer(Layer):
