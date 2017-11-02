@@ -28,12 +28,12 @@ class Layer:
         grid_widith = get_int_distance(self.border_points[0].x, self.border_points[1].x)
         grid_height = get_int_distance(self.border_points[0].y, self.border_points[1].y)
         # number of points per meter
-        resolution = 5
+        self.resolution = 5
         # get rows and cols
-        rows = grid_height * resolution
-        cols = grid_widith * resolution
+        self.rows = grid_height * self.resolution
+        self.cols = grid_widith * self.resolution
         # create empty numpy instace
-        return np.zeros([rows, cols])
+        return np.zeros([self.rows, self.cols])
 
     def get_grid(self):
         ''' Return corresponding grid '''
@@ -49,3 +49,26 @@ class Layer:
     def set_borders(self, pt1, pt2):
         ''' Define border points for layer '''
         self.border_points = [pt1, pt2]
+
+    # Obstacle processing ----------------------------------------------
+
+    def draw_obstacles(self, origin_x, origin_y, angle_ranges, laser_ranges):
+        '''
+            Returns a modified grid which:
+                value 0 represents an unknown region
+                value 1 represents an occupied region
+                value -1 represents an free region
+            Params:
+                origin_x: x coordinate of the polar coordinate space
+                origin_y: y coordinate of the polar coordinate space
+                angle_ranges: list of radian values corresponding to laser_ranges
+                laser_ranges: list of laser distances corresponding to angle_ranges
+        '''
+        obstacle_value = 1
+        free_value = 0
+
+        idx_origin_x = get_int_distance(self.border_points[0].x, origin_x) * self.resolution
+        idx_origin_y = get_int_distance(self.border_points[1].y, origin_y) * self.resolution
+
+        self.grid[idx_origin_x, idx_origin_y] = obstacle_value
+        

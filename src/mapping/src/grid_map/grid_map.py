@@ -1,4 +1,6 @@
 import rospy
+from geometry_msgs.msg import Point
+
 import numpy as np
 from matplotlib import pyplot as plt
 
@@ -17,6 +19,7 @@ class GridMap:
         self.layer_dict = {}
         self.num_layer = 0
         self.current_id = '0' # default node id
+        self.current_position = Point(0,0,0)
         # ros setup
         self.laser_monitor = laser_monitor.LaserMonitor()
         self.odometry_monitor = odometry_monitor.OdometryMonitor()
@@ -57,14 +60,17 @@ class GridMap:
 
     def node_pose_update(self):
         ''' Updates the private vatiable for current_position '''
-        self.current_position = self.odometry_monitor.get_position
+        self.current_position = self.odometry_monitor.get_position()
 
     def process_obstacles(self):
         ''' Process laser_monitor messages to detect and process obstacles '''
-        theta = self.laser_monitor.get_angles()
+        thetas = self.laser_monitor.get_angles()
         ranges = self.laser_monitor.get_ranges()
         if ranges is not None:
-            # print ranges
+            self.get_layer(self.current_id).draw_obstacles(self.current_position.x,
+                                                           self.current_position.y,
+                                                           thetas,
+                                                           ranges)
 
     def run(self):
         ''' Class Main Fuction '''
