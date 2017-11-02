@@ -10,6 +10,7 @@ from cic_map import getMap
 
 # Mapping functions
 def initialize_map():
+    ''' Initilize map graph based on cic_map.py '''
     g = getMap()
 
     # print 'Graph data:'
@@ -22,6 +23,7 @@ def initialize_map():
     return g
 
 def get_vertex_from_point(g, point):
+    ''' Recieve a point and the Mapping graph and returns its corresponding vertex on the map '''
     # get vertex names
     keys = g.get_vertices()
     for v_id in keys:
@@ -31,9 +33,11 @@ def get_vertex_from_point(g, point):
     return '0'
 
 def reset_shortest_path(g):
+    ''' Reset map for a new shortest path call '''
     g = initialize_map()
 
 def get_shortest_path(g, initial, target):
+    ''' Recieves topological map and initial and final ids. Returns the best path of Poses to get there. '''
     reset_shortest_path(g)
     print 'Origin: ', initial, 'Target: ', target
     dj.dijkstra(g, g.get_vertex(initial), g.get_vertex(target))
@@ -43,27 +47,32 @@ def get_shortest_path(g, initial, target):
     return list(reversed(path))
 
 def print_path(path):
+    ''' Pronts the shortest path on stdout '''
     print 'The shortest path : '
     for node in path:
         print 'Node [', node.get_id(), '] (', node.get_pointX(), ', ', node.get_pointY(), ')'
 
 # ROS functions
 def get_id_msg(path):
+    ''' Generate string message for TopologicalMap id communication '''
     msg = String()
     for node in path:
         msg.data += node.get_id() + ' '
     return msg
 
 def get_pose(point):
+    ''' Returns the Pose object for corresponding point '''
     pose = Pose()
     pose.position = point
     return pose
 
 def initialize_pose_array():
+    ''' Returns empty PoseArray object '''
     pose_array = PoseArray()
     return pose_array
 
 def generate_poses_msg(path):
+    ''' Generate PoseArray message for TopologicalMap poses communication '''
     pose_array = initialize_pose_array()
     for node in path:
         pose_array.poses.append(get_pose(node.get_point()))
@@ -71,6 +80,7 @@ def generate_poses_msg(path):
     return pose_array
 
 def generate_regions_msg(g, vertex):
+    ''' Generate PoseArray message for TopologicalMap regions communication '''
     if vertex == '0':
         return None
     regionPt1, regionPt2 = g.get_region(vertex)
@@ -85,6 +95,7 @@ def generate_regions_msg(g, vertex):
 class TopologicalMap:
 
     def __init__(self):
+        ''' Class constructor '''
         self.graph = initialize_map()
         ## ROS setup
         # subscribers to pose and where_to
@@ -105,7 +116,7 @@ class TopologicalMap:
 
 
     def get_origin_callback(self, odometry_data):
-        # get pose from odometry message
+        ''' Callback to get pose from odometry message '''
         self.origin_pose = odometry_data.pose.pose
 
         new_id = get_vertex_from_point(self.graph, self.origin_pose.position);
@@ -117,6 +128,7 @@ class TopologicalMap:
 
 
     def get_target_callback_pose(self, pose_data):
+        ''' Callback to recieve a target pose for shortest path computation '''
         self.target_pose = pose_data
         print 'recieved target pose: (', self.target_pose.position.x, ', ',self.target_pose.position.y, ')'
         self.target_id = get_vertex_from_point(self.graph, self.target_pose.position)
@@ -126,6 +138,7 @@ class TopologicalMap:
             self.recieved_target = True
 
     def get_target_callback_id(self, id_str):
+        ''' Callback to recieve a target id for shortest path computation '''
         self.target_id = id_str.data
         print 'recieved target id: (', self.target_id, ')'
         if self.target_id != '0' and self.recieved_origin:
@@ -134,6 +147,7 @@ class TopologicalMap:
 
     # publishung routines
     def run(self):
+        ''' Main function for TopologicalMap. Accomodates the publishing routines '''
         if self.recieved_origin:
             self.pub_curr_id.publish(self.origin_id)
             rospy.loginfo('published current ID')
