@@ -7,6 +7,7 @@ import odometry_monitor
 import topological_monitor
 
 import layer
+import grid_2d
 
 class GridMap:
     ''' GridMap node main Class '''
@@ -20,6 +21,7 @@ class GridMap:
         self.laser_monitor = laser_monitor.LaserMonitor()
         self.odometry_monitor = odometry_monitor.OdometryMonitor()
         self.topological_monitor = topological_monitor.TopologicalMonitor()
+        self.grid_2d = grid_2d.Grid2D()
 
     def __iter__(self):
         return iter(self.layer_dict.values())
@@ -78,13 +80,13 @@ class GridMap:
     def show_layer(self, node, windowname):
         ''' Show image corresponding to layer identified by node '''
         if node in self.layer_dict:
-            self.get_layer(node).show_layer(windowname)
+            self.grid_2d.show_grid2d(self.get_grid(node), windowname)
         else:
             print 'tried to show an unitialized layer'
 
     def save_layer(self, node, filename):
         ''' Save layer corresponding to node to a file '''
         if node in self.layer_dict:
-            get_layer(node).save_layer(filename)
+            self.grid_2d.save_grid2d(self.get_grid(node), filename)
         else:
             print 'tried to save an unitialized layer'

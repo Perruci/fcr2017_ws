@@ -1,7 +1,5 @@
 import numpy as np
 import math
-from matplotlib import pyplot
-import matplotlib as mpl
 
 def get_int_distance(value1, value2):
     ''' Returns the absolute distance from two float objects '''
@@ -52,33 +50,3 @@ class Layer:
     def set_borders(self, pt1, pt2):
         ''' Define border points for layer '''
         self.border_points = [pt1, pt2]
-
-    def show_layer(self, windowname):
-        ''' Shows an image of the layer '''
-        # make a color map of fixed colors
-        cmap = mpl.colors.ListedColormap(['blue','black','red'])
-        bounds=[-1.5,-0.5,0.5,1.5]
-        norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
-
-        # tell imshow about color map so that only set colors are used
-        img = pyplot.imshow(self.get_grid(),interpolation='nearest',
-                            cmap = cmap,norm=norm)
-        pyplot.ion()
-
-        if self.first_imshow:
-            pyplot.title('Node: ' + windowname)
-            # make a color bar
-            cbar = pyplot.colorbar(img,
-                                   cmap=cmap,
-                                   norm=norm,
-                                   boundaries=bounds,
-                                   ticks=[-1,0,1])
-            cbar.ax.set_yticklabels(['free', 'unknown', 'obstacle'])
-            self.first_imshow = False
-
-        pyplot.show()
-        pyplot.pause(0.01)
-
-    def save_layer(self, filename):
-        ''' Saves layer image to a file '''
-        # cv2.imwrite(filename, self.get_grid())
