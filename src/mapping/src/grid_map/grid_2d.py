@@ -14,7 +14,7 @@ class Grid2D:
     def update_image(self, grid, node_name):
         ''' Perform image update on matplotlib structure '''
         # tell imshow about color map so that only set colors are used
-        self.img = plt.imshow(grid,interpolation='nearest',
+        self.img = plt.imshow(grid,interpolation='nearest', origin='lower',
                               cmap = self.cmap, norm = self.norm)
         # iteractive mode: on
         plt.ion()
