@@ -1,5 +1,4 @@
 import rospy
-import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 
@@ -11,15 +10,9 @@ import layer
 
 class GridMap:
     ''' GridMap node main Class '''
-    def init_basic_layer(self):
-        ''' Basic layer is the matrix of occupancy which will fill the grid_map'''
-        self.num_layer = self.num_layer + 1
-        new_layer = layer.BasicLayer(self.basic_layer)
-        self.layer_dict[self.basic_layer] = new_layer
 
     def __init__(self):
         ''' GridMap Constructor '''
-        self.basic_layer = 'occupancy_map'
         self.layer_dict = {}
         self.num_layer = 0
         self.current_id = '0' # default node id
@@ -27,7 +20,6 @@ class GridMap:
         self.laser_monitor = laser_monitor.LaserMonitor()
         self.odometry_monitor = odometry_monitor.OdometryMonitor()
         self.topological_monitor = topological_monitor.TopologicalMonitor()
-        self.init_basic_layer()
 
     def __iter__(self):
         return iter(self.layer_dict.values())
@@ -35,7 +27,7 @@ class GridMap:
     def add_layer(self, node):
         ''' Add a Layer to layer_dict '''
         self.num_layer = self.num_layer + 1
-        new_layer = layer.Layer(node)
+        new_layer = layer.Layer(node, self.region_points)
         self.layer_dict[node] = new_layer
 
     def get_layer(self, node):
@@ -46,9 +38,9 @@ class GridMap:
             return None
 
     def set_occupancy_border(self):
-        ''' Define basic_layer dimentions using topological_map information '''
+        ''' Define layer dimentions using topological_map information '''
         regionPt1, regionPt2 = self.topological_monitor.get_region()
-        self.get_layer(self.basic_layer).set_borders(regionPt1, regionPt2)
+        self.region_points = [regionPt1, regionPt2]
 
     def node_id_update(self):
         ''' Process any changes in current_id call back
@@ -57,8 +49,8 @@ class GridMap:
         if self.current_id != gotten_id:
             print 'changed topological node', self.current_id, 'to', gotten_id
             self.current_id = gotten_id
-            self.add_layer(self.current_id)
             self.set_occupancy_border()
+            self.add_layer(self.current_id)
 
     def node_pose_update(self):
         ''' Updates the private vatiable for current_position '''
@@ -86,13 +78,13 @@ class GridMap:
     def show_layer(self, node, windowname):
         ''' Show image corresponding to layer identified by node '''
         if node in self.layer_dict:
-            cv2.imshow(windowname, self.get_grid(node))
+            self.get_layer(node).show_layer(windowname)
         else:
             print 'tried to show an unitialized layer'
 
     def save_layer(self, node, filename):
         ''' Save layer corresponding to node to a file '''
         if node in self.layer_dict:
-            cv2.imwrite(filename, self.get_grid(node))
+            get_layer(node).save_layer(filename)
         else:
             print 'tried to save an unitialized layer'
