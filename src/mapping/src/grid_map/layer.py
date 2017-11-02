@@ -1,6 +1,7 @@
 import numpy as np
 import math
-import cv2
+from matplotlib import pyplot
+import matplotlib as mpl
 
 def get_int_distance(value1, value2):
     ''' Returns the absolute distance from two float objects '''
@@ -20,6 +21,7 @@ class Layer:
         self.set_borders(region_points[0], region_points[1])
         self.grid = self.init_layer()
         self.border_points = set()
+        self.first_imshow = True
 
     def init_layer(self):
         '''
@@ -34,7 +36,7 @@ class Layer:
         rows = grid_height * resolution
         cols = grid_widith * resolution
         # create empty numpy instace
-        return np.ones([rows, cols], np.float32)/2
+        return np.zeros([rows, cols], np.float32)/2
 
     def get_grid(self):
         ''' Return corresponding grid '''
@@ -53,8 +55,30 @@ class Layer:
 
     def show_layer(self, windowname):
         ''' Shows an image of the layer '''
-        cv2.imshow(windowname, self.get_grid())
+        # make a color map of fixed colors
+        cmap = mpl.colors.ListedColormap(['blue','black','red'])
+        bounds=[-1.5,-0.5,0.5,1.5]
+        norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
+
+        # tell imshow about color map so that only set colors are used
+        img = pyplot.imshow(self.get_grid(),interpolation='nearest',
+                            cmap = cmap,norm=norm)
+        pyplot.ion()
+
+        if self.first_imshow:
+            pyplot.title('Node: ' + windowname)
+            # make a color bar
+            cbar = pyplot.colorbar(img,
+                                   cmap=cmap,
+                                   norm=norm,
+                                   boundaries=bounds,
+                                   ticks=[-1,0,1])
+            cbar.ax.set_yticklabels(['free', 'unknown', 'obstacle'])
+            self.first_imshow = False
+
+        pyplot.show()
+        pyplot.pause(0.01)
 
     def save_layer(self, filename):
         ''' Saves layer image to a file '''
-        cv2.imwrite(filename, self.get_grid())
+        # cv2.imwrite(filename, self.get_grid())
