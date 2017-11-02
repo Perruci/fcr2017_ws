@@ -20,6 +20,7 @@ class GridMap:
         self.num_layer = 0
         self.current_id = '0' # default node id
         self.current_position = Point(0,0,0)
+        self.current_orientation = 0.0
         # ros setup
         self.laser_monitor = laser_monitor.LaserMonitor()
         self.odometry_monitor = odometry_monitor.OdometryMonitor()
@@ -61,6 +62,7 @@ class GridMap:
     def node_pose_update(self):
         ''' Updates the private vatiable for current_position '''
         self.current_position = self.odometry_monitor.get_position()
+        self.current_orientation = self.odometry_monitor.get_orientation()
 
     def process_obstacles(self):
         ''' Process laser_monitor messages to detect and process obstacles '''
@@ -69,6 +71,7 @@ class GridMap:
         if ranges is not None:
             self.get_layer(self.current_id).draw_obstacles(self.current_position.x,
                                                            self.current_position.y,
+                                                           self.current_orientation,
                                                            thetas,
                                                            ranges)
 

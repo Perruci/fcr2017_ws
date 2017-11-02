@@ -52,7 +52,7 @@ class Layer:
 
     # Obstacle processing ----------------------------------------------
 
-    def draw_obstacles(self, origin_x, origin_y, angle_ranges, laser_ranges):
+    def draw_obstacles(self, origin_x, origin_y, orientation, angle_ranges, laser_ranges):
         '''
             Returns a modified grid which:
                 value 0 represents an unknown region
@@ -71,4 +71,3 @@ class Layer:
         idx_origin_y = get_int_distance(self.border_points[1].y, origin_y) * self.resolution
 
         self.grid[idx_origin_x, idx_origin_y] = obstacle_value
-        
