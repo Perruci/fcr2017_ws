@@ -85,6 +85,6 @@ class Layer:
                     self.grid[idx_y, idx_x] = obstacle_value
 
             # mark robot
-            if idx_x < self.cols and idx_x > 0:
-                if idx_y < self.rows and idx_y > 0:
+            if idx_origin_x < self.cols and idx_origin_x > 0:
+                if idx_origin_y < self.rows and idx_origin_y > 0:
                     self.grid[idx_origin_y, idx_origin_x] = free_value
