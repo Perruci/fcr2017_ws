@@ -29,7 +29,7 @@ class LaserMonitor:
         else:
             return self.laser_ranges
 
-    def get_obstacles(self, distance):
+    def get_obstacles(self):
         if self.first_run:
             print 'waiting for laser messages'
             return None

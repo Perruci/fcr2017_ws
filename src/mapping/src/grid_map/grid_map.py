@@ -28,9 +28,10 @@ class GridMap:
 
     def add_layer(self, node):
         ''' Add a Layer to layer_dict '''
-        self.num_layer = self.num_layer + 1
-        new_layer = layer.Layer(node, self.region_points)
-        self.layer_dict[node] = new_layer
+        if node not in self.layer_dict:
+            self.num_layer = self.num_layer + 1
+            new_layer = layer.Layer(node, self.region_points)
+            self.layer_dict[node] = new_layer
 
     def get_layer(self, node):
         ''' Return layer called node '''
@@ -60,7 +61,7 @@ class GridMap:
 
     def process_obstacles(self):
         ''' Process laser_monitor messages to detect and process obstacles '''
-        obstacles = self.laser_monitor.get_obstacles(3)
+        obstacles = self.laser_monitor.get_obstacles()
         if obstacles is not None:
             print obstacles
 
