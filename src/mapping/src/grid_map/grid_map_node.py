@@ -10,11 +10,12 @@ def create_dir(directory):
     if not os.path.exists(directory):
         try:
             os.makedirs(directory)
+            print('Created directory: ', directory)
         except OSError as e:
             if e.errno != errno.EEXIST:
                 raise
 
-if __name__ == '__main__':
+def main():
     ''' GridMap Node main function '''
     rospy.init_node('grid_map')
 
@@ -31,3 +32,6 @@ if __name__ == '__main__':
             create_dir(save_path)
             grid.save_all_layers(save_path)
             pass
+
+if __name__ == '__main__':
+    main()
