@@ -58,6 +58,13 @@ class Layer:
 
     # Obstacle processing ----------------------------------------------
 
+    def is_inside(self, x, y):
+        if x < self.cols and x > 0:
+            if y < self.rows and y > 0:
+                return True
+        return False
+
+
     def draw_obstacles(self, origin_x, origin_y, orientation, angle_ranges, laser_ranges):
         '''
             Returns a modified grid which:
@@ -80,11 +87,9 @@ class Layer:
             idx_x, idx_y = get_idx_from_polar(angle_ranges[i] + orientation, laser_ranges[i], self.resolution)
             idx_x = idx_origin_x + idx_x
             idx_y = idx_origin_y + idx_y
-            if idx_x < self.cols and idx_x > 0:
-                if idx_y < self.rows and idx_y > 0:
-                    self.grid[idx_y, idx_x] = obstacle_value
+            if self.is_inside(idx_x, idx_y):
+                self.grid[idx_y, idx_x] = obstacle_value
 
-            # mark robot
-            if idx_origin_x < self.cols and idx_origin_x > 0:
-                if idx_origin_y < self.rows and idx_origin_y > 0:
-                    self.grid[idx_origin_y, idx_origin_x] = free_value
+        # mark robot
+        if self.is_inside(idx_origin_y, idx_origin_x):
+            self.grid[idx_origin_y, idx_origin_x] = free_value
