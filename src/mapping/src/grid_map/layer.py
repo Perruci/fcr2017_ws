@@ -1,7 +1,7 @@
 import numpy as np
 import math
 
-def get_int_distance(value1, value2):
+def get_int_difference(value1, value2):
     ''' Returns the absolute distance from two float objects '''
     return int(math.floor(abs(value1 - value2)))
 
@@ -10,6 +10,40 @@ def get_idx_from_polar(angle, radius, resolution):
     x = int(math.floor(math.cos(angle) * radius * resolution))
     y = int(math.floor(math.sin(angle) * radius * resolution))
     return x, y
+
+def find_nearest(array,value):
+    ''' Find nearest index in a array. Ref: https://stackoverflow.com/questions/2566412/find-nearest-value-in-numpy-array '''
+    idx = (np.abs(array-value)).argmin()
+    print array[idx]
+    return idx
+
+def compute_angle(idx_origin_x, idx_origin_y, idx_x, idx_y):
+    ''' Returns the orientation diference between idx_origin and idx '''
+    diff_x = idx_x - idx_origin_x
+    diff_y = idx_y - idx_origin_y
+    return math.atan2(diff_y, diff_x)
+
+def check_for_occupation(laser_value, distance):
+    ''' Check if there is an obstacle for pixel given laser_value and distance '''
+    tolerance = 0.1
+
+    obstacle_value = 1
+    unknown_value = 0
+    free_value = -1
+
+    diff_distance = laser_value - distance
+
+    if abs(diff_distance) < tolerance:
+        print 'Obstacle!'
+        return obstacle_value
+    else:
+        if diff_distance > 0:
+            print 'Free!'
+            return free_value
+        else:
+            print 'unknown_value!'
+            return unknown_value
+
 
 class Layer:
     ''' Default GridMap Layer Instance '''
@@ -31,8 +65,8 @@ class Layer:
             Layers have, a resolution of 5 points per meter
         '''
         # basic setup
-        grid_widith = get_int_distance(self.border_points[0].x, self.border_points[1].x)
-        grid_height = get_int_distance(self.border_points[0].y, self.border_points[1].y)
+        grid_widith = get_int_difference(self.border_points[0].x, self.border_points[1].x)
+        grid_height = get_int_difference(self.border_points[0].y, self.border_points[1].y)
         # number of points per meter
         self.resolution = 5
         # get rows and cols
@@ -59,13 +93,18 @@ class Layer:
     # Obstacle processing ----------------------------------------------
 
     def is_inside(self, x, y):
+        ''' Check wheather index values x and y are inside grid matrix '''
         if x < self.cols and x > 0:
             if y < self.rows and y > 0:
                 return True
         return False
 
+    def compute_distance(self, idx_origin_x, idx_origin_y, idx_x, idx_y):
+        diff_x = idx_x - idx_origin_x
+        diff_y = idx_y - idx_origin_y
+        return math.sqrt(diff_x**2 + diff_y**2) / self.resolution
 
-    def draw_obstacles(self, origin_x, origin_y, orientation, angle_ranges, laser_ranges):
+    def draw_obstacles(self, origin_x, origin_y, orientation, angle_ranges, laser_ranges, min_max_angle):
         '''
             Returns a modified grid which:
                 value 0 represents an unknown region
@@ -76,20 +115,16 @@ class Layer:
                 origin_y: y coordinate of the polar coordinate space
                 angle_ranges: list of radian values corresponding to laser_ranges
                 laser_ranges: list of laser distances corresponding to angle_ranges
+                min_max_angle: numpy list. first element is minimum angle, second is maximum
         '''
-        obstacle_value = 1
-        free_value = -1
+        idx_origin_x = get_int_difference(self.border_points[0].x, origin_x) * self.resolution
+        idx_origin_y = get_int_difference(self.border_points[1].y, origin_y) * self.resolution
 
-        idx_origin_x = get_int_distance(self.border_points[0].x, origin_x) * self.resolution
-        idx_origin_y = get_int_distance(self.border_points[1].y, origin_y) * self.resolution
-
-        for i in xrange(len(laser_ranges)):
-            idx_x, idx_y = get_idx_from_polar(angle_ranges[i] + orientation, laser_ranges[i], self.resolution)
-            idx_x = idx_origin_x + idx_x
-            idx_y = idx_origin_y + idx_y
-            if self.is_inside(idx_x, idx_y):
-                self.grid[idx_y, idx_x] = obstacle_value
-
-        # mark robot
-        if self.is_inside(idx_origin_y, idx_origin_x):
-            self.grid[idx_origin_y, idx_origin_x] = free_value
+        for (idx_y, idx_x), pixel_value in np.ndenumerate(self.grid):
+            theta = compute_angle(idx_origin_x, idx_origin_y, idx_x, idx_y) - orientation
+            if theta > min_max_angle[0] and theta < min_max_angle[1]:
+                near_idx = find_nearest(angle_ranges, theta)
+                self.grid[idx_y, idx_x] = check_for_occupation(laser_ranges[near_idx],
+                                                               self.compute_distance(idx_origin_x,
+                                                                                     idx_origin_y,
+                                                                                     idx_x, idx_y))

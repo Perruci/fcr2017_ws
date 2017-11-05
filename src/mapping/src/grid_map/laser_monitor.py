@@ -36,6 +36,9 @@ class LaserMonitor:
         else:
             return self.ranges_orientation
 
+    def get_min_max_angles(self):
+        return [self.angle_min, self.angle_max]
+
     def get_obstacles(self, distance=30.0):
         if self.first_run:
             print 'waiting for laser messages'

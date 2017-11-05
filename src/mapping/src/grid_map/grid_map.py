@@ -72,7 +72,8 @@ class GridMap:
                                                            self.current_position.y,
                                                            self.current_orientation,
                                                            self.laser_monitor.get_angles(),
-                                                           obstacles)
+                                                           obstacles,
+                                                           self.laser_monitor.get_min_max_angles())
 
     def run(self):
         ''' Class Main Fuction '''
