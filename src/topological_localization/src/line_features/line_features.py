@@ -1,5 +1,6 @@
 import rospy
 import math
+import numpy as np
 from topological_localization.msg import LineSegmentList
 
 def line_length(start, end):
@@ -11,8 +12,8 @@ def line_length(start, end):
 
 class LineFeatures:
     def line_extraction_callback(self, msg):
-        self.line_list = msg.line_segments
-
+        self.line_list = np.array(msg.line_segments)
+        
     def __init__(self):
         self.line_list = []
         self.sub_lines = rospy.Subscriber('line_segments', LineSegmentList, self.line_extraction_callback)
