@@ -51,7 +51,7 @@ class LineFeatures:
         return parallel_tuples, orthogonal_tuples
 
     def parallel_validation(self, idx_tuple):
-        ''' Compute two parall lines distance '''
+        ''' Returns true for parallel lines which distace is greater than min and lesser than max '''
         i = idx_tuple[0]
         j = idx_tuple[1]
         dist = abs(self.line_list[i].radius - self.line_list[j].radius)
@@ -62,7 +62,7 @@ class LineFeatures:
             return False
 
     def filter_parallels(self, parallel_pairs):
-        ''' Remove parallel_pairs which distance is less than distance '''
+        ''' Filter parallel_pairs which distance is outside a range '''
         if parallel_pairs is None:
             return None
         # filter min_distance
