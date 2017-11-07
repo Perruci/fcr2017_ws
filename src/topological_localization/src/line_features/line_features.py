@@ -26,6 +26,7 @@ class LineFeatures:
         self.sub_lines = rospy.Subscriber('line_segments', LineSegmentList, self.line_extraction_callback)
         self.parallel_min_dist = 1.5
         self.parallel_max_dist = 5
+        self.continuity_tolerance = 1
 
     def  get_parallel_and_orthogonal(self, tolerance):
         ''' Extract line properties as parallel and orthogonal lines '''
@@ -52,9 +53,10 @@ class LineFeatures:
 
     def parallel_validation(self, idx_tuple):
         ''' Returns true for parallel lines which distace is greater than min and lesser than max '''
-        i = idx_tuple[0]
-        j = idx_tuple[1]
-        dist = abs(self.line_list[i].radius - self.line_list[j].radius)
+        i, j = idx_tuple[0], idx_tuple[1]
+        line1, line2 = self.line_list[i], self.line_list[j]
+
+        dist = abs(line1.radius - line2.radius)
         if self.parallel_min_dist < dist and dist < self.parallel_max_dist:
             print 'parallel lines distance: ', dist
             return True
@@ -65,9 +67,38 @@ class LineFeatures:
         ''' Filter parallel_pairs which distance is outside a range '''
         if parallel_pairs is None:
             return None
-        # filter min_distance
+        # filter min_distance and max_distance
         parallel_pairs = filter(self.parallel_validation, parallel_pairs)
         return parallel_pairs
+
+    def tuple_inside_tolerance(self, tup):
+        if tup[0] < self.continuity_tolerance and tup[1] < self.continuity_tolerance:
+            return True
+        else:
+            return False
+
+    def orthogonal_validation(self, idx_tuple):
+        ''' Check for continuity on the orthogonal pairs. Returns true for continuous, false otherwise. '''
+        i, j = idx_tuple[0], idx_tuple[1]
+        line1, line2 = self.line_list[i], self.line_list[j]
+
+        # Subtract x and y coordinates of lines start and end
+        diff_start = tuple(abs(np.subtract(line1.start, line2.start)))
+        diff_end = tuple(abs(np.subtract(line1.end, line2.end)))
+        diff_start_end = tuple(abs(np.subtract(line1.end, line2.end)))
+
+        # detects low values in tuple pairs
+        if self.tuple_inside_tolerance(diff_start) or self.tuple_inside_tolerance(diff_end) or self.tuple_inside_tolerance(diff_start_end):
+            return True
+        else:
+            return False
+
+    def filter_orthogonals(self, orthogonal_pairs):
+        if orthogonal_pairs is None:
+            return None
+        # check for continuity between line start and end
+        orthogonal_pairs = filter(self.orthogonal_validation, orthogonal_pairs)
+        return orthogonal_pairs
 
 
     def process_line(self, tolerance=0.01):
@@ -75,6 +106,7 @@ class LineFeatures:
         parallel_pairs, orthogonal_pairs = self.get_parallel_and_orthogonal(tolerance)
 
         parallel_pairs = self.filter_parallels(parallel_pairs)
+        orthogonal_pairs = self.filter_orthogonals(orthogonal_pairs)
 
         print parallel_pairs
         print orthogonal_pairs
