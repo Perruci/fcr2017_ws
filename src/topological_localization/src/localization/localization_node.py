@@ -7,7 +7,7 @@ def main():
 
     cic_prob = cic_probabilities.CIC_Probabilities()
     rate = rospy.Rate(1) # 1hz
-    
+
     while not rospy.is_shutdown():
         try:
             rate.sleep()

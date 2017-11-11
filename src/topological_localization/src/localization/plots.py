@@ -33,6 +33,7 @@ def bar_plot(pos, x=None, ylim=(0,1), title=None, c='#30a2da',
     """
 
     ax = plt.gca()
+    ax.grid('on')
     if x is None:
         x = np.arange(len(pos))
     ax.bar(x, pos, color=c, **kwargs)
