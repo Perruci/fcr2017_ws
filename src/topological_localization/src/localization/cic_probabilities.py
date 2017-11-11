@@ -7,6 +7,11 @@ def uniform_distribution(array_len):
     ''' Returns a 1D array of uniform probability distribution '''
     return np.array([1./array_len]*array_len)
 
+class PositionProbability(object):
+    ''' Class designed to host the location probability '''
+    def __init__(self):
+        self.position_belief = uniform_distribution(18)
+
 class SensorProbability(object):
     ''' Class designed to host sensor readings static probabilities '''
     def __init__(self):
@@ -74,32 +79,40 @@ class SensorProbability(object):
                 2. inner corners probability
                 3. outer corners probability
         '''
+        # Define a feature order vector for posterior segmentation
+        self.features_order = np.array([self.hallway_features, self.inner_features, self.outer_features])
+        # Stack together the measurements probability
         self.measurements_probability = np.vstack((self.prob_hallway, self.prob_inner_corner))
         self.measurements_probability = np.vstack((self.measurements_probability , self.prob_outer_corner))
         return self.measurements_probability
 
-class CIC_Probabilities(SensorProbability):
-    ''' Class designed to host the initial probabilities of the CIC Map '''
+class CIC_Probabilities(PositionProbability, SensorProbability):
+    '''
+        Class designed to host the initial probabilities of the CIC Map.
+        Prior probabilities are already inherited of the subclasses.
+        The main variables previously set are:
+            self.position_belief: Position Probability
+            self.measurements_probability: Sensor static probabilities
+    '''
     def __init__(self):
-        super(CIC_Probabilities, self).__init__() # call past constructor
         self.map_len = 18
-        self.nodes_array = np.arange(1, self.map_len+1)
-        self.set_prior_probabilities()
+        self.nodes_array = np.arange(1, self.map_len+1) # 1-18 array
+        self.set_prior_probabilities() # call prior constructors
 
     def set_prior_probabilities(self):
         '''
-            Define a priori probabilities:
-                * belief states for the node localization probability
+            Prior probabilities are computed on iherited classes constructors.
         '''
-        self.belief = uniform_distribution(self.map_len)
+        PositionProbability.__init__(self)
+        SensorProbability.__init__(self)
         self.print_belief()
-        print self.measurements_probability.shape
+        print self.measurements_probability
         print 'Prior probabilities set'
 
     def print_belief(self):
         plt.figure()
-        plots.bar_plot(self.belief, self.nodes_array, (0,0.5))
-        plt.title('Belief Plot')
+        plots.bar_plot(self.position_belief, self.nodes_array, (0,0.5))
+        plt.title('Position Belief Plot')
         plt.xlabel('Node Ids')
         plt.ylabel('Current Probability')
         # show plot
