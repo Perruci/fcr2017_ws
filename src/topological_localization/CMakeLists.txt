@@ -163,6 +163,7 @@ include_directories(
 ## in contrast to setup.py, you can choose the destination
 install(PROGRAMS
   src/line_features/line_features_node
+  src/localization/localization_node
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
