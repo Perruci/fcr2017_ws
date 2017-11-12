@@ -143,7 +143,7 @@ class CIC_Probabilities(PositionProbability, SensorProbability):
         '''
         if reading.shape[0] != self.measurements_probability.shape[0]:
             print 'Attempt to process sensor reading of wrong shape'
-        prob_x_reading = np.dot(reading, self.measurements_probability)
+        prob_x_reading = np.dot(reading, self.measurements_probability) * self.position_belief
         self.set_belief(normalize(prob_x_reading))
 
     def plot_belief(self):
