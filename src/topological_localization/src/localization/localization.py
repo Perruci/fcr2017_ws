@@ -12,7 +12,7 @@ class Localization:
 
     def run(self):
         # emulate a sensor reading none features
-        z = np.array([1, 0, 1, 0, 0, 1, 0, 0])
-        self.process_sensor_reading(z)
+        reading = np.array([0, 0, 0])
+        self.process_sensor_reading(reading)
         self.cic_prob.plot_belief()
         print self.cic_prob.get_belief()

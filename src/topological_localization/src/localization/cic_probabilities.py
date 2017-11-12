@@ -11,6 +11,10 @@ def uniform_distribution(array_len):
     ''' Returns a 1D array of uniform probability distribution '''
     return np.array([1./array_len]*array_len)
 
+# Sensor reading functions --------------------------------
+def empty_reading():
+    return np.array([1, 0, 1, 0, 0, 1, 0, 0])
+
 class PositionProbability(object):
     ''' Class designed to host the location probability '''
     def __init__(self):
@@ -134,6 +138,34 @@ class CIC_Probabilities(PositionProbability, SensorProbability):
         else:
             print 'Wrong size in belief update'
 
+    def process_sensor_reading(self, reading):
+        '''
+            Transform a tree integer reading into a binary vector of sensor readin information.
+                param: reading - numpy array of three integer values.
+                       Each correspond to sensor reading of hallway, inner corner or outer corner.
+            The integers value is converted to a binary message which leghth correspond to self.features_order.
+                - 1st value converts to a self.features_order[0] size array: hallway_msg
+                - 2nd value converts to a self.features_order[1] size array: inner_msg
+                - 3rd value converts to a self.features_order[2] size array: outer_msg
+                return: horizontal concatenation of the arrays in the following order:
+                    return [hallway_msg, inner_msg, outer_msg]
+        '''
+        if self.features_order.shape != reading.shape:
+            print 'Wrong shape of reading message recieved.'
+            return empty_reading()
+
+        hallway_msg = np.zeros(self.features_order[0])
+        inner_msg = np.zeros(self.features_order[1])
+        outer_msg = np.zeros(self.features_order[2])
+
+        # process each reading integer
+        hallway_msg[reading[0]] = 1
+        inner_msg[reading[1]] = 1
+        outer_msg[reading[2]] = 1
+
+        # horizontal concatenate and output
+        return np.concatenate((hallway_msg,inner_msg,outer_msg))
+
     def update_belief(self, reading):
         '''
             Update position_belief probability according to sensor reading.
@@ -141,9 +173,11 @@ class CIC_Probabilities(PositionProbability, SensorProbability):
                         reading * measurements_probability
             performs the belief update we expect.
         '''
-        if reading.shape[0] != self.measurements_probability.shape[0]:
+        z = self.process_sensor_reading(reading)
+        # z is a row vector of binaies ones and zeros for each feature
+        if self.measurements_probability.shape[0] != z.shape[0]:
             print 'Attempt to process sensor reading of wrong shape'
-        prob_x_reading = np.dot(reading, self.measurements_probability) * self.position_belief
+        prob_x_reading = np.dot(z, self.measurements_probability) * self.position_belief
         self.set_belief(normalize(prob_x_reading))
 
     def plot_belief(self):
