@@ -6,5 +6,13 @@ class Localization:
     def __init__(self):
         self.cic_prob = cic_probabilities.CIC_Probabilities()
 
+    def process_sensor_reading(self, z):
+        ''' Process sensor reading given in vector z '''
+        self.cic_prob.update_belief(z)
+
     def run(self):
-        pass
+        # emulate a sensor reading
+        z = np.array([0, 1, 0, 0, 0, 0, 0, 0])
+        self.process_sensor_reading(z)
+        self.cic_prob.plot_belief()
+        print self.cic_prob.get_belief()

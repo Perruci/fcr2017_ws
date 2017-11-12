@@ -10,6 +10,7 @@ def main():
 
     while not rospy.is_shutdown():
         try:
+            localize.run()
             rate.sleep()
         except:
             pass
