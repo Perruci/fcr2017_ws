@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 import rospy
-import cic_probabilities
+import localization
 
 def main():
     rospy.init_node('localization')
 
-    cic_prob = cic_probabilities.CIC_Probabilities()
+    localize = localization.Localization()
     rate = rospy.Rate(1) # 1hz
 
     while not rospy.is_shutdown():
