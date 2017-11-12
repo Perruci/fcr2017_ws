@@ -42,7 +42,7 @@ class SensorProbability(object):
         # define arrays shape
         self.prob_hallway = np.ndarray(shape=(2,18))
         # set none probability
-        self.prob_hallway[0,:] = self.set_feature_occurency([1,3,5,7,12,14,16,18])
+        self.prob_hallway[0,:] = uniform_distribution(18)
         # set single corner probability
         self.prob_hallway[1,:] = self.set_feature_occurency([2,4,6,8,9,10,11,13,15,17])
         return self.prob_hallway
@@ -58,7 +58,7 @@ class SensorProbability(object):
         # define arrays shape
         self.prob_inner_corner = np.ndarray(shape=(3,18))
         # set none probability
-        self.prob_inner_corner[0,:] = self.set_feature_occurency([2,3,4,5,6,8,9,10,11,13,14,15,16,17])
+        self.prob_inner_corner[0,:] = uniform_distribution(18)
         # set single corner probability
         self.prob_inner_corner[1,:] = self.set_feature_occurency([1,7,12,18])
         # set multi corner probability
@@ -76,7 +76,7 @@ class SensorProbability(object):
         # define arrays shape
         self.prob_outer_corner = np.ndarray(shape=(3,18))
         # set none probability
-        self.prob_outer_corner[0,:] = self.set_feature_occurency([2,4,6,8,9,10,11,13,15,17])
+        self.prob_outer_corner[0,:] = uniform_distribution(18)
         # set single corner probability
         self.prob_outer_corner[1,:] = self.set_feature_occurency([1,3,5,7,12,14,16,18])
         # set multi corner probability

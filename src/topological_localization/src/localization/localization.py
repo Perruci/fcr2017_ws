@@ -11,8 +11,8 @@ class Localization:
         self.cic_prob.update_belief(z)
 
     def run(self):
-        # emulate a sensor reading for node 2
-        z = np.array([0, 1, 1, 0, 0, 1, 0, 0])
+        # emulate a sensor reading none features
+        z = np.array([1, 0, 1, 0, 0, 1, 0, 0])
         self.process_sensor_reading(z)
         self.cic_prob.plot_belief()
         print self.cic_prob.get_belief()
