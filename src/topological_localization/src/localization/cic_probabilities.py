@@ -154,11 +154,16 @@ class CIC_Probabilities(PositionProbability, SensorProbability):
             print 'Wrong shape of reading message recieved.'
             return empty_reading()
 
+        # evaluates if reading elements are less or equal to expected
+        if not (np.all(reading <= self.features_order)):
+            print 'Invalid reading value. An integer flag was different than expected'
+            return empty_reading()
+
         hallway_msg = np.zeros(self.features_order[0])
         inner_msg = np.zeros(self.features_order[1])
         outer_msg = np.zeros(self.features_order[2])
 
-        # process each reading integer
+        # reading indicated indexes are set to one
         hallway_msg[reading[0]] = 1
         inner_msg[reading[1]] = 1
         outer_msg[reading[2]] = 1
