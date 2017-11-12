@@ -28,4 +28,4 @@ class Localization:
         self.plot_belief()
 
     def plot_belief(self):
-        self.cic_prob.plot_belief()
+        self.cic_prob.plot_belief(self.msg_reading)

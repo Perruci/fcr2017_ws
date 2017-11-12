@@ -185,10 +185,10 @@ class CIC_Probabilities(PositionProbability, SensorProbability):
         prob_x_reading = np.dot(z, self.measurements_probability) * self.position_belief
         self.set_belief(normalize(prob_x_reading))
 
-    def plot_belief(self):
+    def plot_belief(self, reading=None):
         ''' Function to create a bar plot and express belief values '''
         plots.bar_plot(self.position_belief, self.nodes_array, (0,0.5))
-        plt.title('Position Belief Plot')
+        plt.title('Position Belief Plot\nReading = (%s)' %(reading))
         plt.xlabel('Node Ids')
         plt.ylabel('Current Probability')
         # show plot
