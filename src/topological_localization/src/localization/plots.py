@@ -39,6 +39,6 @@ def bar_plot(pos, x=None, ylim=(0,1), title=None, c='#30a2da',
     ax.bar(x, pos, color=c, **kwargs)
     if ylim:
         plt.ylim(ylim)
-    plt.xticks(np.asarray(x)+0.4, x)
+    plt.xticks(np.asarray(x), x)
     if title is not None:
         plt.title(title)
