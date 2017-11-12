@@ -98,6 +98,7 @@ class CIC_Probabilities(PositionProbability, SensorProbability):
         self.map_len = 18
         self.nodes_array = np.arange(1, self.map_len+1) # 1-18 array
         self.set_prior_probabilities() # call prior constructors
+        plt.show() # show plots (if any)
 
     def set_prior_probabilities(self):
         '''
@@ -105,16 +106,15 @@ class CIC_Probabilities(PositionProbability, SensorProbability):
         '''
         PositionProbability.__init__(self)
         SensorProbability.__init__(self)
-        self.print_belief()
-        print self.measurements_probability
+        self.plot_belief()
         print 'Prior probabilities set'
 
-    def print_belief(self):
-        plt.figure()
+    def plot_belief(self):
+        fig = plt.figure()
         plots.bar_plot(self.position_belief, self.nodes_array, (0,0.5))
         plt.title('Position Belief Plot')
         plt.xlabel('Node Ids')
         plt.ylabel('Current Probability')
         # show plot
         plt.ion()
-        plt.show()
+        plt.draw()
