@@ -4,7 +4,7 @@ import line_features
 
 if __name__ == '__main__':
 
-    rospy.init_node('topological')
+    rospy.init_node('localization_line_features')
 
     line_feat = line_features.LineFeatures()
     r = rospy.Rate(1) # 1hz

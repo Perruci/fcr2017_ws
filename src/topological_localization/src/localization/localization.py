@@ -16,7 +16,7 @@ class Localization:
         if msg.num_features != 3:
             print 'Recieved wrong type of message on topic localization/line_features'
             pass
-        print 'Recived features message: ', msg.features_list
+        rospy.loginfo("Recived features message: %s", msg.features_list)
         self.msg_reading = np.array(msg.features_list)
 
     def update_belief(self, z):
