@@ -12,6 +12,7 @@
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>std_msgs</build_depend>
+  <build_depend>laser_line_extraction</build_depend>
   <build_depend>geometry_msgs</build_depend>
   <build_depend>sensor_msgs</build_depend>
   <build_depend>p2os_msgs</build_depend>
@@ -26,6 +27,7 @@
   <run_depend>gazebo_ros_control</run_depend>
   <run_depend>geometry_msgs</run_depend>
   <run_depend>p2os_msgs</run_depend>
+  <run_depend>laser_line_extraction</run_depend>
   <run_depend>tf</run_depend>
 
   <!-- The export tag contains other, unspecified, tags -->

@@ -14,7 +14,7 @@
     <!-- push robot_description to factory and spawn robot in gazebo -->
     <node name="spawn_pioneer" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model Pioneer3at" respawn="false" output="screen" />
 
-    <!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(find fcr2017)/launch/gazebo.rviz"/> -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find fcr2017)/launch/gazebo.rviz"/>
 
     <node name="sonar" pkg="fcr2017" type="gazebo_sonar" />
 
@@ -44,6 +44,6 @@
         <param name="~min_split_dist" value="0.04" />
         <param name="~outlier_dist" value="0.06" />
         <param name="~min_line_points" value="10" />
-</node>
+    </node>
 
 </launch>
