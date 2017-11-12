@@ -53,6 +53,7 @@ add_message_files(
   FILES
   LineSegment.msg
   LineSegmentList.msg
+  LocalizationFeatures.msg
 )
 
 ## Generate services in the 'srv' folder

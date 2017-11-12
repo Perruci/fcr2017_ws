@@ -2,6 +2,7 @@ import rospy
 import math
 import numpy as np
 from topological_localization.msg import LineSegmentList
+from topological_localization.msg import LocalizationFeatures
 
 def line_length(start, end):
     ''' Compute line length through the pitagorean theorem '''
@@ -25,7 +26,6 @@ class LineFeatures:
     def __init__(self):
         ''' Line features constructor. Create ROS publisher and subscriber ans set default valued variables '''
         self.line_list = []
-        self.sub_lines = rospy.Subscriber('line_segments', LineSegmentList, self.line_extraction_callback)
         # tolerance values
         self.parallel_min_dist = 1.5
         self.parallel_max_dist = 10
@@ -34,6 +34,11 @@ class LineFeatures:
         self.found_hallway = False
         self.found_corner = False
         self.found_mult_corner = False
+        # subscriber
+        self.sub_lines = rospy.Subscriber('line_segments', LineSegmentList, self.line_extraction_callback)
+        # publiser
+        self.pub_features = rospy.Publisher('localization/line_features', LocalizationFeatures, queue_size=10)
+
 
     def  get_parallel_and_orthogonal(self, tolerance):
         ''' Extract line properties as parallel and orthogonal lines '''
@@ -135,17 +140,23 @@ class LineFeatures:
             self.found_mult_corner = True
 
     def publish_message(self):
-        msg = np.zeros(3)
+        ''' Construct and publish line features message '''
+        features_list = np.zeros(3)
         if self.found_hallway:
-            msg[0] = 1
+            features_list[0] = 1
         if self.found_corner and not self.found_mult_corner:
-            msg[1] = 1
-            msg[2] = 1
+            features_list[1] = 1
+            features_list[2] = 1
         elif self.found_mult_corner:
-            msg[1] = 2
-            msg[2] = 2
-        print 'Message published!', msg
+            features_list[1] = 2
+            features_list[2] = 2
 
+        msg = LocalizationFeatures()
+        msg.num_features = 3
+        msg.features_list = features_list
+        self.pub_features.publish(msg)
+
+        print 'Message published!', msg.features_list
         self.found_hallway, self.found_corner, self.found_mult_corner = False, False, False
 
     def run(self):
