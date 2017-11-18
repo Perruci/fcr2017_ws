@@ -260,17 +260,28 @@ class CIC_Probabilities(PositionProbability, SensorProbability):
         prob_x_reading = np.dot(z, self.measurements_probability) * self.position_belief
         self.set_belief(normalize(prob_x_reading))
 
+    def movement_update_belief(self, has_moved):
+        '''
+            Update position belief according to movement movel.
+            If robot has moved, use self.move_pdf, else use self.still_pdf
+        '''
+        if has_moved:
+            prob_x_movement = np.dot(self.position_belief, self.move_pdf)
+        else:
+            prob_x_movement = np.dot(self.position_belief, self.still_pdf)
+        self.set_belief(normalize(prob_x_movement))
 
-    def update_belief(self, reading):
+    def update_belief(self, reading, has_moved):
         '''
             Update position belief according to sensor reading and movement model
         '''
         self.sensor_update_belief(reading)
+        self.movement_update_belief(has_moved)
 
-    def plot_belief(self, reading=None):
+    def plot_belief(self, reading=None, has_moved=None):
         ''' Function to create a bar plot and express belief values '''
         plots.bar_plot(self.position_belief, self.nodes_array, (0,0.5))
-        plt.title('Position Belief Plot\nReading = (%s)' %(reading))
+        plt.title('Position Belief Plot\nReading = (%s) %s' %(reading,has_moved))
         plt.xlabel('Node Ids')
         plt.ylabel('Current Probability')
         # show plot
