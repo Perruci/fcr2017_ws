@@ -19,6 +19,81 @@ class PositionProbability(object):
     ''' Class designed to host the location probability '''
     def __init__(self):
         self.position_belief = uniform_distribution(18)
+        self.set_neighboors()
+        self.set_static_probability()
+        self.set_movement_probability()
+
+    def set_neighboors(self):
+        ''' Hard coded nodes neighboors '''
+        self.node_neighboors = {}
+        # top nodes
+        self.node_neighboors[1] = [2,8]
+        self.node_neighboors[2] = [1,3]
+        self.node_neighboors[3] = [2,4,9]
+        self.node_neighboors[4] = [3,5]
+        self.node_neighboors[5] = [4,6,10]
+        self.node_neighboors[6] = [5,7]
+        self.node_neighboors[7] = [6,11]
+        # middle nodes
+        self.node_neighboors[8]  = [1,12]
+        self.node_neighboors[9]  = [3,14]
+        self.node_neighboors[10] = [5,16]
+        self.node_neighboors[11] = [7,18]
+        # bottom layers
+        self.node_neighboors[12] = [8,13]
+        self.node_neighboors[13] = [12,14]
+        self.node_neighboors[14] = [9,13,15]
+        self.node_neighboors[15] = [14,16]
+        self.node_neighboors[16] = [10,15,17]
+        self.node_neighboors[17] = [16,18]
+        self.node_neighboors[18] = [17,11]
+
+    def get_neighboor(self, node):
+        ''' Returns node neighboors indexes as stored in self.node_neighboors '''
+        if node in self.node_neighboors:
+            # correct node values to indexes
+            idxs_neighboors = np.subtract(self.node_neighboors[node],1)
+            return idxs_neighboors
+        else:
+            print 'Node not found on neighboord dict: ', node
+            return None
+
+    def set_node_probability(self, node, scale_node, scale_neighboors):
+        '''
+            For a given node and neighboors return an array of probabilities.
+            - node: node number from 1-18 to recieve scale_node probability
+            - neighboors: vector of integers from 1-18 to recieve scale_neighboors probability
+            - returns: 18 sized array to fill self.still_pdf or self.move_pdf
+        '''
+        # correct node numbers to indexes
+        idx_node = node - 1
+        # create output probabilty density function
+        pdf = np.ones(18)
+        pdf[idx_node] = scale_node # set node scale
+        pdf[self.get_neighboor(node)] = scale_neighboors # set neighboor scale
+        return normalize(pdf)
+
+    def set_static_probability(self):
+        ''' Crete hard coded no-movement probability '''
+        node_scale = 100        # hard coded value for staying on the same node
+        neighboor_scale = 10    # hard coded value for moving to neighboors
+        self.still_pdf = np.ones((18,18))
+        # apply each node probability
+        for i in range(0,18):
+            node = i + 1
+            self.still_pdf[i,:] = self.set_node_probability(node, node_scale, neighboor_scale)
+        print 'No-movement probability set'
+
+    def set_movement_probability(self):
+        ''' Create hard coded movement probability '''
+        node_scale = 100        # hard coded value for staying on the same node
+        neighboor_scale = 30    # hard coded value for moving to neighboors
+        self.move_pdf = np.ones((18,18))
+        # apply each node probability
+        for i in range(0,18):
+            node = i + 1
+            self.move_pdf[i,:] = self.set_node_probability(node, node_scale, neighboor_scale)
+        print 'Movement probability set'
 
 class SensorProbability(object):
     ''' Class designed to host sensor readings static probabilities '''
@@ -171,7 +246,7 @@ class CIC_Probabilities(PositionProbability, SensorProbability):
         # horizontal concatenate and output
         return np.concatenate((hallway_msg,inner_msg,outer_msg))
 
-    def update_belief(self, reading):
+    def sensor_update_belief(self,reading):
         '''
             Update position_belief probability according to sensor reading.
             Note that a matrix multiplication:
@@ -184,6 +259,13 @@ class CIC_Probabilities(PositionProbability, SensorProbability):
             print 'Attempt to process sensor reading of wrong shape'
         prob_x_reading = np.dot(z, self.measurements_probability) * self.position_belief
         self.set_belief(normalize(prob_x_reading))
+
+
+    def update_belief(self, reading):
+        '''
+            Update position belief according to sensor reading and movement model
+        '''
+        self.sensor_update_belief(reading)
 
     def plot_belief(self, reading=None):
         ''' Function to create a bar plot and express belief values '''
