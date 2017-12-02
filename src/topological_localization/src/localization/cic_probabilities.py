@@ -75,7 +75,7 @@ class PositionProbability(object):
 
     def set_static_probability(self):
         ''' Crete hard coded no-movement probability '''
-        node_scale = 100        # hard coded value for staying on the same node
+        node_scale = 500       # hard coded value for staying on the same node
         neighboor_scale = 10    # hard coded value for moving to neighboors
         self.still_pdf = np.ones((18,18))
         # apply each node probability
@@ -86,8 +86,8 @@ class PositionProbability(object):
 
     def set_movement_probability(self):
         ''' Create hard coded movement probability '''
-        node_scale = 100        # hard coded value for staying on the same node
-        neighboor_scale = 30    # hard coded value for moving to neighboors
+        node_scale = 500        # hard coded value for staying on the same node
+        neighboor_scale = 50    # hard coded value for moving to neighboors
         self.move_pdf = np.ones((18,18))
         # apply each node probability
         for i in range(0,18):
@@ -275,8 +275,8 @@ class CIC_Probabilities(PositionProbability, SensorProbability):
         '''
             Update position belief according to sensor reading and movement model
         '''
-        self.sensor_update_belief(reading)
         self.movement_update_belief(has_moved)
+        self.sensor_update_belief(reading)
 
     def plot_belief(self, reading=None, has_moved=None):
         ''' Function to create a bar plot and express belief values '''
