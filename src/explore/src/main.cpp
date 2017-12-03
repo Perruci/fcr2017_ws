@@ -1,4 +1,5 @@
 #include "../include/explore.h"
+#include "../include/teleport.h"
 #include "../include/movement/navigation.h"
 
 char startMenu();
@@ -7,11 +8,12 @@ int main(int argc, char *argv[])
 {
     Navigation navigate(argc, argv);
     Explore explore(argc, argv);
+    Teleport teleport(argc, argv);
     ros::spinOnce();
 
     bool explore_complete = false;
     geometry_msgs::Point point;
-
+    float orientation;
     while(ros::ok())
     {
         char command = startMenu();
@@ -43,6 +45,18 @@ int main(int argc, char *argv[])
                         ros::spinOnce();
                     }
                     break;
+
+                case 't':
+                    std::cout << "Where would you like to go? \n"
+                              << "Insert X value:\n-> ";
+                    std::cin >> point.x;
+                    std::cout << "Insert Y value:\n-> ";
+                    std::cin >> point.y;
+                    std::cout << "Which orientation? (rad)\n-> ";
+                    std::cin >> orientation;
+                    teleport.set_position(point.x, point.y);
+                    teleport.set_orientation(orientation);
+                    teleport.serviceTeleport();
             }
         }
         else
@@ -57,6 +71,7 @@ char startMenu()
     std::cout << "What would you like me to do?" << '\n';
     std::cout << "\tp --- run through all nodes" << '\n';
     std::cout << "\tm --- move to a point" << '\n';
+    std::cout << "\tt --- teleport to a point" << '\n';
     std::cout << "\tq --- quit and sleep" << '\n';
     std::cout << "-> ";
     while (true)
@@ -71,6 +86,8 @@ char startMenu()
             case 'm':
                 return 'm';
                 break;
+            case 't':
+                return 't';
             case 'q':
                 return 'q';
                 break;

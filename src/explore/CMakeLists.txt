@@ -147,6 +147,7 @@ include_directories(
 add_executable(explore
     src/main.cpp
     src/explore.cpp
+    src/teleport.cpp
     src/navigation.cpp
     src/kinematics.cpp
     src/movement.cpp
