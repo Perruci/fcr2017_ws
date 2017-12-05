@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
     ros::spinOnce();
 
     bool explore_complete = false;
-    geometry_msgs::Point point;
+    geometry_msgs::Pose pose;
     float orientation;
     while(ros::ok())
     {
@@ -24,13 +24,28 @@ int main(int argc, char *argv[])
                 case 'm':
                     std::cout << "Where would you like to go? \n"
                               << "Insert X value:\n-> ";
-                    std::cin >> point.x;
+                    std::cin >> pose.position.x;
                     std::cout << "Insert Y value:\n-> ";
-                    std::cin >> point.y;
+                    std::cin >> pose.position.y;
 
-                    std::cout << "Heading to point [" << point.x << ", " << point.y << "]" << '\n';
+                    std::cout << "Heading to point [" << pose.position.x << ", " << pose.position.y << "]" << '\n';
 
-                    navigate.go_to_goal(point);
+                    navigate.go_to_goal(pose.position);
+
+                    navigate.stopMoving();
+                    break;
+
+                case 'n':
+                    std::cout << "Which is a point of the node you would like to go? \n"
+                              << "Insert X value:\n-> ";
+                    std::cin >> pose.position.x;
+                    std::cout << "Insert Y value:\n-> ";
+                    std::cin >> pose.position.y;
+
+                    std::cout << "Heading to point [" << pose.position.x << ", " << pose.position.y << "]" << '\n';
+
+                    explore.poseTargetPublish(pose);
+                    explore.go_to_goal(navigate);
 
                     navigate.stopMoving();
                     break;
@@ -49,12 +64,12 @@ int main(int argc, char *argv[])
                 case 't':
                     std::cout << "Where would you like to go? \n"
                               << "Insert X value:\n-> ";
-                    std::cin >> point.x;
+                    std::cin >> pose.position.x;
                     std::cout << "Insert Y value:\n-> ";
-                    std::cin >> point.y;
+                    std::cin >> pose.position.y;
                     std::cout << "Which orientation? (rad)\n-> ";
                     std::cin >> orientation;
-                    teleport.set_position(point.x, point.y);
+                    teleport.set_position(pose.position.x, pose.position.y);
                     teleport.set_orientation(orientation);
                     teleport.serviceTeleport();
             }
@@ -71,6 +86,7 @@ char startMenu()
     std::cout << "What would you like me to do?" << '\n';
     std::cout << "\tp --- run through all nodes" << '\n';
     std::cout << "\tm --- move to a point" << '\n';
+    std::cout << "\tn --- move to the node of a point" << '\n';
     std::cout << "\tt --- teleport to a point" << '\n';
     std::cout << "\tq --- quit and sleep" << '\n';
     std::cout << "-> ";
@@ -85,6 +101,9 @@ char startMenu()
                 break;
             case 'm':
                 return 'm';
+                break;
+            case 'n':
+                return 'n';
                 break;
             case 't':
                 return 't';

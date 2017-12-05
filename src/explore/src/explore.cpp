@@ -23,6 +23,7 @@ void Explore::loadToplogicalNodes()
 
 void Explore::poseArrayCallback(const geometry_msgs::PoseArray::ConstPtr& msg)
 {
+    this->posePath.clear();
     std::cout << "Best path poses recieved: " << '\n';
     this->posePath.assign(std::begin(msg->poses), std::end(msg->poses));
     for(auto pose : this->posePath)
@@ -50,6 +51,8 @@ void Explore::idTargetPublish(std::string str)
 
 void Explore::go_to_goal(Navigation& nav)
 {
+    while(!this->best_path_recieved)
+        ros::spinOnce(); // wait for best path
     for(auto pose : this->posePath)
     {
         std::cout << "Heading to point [" << pose.position.x << ", " << pose.position.y << "]" << '\n';
