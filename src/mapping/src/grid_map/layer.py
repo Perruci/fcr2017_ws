@@ -25,7 +25,7 @@ def compute_angle(idx_origin_x, idx_origin_y, idx_x, idx_y):
 
 def check_for_occupation(laser_value, distance):
     ''' Check if there is an obstacle for pixel given laser_value and distance '''
-    tolerance = 0.1
+    tolerance = 0.2
 
     obstacle_value = 1
     unknown_value = 0
