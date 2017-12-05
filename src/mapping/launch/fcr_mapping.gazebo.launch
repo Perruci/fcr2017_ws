@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- launch fcr2017 simulation -->
+    <include file="$(find fcr2017)/launch/pioneer3at.gazebo.launch"/>
+    <!-- launch mapping nodes -->
+    <node name="grid_map" pkg="mapping" type="grid_map_node.py"/>
+    <node name="topological" pkg="mapping" type="topological_node.py"/>
+</launch>
