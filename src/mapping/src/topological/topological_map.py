@@ -89,8 +89,8 @@ class TopologicalMap:
         ## ROS setup
         # subscribers to pose and where_to
         self.sub_origin = rospy.Subscriber('pose', Odometry, self.get_origin_callback)
-        self.sub_target = rospy.Subscriber('topological/where_to/pose', Pose, self.get_target_callback_pose)
-        self.sub_target = rospy.Subscriber('topological/where_to/id', String, self.get_target_callback_id)
+        self.sub_target_pose  = rospy.Subscriber('topological/where_to/pose', Pose, self.get_target_callback_pose)
+        self.sub_target_id    = rospy.Subscriber('topological/where_to/id', String, self.get_target_callback_id)
         # publishers
         self.pub_curr_id = rospy.Publisher('topological/current/id', String, queue_size=10)
         self.pub_curr_region = rospy.Publisher('topological/current/region', PoseArray, queue_size=10)
