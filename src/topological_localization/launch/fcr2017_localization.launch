@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
     <!-- launch fcr2017 simulation -->
-    <include file="$(find fcr2017)/launch/pioneer3at.gazebo.launch"/>
+    <include file="$(find fcr2017)/launch/pioneer3at_lines.gazebo.launch"/>
     <!-- launch topological_localization nodes -->
     <node name="localization_line_features" pkg="topological_localization" type="line_features_node.py"/>
     <node name="localization" pkg="topological_localization" type="localization_node.py" output="screen"/>
